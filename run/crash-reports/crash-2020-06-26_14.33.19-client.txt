@@ -1,12 +1,5 @@
-[26Jun2020 14:32:39.935] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--gameDir, ., --launchTarget, fmluserdevclient, --fml.mcpVersion, 20200515.085601, --fml.mcVersion, 1.15.2, --fml.forgeGroup, net.minecraftforge, --fml.forgeVersion, 31.2.27, --version, MOD_DEV, --assetIndex, 1.15, --assetsDir, C:\Users\willi\.gradle\caches\forge_gradle\assets, --username, Dev, --accessToken, ????????, --userProperties, {}]
-[26Jun2020 14:32:40.011] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 5.1.0+69+master.79f13f7 starting: java version 14.0.1 by AdoptOpenJDK
-[26Jun2020 14:32:40.755] [main/INFO] [net.minecraftforge.fml.loading.FixSSL/CORE]: Added Lets Encrypt root certificates as additional trust
-[26Jun2020 14:32:42.766] [main/INFO] [STDERR/]: [jdk.nashorn.api.scripting.NashornScriptEngine:<init>:143]: Warning: Nashorn engine is planned to be removed from a future JDK release
-[26Jun2020 14:32:43.973] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'fmluserdevclient' with arguments [--version, MOD_DEV, --gameDir, ., --assetsDir, C:\Users\willi\.gradle\caches\forge_gradle\assets, --assetIndex, 1.15, --username, Dev, --accessToken, ????????, --userProperties, {}]
-[26Jun2020 14:32:50.239] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Setting user: Dev
-[26Jun2020 14:33:18.231] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Backend library: LWJGL version 3.2.2 build 10
-[26Jun2020 14:33:19.172] [Render thread/INFO] [STDOUT/]: [net.minecraft.util.registry.Bootstrap:printToSYSOUT:103]: ---- Minecraft Crash Report ----
-// Who set us up the TNT?
+---- Minecraft Crash Report ----
+// Surprise! Haha. Well, this is awkward.
 
 Time: 6/26/20, 2:33 PM
 Description: Initializing game
@@ -79,4 +72,3 @@ Details:
 	Is Modded: Definitely; Client brand changed to 'forge'
 	Type: Client (map_client.txt)
 	CPU: 8x Intel(R) Core(TM) i5-1035G1 CPU @ 1.00GHz
-[26Jun2020 14:33:19.179] [Render thread/INFO] [STDOUT/]: [net.minecraft.util.registry.Bootstrap:printToSYSOUT:103]: #@!@# Game crashed! Crash report saved to: #@!@# C:\Users\willi\OneDrive\Desktop\forge-1.15.2-31.2.0-mdk\run\.\crash-reports\crash-2020-06-26_14.33.19-client.txt
