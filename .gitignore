@@ -1,4 +1,5 @@
 .gradle/
 .idea/
 build/
-lib/
+src/main/java/com/mojang/
+src/main/java/net/
