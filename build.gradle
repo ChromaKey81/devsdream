@@ -74,7 +74,7 @@ minecraft {
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
 
-            args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/')
+            args '--mod', 'devsdream', '--all', '--output', file('src/generated/resources/')
 
             mods {
                 examplemod {
@@ -116,11 +116,11 @@ jar {
     manifest {
         attributes([
             "Specification-Title": "devsdream",
-            "Specification-Vendor": "devsdreamsareus",
+            "Specification-Vendor": "ChromaKey",
             "Specification-Version": "1", // We are version 1 of ourselves
             "Implementation-Title": project.name,
             "Implementation-Version": "${version}",
-            "Implementation-Vendor" :"devsdreamsareus",
+            "Implementation-Vendor" :"ChromaKey",
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
