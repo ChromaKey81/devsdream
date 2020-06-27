@@ -1,1 +1,11 @@
 [27Jun2020 00:04:02.506] [Server thread/WARN] [net.minecraft.server.MinecraftServer/]: Can't keep up! Is the server overloaded? Running 5073387ms or 101467 ticks behind
+[27Jun2020 00:10:22.142] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Stopping!
+[27Jun2020 00:10:22.192] [Server thread/INFO] [net.minecraft.network.play.ServerPlayNetHandler/]: Dev lost connection: Disconnected
+[27Jun2020 00:10:22.194] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Dev left the game
+[27Jun2020 00:10:22.216] [Server thread/INFO] [net.minecraft.network.play.ServerPlayNetHandler/]: Stopping singleplayer server as player logged out
+[27Jun2020 00:10:22.346] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Stopping server
+[27Jun2020 00:10:22.356] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving players
+[27Jun2020 00:10:22.371] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving worlds
+[27Jun2020 00:10:22.371] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'test'/minecraft:overworld
+[27Jun2020 00:10:22.750] [Server thread/INFO] [net.minecraft.world.server.ChunkManager/]: ThreadedAnvilChunkStorage (test): All chunks are saved
+[27Jun2020 00:10:22.783] [Server thread/INFO] [net.minecraft.world.server.ChunkManager/]: ThreadedAnvilChunkStorage (test): All chunks are saved

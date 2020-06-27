@@ -42,7 +42,6 @@ public class Main {
       logger.info("Successfully set up clientRegistries");
     }
 
-
     @SubscribeEvent
     public void onServerStart(FMLServerStartingEvent event) {
       logger.info("Successfully set up server start");
