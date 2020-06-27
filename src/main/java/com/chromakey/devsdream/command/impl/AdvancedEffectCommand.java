@@ -42,8 +42,8 @@ public class AdvancedEffectCommand {
          return addEffect(p_229759_0_.getSource(), EntityArgument.getEntities(p_229759_0_, "targets"), PotionArgument.getMobEffect(p_229759_0_, "effect"), IntegerArgumentType.getInteger(p_229759_0_, "seconds"), IntegerArgumentType.getInteger(p_229759_0_, "amplifier"), !BoolArgumentType.getBool(p_229759_0_, "hideParticles"), false, false);
       }).then(Commands.argument("hideIcon", BoolArgumentType.bool()).executes((p_229759_0_) -> {
         return addEffect(p_229759_0_.getSource(), EntityArgument.getEntities(p_229759_0_, "targets"), PotionArgument.getMobEffect(p_229759_0_, "effect"), IntegerArgumentType.getInteger(p_229759_0_, "seconds"), IntegerArgumentType.getInteger(p_229759_0_, "amplifier"), !BoolArgumentType.getBool(p_229759_0_, "hideParticles"), !BoolArgumentType.getBool(p_229759_0_, "hideIcon"), false);
-     }).then(Commands.argument("notAmbient", BoolArgumentType.bool()).executes((p_229759_0_) -> {
-        return addEffect(p_229759_0_.getSource(), EntityArgument.getEntities(p_229759_0_, "targets"), PotionArgument.getMobEffect(p_229759_0_, "effect"), IntegerArgumentType.getInteger(p_229759_0_, "seconds"), IntegerArgumentType.getInteger(p_229759_0_, "amplifier"), !BoolArgumentType.getBool(p_229759_0_, "hideParticles"), !BoolArgumentType.getBool(p_229759_0_, "hideIcon"), !BoolArgumentType.getBool(p_229759_0_, "notAmbient"));
+     }).then(Commands.argument("isAmbient", BoolArgumentType.bool()).executes((p_229759_0_) -> {
+        return addEffect(p_229759_0_.getSource(), EntityArgument.getEntities(p_229759_0_, "targets"), PotionArgument.getMobEffect(p_229759_0_, "effect"), IntegerArgumentType.getInteger(p_229759_0_, "seconds"), IntegerArgumentType.getInteger(p_229759_0_, "amplifier"), !BoolArgumentType.getBool(p_229759_0_, "hideParticles"), !BoolArgumentType.getBool(p_229759_0_, "hideIcon"), BoolArgumentType.getBool(p_229759_0_, "isAmbient"));
      }))))))))));
    }
 
