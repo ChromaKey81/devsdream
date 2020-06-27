@@ -15,6 +15,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
+import com.chromakey.devsdream.command.impl.AdvancedEffectCommand;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,6 +42,13 @@ public class Main {
       logger.info("Successfully set up clientRegistries");
     }
 
+
+    @SubscribeEvent
+    public void onServerStart(FMLServerStartingEvent event) {
+      logger.info("Successfully set up server start");
+      AdvancedEffectCommand.register(event.getCommandDispatcher());
+    }
+
     @Mod.EventBusSubscriber(bus= Mod.EventBusSubscriber.Bus.MOD)
     public static class events {
       
@@ -57,12 +66,6 @@ public class Main {
             ItemList.blank_slate_stone = new BlockItem(BlockList.blank_slate_stone, new Item.Properties().maxStackSize(64)).setRegistryName(new ResourceLocation(modid, "blank_slate_stone"))
           );
           logger.info("Successfully registered items");
-        }
-
-        @SubscribeEvent
-        public static void onServerStart(final FMLServerStartingEvent event) {
-          logger.info("Successfully set up server start");
-          event.getCommandDispatcher();
         }
     }
 }

@@ -1,82 +1,85 @@
-[26Jun2020 14:32:39.935] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--gameDir, ., --launchTarget, fmluserdevclient, --fml.mcpVersion, 20200515.085601, --fml.mcVersion, 1.15.2, --fml.forgeGroup, net.minecraftforge, --fml.forgeVersion, 31.2.27, --version, MOD_DEV, --assetIndex, 1.15, --assetsDir, C:\Users\willi\.gradle\caches\forge_gradle\assets, --username, Dev, --accessToken, ????????, --userProperties, {}]
-[26Jun2020 14:32:40.011] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 5.1.0+69+master.79f13f7 starting: java version 14.0.1 by AdoptOpenJDK
-[26Jun2020 14:32:40.755] [main/INFO] [net.minecraftforge.fml.loading.FixSSL/CORE]: Added Lets Encrypt root certificates as additional trust
-[26Jun2020 14:32:42.766] [main/INFO] [STDERR/]: [jdk.nashorn.api.scripting.NashornScriptEngine:<init>:143]: Warning: Nashorn engine is planned to be removed from a future JDK release
-[26Jun2020 14:32:43.973] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'fmluserdevclient' with arguments [--version, MOD_DEV, --gameDir, ., --assetsDir, C:\Users\willi\.gradle\caches\forge_gradle\assets, --assetIndex, 1.15, --username, Dev, --accessToken, ????????, --userProperties, {}]
-[26Jun2020 14:32:50.239] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Setting user: Dev
-[26Jun2020 14:33:18.231] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Backend library: LWJGL version 3.2.2 build 10
-[26Jun2020 14:33:19.172] [Render thread/INFO] [STDOUT/]: [net.minecraft.util.registry.Bootstrap:printToSYSOUT:103]: ---- Minecraft Crash Report ----
-// Who set us up the TNT?
-
-Time: 6/26/20, 2:33 PM
-Description: Initializing game
-
-java.lang.RuntimeException: GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT
-	at net.minecraft.client.shader.Framebuffer.checkFramebufferComplete(Framebuffer.java:134) ~[forge-1.15.2-31.2.27_mapped_snapshot_20200514-1.15.1.jar:?] {re:classloading,pl:runtimedistcleaner:A}
-	at net.minecraft.client.shader.Framebuffer.createBuffers(Framebuffer.java:113) ~[forge-1.15.2-31.2.27_mapped_snapshot_20200514-1.15.1.jar:?] {re:classloading,pl:runtimedistcleaner:A}
-	at net.minecraft.client.shader.Framebuffer.resizeRaw(Framebuffer.java:58) ~[forge-1.15.2-31.2.27_mapped_snapshot_20200514-1.15.1.jar:?] {re:classloading,pl:runtimedistcleaner:A}
-	at net.minecraft.client.shader.Framebuffer.resize(Framebuffer.java:46) ~[forge-1.15.2-31.2.27_mapped_snapshot_20200514-1.15.1.jar:?] {re:classloading,pl:runtimedistcleaner:A}
-	at net.minecraft.client.shader.Framebuffer.<init>(Framebuffer.java:37) ~[forge-1.15.2-31.2.27_mapped_snapshot_20200514-1.15.1.jar:?] {re:classloading,pl:runtimedistcleaner:A}
-	at net.minecraft.client.Minecraft.<init>(Minecraft.java:389) ~[forge-1.15.2-31.2.27_mapped_snapshot_20200514-1.15.1.jar:?] {re:classloading,pl:accesstransformer:B,pl:runtimedistcleaner:A}
-	at net.minecraft.client.main.Main.main(SourceFile:166) ~[forge-1.15.2-31.2.27_mapped_snapshot_20200514-1.15.1.jar:?] {re:classloading,pl:runtimedistcleaner:A}
-	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?] {}
-	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?] {}
-	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?] {}
-	at java.lang.reflect.Method.invoke(Method.java:564) ~[?:?] {}
-	at net.minecraftforge.userdev.FMLUserdevClientLaunchProvider.lambda$launchService$0(FMLUserdevClientLaunchProvider.java:55) ~[forge-1.15.2-31.2.27_mapped_snapshot_20200514-1.15.1.jar:?] {}
-	at cpw.mods.modlauncher.LaunchServiceHandlerDecorator.launch(LaunchServiceHandlerDecorator.java:37) [modlauncher-5.1.0.jar:?] {}
-	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:54) [modlauncher-5.1.0.jar:?] {}
-	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:72) [modlauncher-5.1.0.jar:?] {}
-	at cpw.mods.modlauncher.Launcher.run(Launcher.java:81) [modlauncher-5.1.0.jar:?] {}
-	at cpw.mods.modlauncher.Launcher.main(Launcher.java:65) [modlauncher-5.1.0.jar:?] {}
-	at net.minecraftforge.userdev.LaunchTesting.main(LaunchTesting.java:105) [forge-1.15.2-31.2.27_mapped_snapshot_20200514-1.15.1.jar:?] {}
-
-
-A detailed walkthrough of the error, its code path and all known details is as follows:
----------------------------------------------------------------------------------------
-
--- Head --
-Thread: Render thread
-Stacktrace:
-	at net.minecraft.client.shader.Framebuffer.checkFramebufferComplete(Framebuffer.java:134)
-	at net.minecraft.client.shader.Framebuffer.createBuffers(Framebuffer.java:113)
-	at net.minecraft.client.shader.Framebuffer.resizeRaw(Framebuffer.java:58)
-	at net.minecraft.client.shader.Framebuffer.resize(Framebuffer.java:46)
-	at net.minecraft.client.shader.Framebuffer.<init>(Framebuffer.java:37)
-	at net.minecraft.client.Minecraft.<init>(Minecraft.java:389)
-
--- Initialization --
-Details:
-Stacktrace:
-	at net.minecraft.client.main.Main.main(SourceFile:166)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:564)
-	at net.minecraftforge.userdev.FMLUserdevClientLaunchProvider.lambda$launchService$0(FMLUserdevClientLaunchProvider.java:55)
-	at cpw.mods.modlauncher.LaunchServiceHandlerDecorator.launch(LaunchServiceHandlerDecorator.java:37)
-	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:54)
-	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:72)
-	at cpw.mods.modlauncher.Launcher.run(Launcher.java:81)
-	at cpw.mods.modlauncher.Launcher.main(Launcher.java:65)
-	at net.minecraftforge.userdev.LaunchTesting.main(LaunchTesting.java:105)
-
--- System Details --
-Details:
-	Minecraft Version: 1.15.2
-	Minecraft Version ID: 1.15.2
-	Operating System: Windows 10 (amd64) version 10.0
-	Java Version: 14.0.1, AdoptOpenJDK
-	Java VM Version: OpenJDK 64-Bit Server VM (mixed mode, sharing), AdoptOpenJDK
-	Memory: 943389024 bytes (899 MB) / 1123024896 bytes (1071 MB) up to 3158310912 bytes (3012 MB)
-	CPUs: 8
-	JVM Flags: 1 total; -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump
-	Launched Version: MOD_DEV
-	Backend library: LWJGL version 3.2.2 build 10
-	Backend API: Intel(R) UHD Graphics GL version 4.6.0 - Build 26.20.100.7926, Intel
-	GL Caps: Using framebuffer using OpenGL 3.0
-	Using VBOs: Yes
-	Is Modded: Definitely; Client brand changed to 'forge'
-	Type: Client (map_client.txt)
-	CPU: 8x Intel(R) Core(TM) i5-1035G1 CPU @ 1.00GHz
-[26Jun2020 14:33:19.179] [Render thread/INFO] [STDOUT/]: [net.minecraft.util.registry.Bootstrap:printToSYSOUT:103]: #@!@# Game crashed! Crash report saved to: #@!@# C:\Users\willi\OneDrive\Desktop\forge-1.15.2-31.2.0-mdk\run\.\crash-reports\crash-2020-06-26_14.33.19-client.txt
+[26Jun2020 21:53:30.164] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--gameDir, ., --launchTarget, fmluserdevclient, --fml.mcpVersion, 20200515.085601, --fml.mcVersion, 1.15.2, --fml.forgeGroup, net.minecraftforge, --fml.forgeVersion, 31.2.0, --version, MOD_DEV, --assetIndex, 1.15, --assetsDir, C:\Users\willi\.gradle\caches\forge_gradle\assets, --username, Dev, --accessToken, ❄❄❄❄❄❄❄❄, --userProperties, {}]
+[26Jun2020 21:53:30.188] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 5.1.0+69+master.79f13f7 starting: java version 14.0.1 by AdoptOpenJDK
+[26Jun2020 21:53:31.141] [main/INFO] [net.minecraftforge.fml.loading.FixSSL/CORE]: Added Lets Encrypt root certificates as additional trust
+[26Jun2020 21:53:36.153] [main/INFO] [STDERR/]: [jdk.nashorn.api.scripting.NashornScriptEngine:<init>:143]: Warning: Nashorn engine is planned to be removed from a future JDK release
+[26Jun2020 21:53:37.125] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'fmluserdevclient' with arguments [--version, MOD_DEV, --gameDir, ., --assetsDir, C:\Users\willi\.gradle\caches\forge_gradle\assets, --assetIndex, 1.15, --username, Dev, --accessToken, ❄❄❄❄❄❄❄❄, --userProperties, {}]
+[26Jun2020 21:53:41.028] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Setting user: Dev
+[26Jun2020 21:54:01.901] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Backend library: LWJGL version 3.2.2 build 10
+[26Jun2020 21:54:38.406] [modloading-worker-2/INFO] [net.minecraftforge.common.ForgeMod/FORGEMOD]: Forge mod loading, version 31.2.27, for MC 1.15.2 with MCP 20200515.085601
+[26Jun2020 21:54:38.425] [modloading-worker-2/INFO] [net.minecraftforge.common.MinecraftForge/FORGE]: MinecraftForge v31.2.27 Initialized
+[26Jun2020 21:54:38.795] [Render thread/INFO] [devsdream/]: Successfully registered blocks
+[26Jun2020 21:54:38.856] [Render thread/INFO] [devsdream/]: Successfully registered items
+[26Jun2020 21:54:44.560] [Render thread/INFO] [com.mojang.text2speech.NarratorWindows/]: Narrator library for x64 successfully loaded
+[26Jun2020 21:54:44.717] [Render thread/INFO] [net.minecraft.resources.SimpleReloadableResourceManager/]: Reloading ResourceManager: Default, Mod Resources
+[26Jun2020 21:54:44.810] [modloading-worker-1/INFO] [devsdream/]: Common setup complete
+[26Jun2020 21:54:45.120] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [forge] Starting version check at https://files.minecraftforge.net/maven/net/minecraftforge/forge/promotions_slim.json
+[26Jun2020 21:54:45.351] [modloading-worker-1/INFO] [devsdream/]: Successfully set up clientRegistries
+[26Jun2020 21:54:48.697] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [forge] Found status: UP_TO_DATE Current: 31.2.0 Target: null
+[26Jun2020 21:54:49.574] [Server-Worker-7/WARN] [net.minecraft.client.renderer.model.ModelBakery/]: Exception loading blockstate definition: devsdream:blockstates/blank_slate_stone.json: java.io.FileNotFoundException: devsdream:blockstates/blank_slate_stone.json
+[26Jun2020 21:54:49.577] [Server-Worker-7/WARN] [net.minecraft.client.renderer.model.ModelBakery/]: Exception loading blockstate definition: 'devsdream:blockstates/blank_slate_stone.json' missing model for variant: 'devsdream:blank_slate_stone#'
+[26Jun2020 21:54:50.729] [Server-Worker-7/WARN] [net.minecraft.client.renderer.model.ModelBakery/]: Unable to load model: 'devsdream:blank_slate_stone#inventory' referenced from: devsdream:blank_slate_stone#inventory: java.io.FileNotFoundException: devsdream:models/item/blank_slate_stone.json
+[26Jun2020 21:54:59.026] [Render thread/INFO] [net.minecraft.client.audio.SoundSystem/]: OpenAL initialized.
+[26Jun2020 21:54:59.028] [Render thread/INFO] [net.minecraft.client.audio.SoundEngine/SOUNDS]: Sound engine started
+[26Jun2020 21:54:59.300] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 1024x512x4 minecraft:textures/atlas/blocks.png-atlas
+[26Jun2020 21:54:59.421] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 128x128x4 minecraft:textures/atlas/signs.png-atlas
+[26Jun2020 21:54:59.424] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 512x512x4 minecraft:textures/atlas/banner_patterns.png-atlas
+[26Jun2020 21:54:59.442] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 512x512x4 minecraft:textures/atlas/shield_patterns.png-atlas
+[26Jun2020 21:54:59.448] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 256x256x4 minecraft:textures/atlas/chest.png-atlas
+[26Jun2020 21:54:59.469] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 512x256x4 minecraft:textures/atlas/beds.png-atlas
+[26Jun2020 21:54:59.493] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 512x256x4 minecraft:textures/atlas/shulker_boxes.png-atlas
+[26Jun2020 21:55:00.527] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 256x256x0 minecraft:textures/atlas/particles.png-atlas
+[26Jun2020 21:55:00.547] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 256x256x0 minecraft:textures/atlas/paintings.png-atlas
+[26Jun2020 21:55:00.554] [Render thread/INFO] [net.minecraft.client.renderer.texture.AtlasTexture/]: Created: 128x128x0 minecraft:textures/atlas/mob_effects.png-atlas
+[26Jun2020 21:55:04.791] [Realms Notification Availability checker #1/INFO] [com.mojang.realmsclient.client.RealmsClient/]: Could not authorize you against Realms server: Invalid session id
+[26Jun2020 21:55:06.187] [Render thread/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, destination] and [teleport, targets] with inputs: [Player, 0123, @e, dd12be42-52a9-4a91-a8a1-11c01849e498]
+[26Jun2020 21:55:06.190] [Render thread/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
+[26Jun2020 21:55:06.216] [Render thread/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, targets] with inputs: [0.1 -0.5 .9, 0 0 0]
+[26Jun2020 21:55:06.219] [Render thread/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, targets] and [teleport, destination] with inputs: [Player, 0123, dd12be42-52a9-4a91-a8a1-11c01849e498]
+[26Jun2020 21:55:06.222] [Render thread/WARN] [net.minecraft.command.Commands/]: Ambiguity between arguments [teleport, targets, location] and [teleport, targets, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
+[26Jun2020 21:55:06.503] [Server thread/INFO] [net.minecraft.server.integrated.IntegratedServer/]: Starting integrated minecraft server version 1.15.2
+[26Jun2020 21:55:06.505] [Server thread/INFO] [net.minecraft.server.integrated.IntegratedServer/]: Generating keypair
+[26Jun2020 21:55:06.897] [Server thread/INFO] [net.minecraftforge.registries.GameData/REGISTRIES]: Injecting existing registry data into this SERVER instance
+[26Jun2020 21:55:16.233] [Server thread/INFO] [net.minecraft.resources.SimpleReloadableResourceManager/]: Reloading ResourceManager: Default, main, forge-1.15.2-31.2.27_mapped_snapshot_20200514-1.15.1-recomp.jar
+[26Jun2020 21:55:18.307] [Server thread/INFO] [net.minecraft.item.crafting.RecipeManager/]: Loaded 6 recipes
+[26Jun2020 21:55:20.504] [Server thread/INFO] [net.minecraft.advancements.AdvancementList/]: Loaded 825 advancements
+[26Jun2020 21:55:21.458] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Preparing start region for dimension minecraft:overworld
+[26Jun2020 21:55:23.272] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 0%
+[26Jun2020 21:55:23.304] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 0%
+[26Jun2020 21:55:23.316] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 0%
+[26Jun2020 21:55:23.318] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 0%
+[26Jun2020 21:55:23.654] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 0%
+[26Jun2020 21:55:24.054] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 49%
+[26Jun2020 21:55:27.451] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 83%
+[26Jun2020 21:55:27.452] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 83%
+[26Jun2020 21:55:27.453] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 83%
+[26Jun2020 21:55:27.454] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 83%
+[26Jun2020 21:55:27.454] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 83%
+[26Jun2020 21:55:27.455] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 83%
+[26Jun2020 21:55:27.549] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 83%
+[26Jun2020 21:55:28.083] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Preparing spawn area: 99%
+[26Jun2020 21:55:28.084] [Server thread/INFO] [devsdream/]: Successfully set up server start
+[26Jun2020 21:55:28.118] [Render thread/INFO] [net.minecraft.world.chunk.listener.LoggingChunkStatusListener/]: Time elapsed: 6645 ms
+[26Jun2020 21:55:29.738] [Server thread/INFO] [net.minecraft.world.server.ChunkManager/]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
+[26Jun2020 21:55:29.759] [Server thread/INFO] [net.minecraft.world.server.ChunkManager/]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved
+[26Jun2020 21:55:29.766] [Server thread/INFO] [net.minecraft.server.integrated.IntegratedServer/]: Changing view distance to 11, from 10
+[26Jun2020 21:55:34.489] [Netty Local Client IO #0/INFO] [net.minecraftforge.fml.network.NetworkHooks/]: Connected to a modded server.
+[26Jun2020 21:55:34.648] [Server thread/INFO] [net.minecraftforge.common.AdvancementLoadFix/]: Using new advancement loading for net.minecraft.advancements.PlayerAdvancements@7ce68205
+[26Jun2020 21:55:34.696] [Server thread/INFO] [net.minecraft.server.management.PlayerList/]: Dev[local:E:634962e5] logged in with entity id 232 at (260.47429092910085, 67.0, -4.457265081957653)
+[26Jun2020 21:55:34.783] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Dev joined the game
+[26Jun2020 21:55:35.431] [Server thread/INFO] [net.minecraft.server.integrated.IntegratedServer/]: Saving and pausing game...
+[26Jun2020 21:55:35.466] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'test'/minecraft:overworld
+[26Jun2020 21:55:35.891] [Render thread/INFO] [net.minecraft.advancements.AdvancementList/]: Loaded 7 advancements
+[26Jun2020 21:55:42.674] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: [Dev: Removed every effect from Dev]
+[26Jun2020 21:55:42.719] [Render thread/INFO] [net.minecraft.client.gui.NewChatGui/]: [CHAT] Removed every effect from Dev
+[26Jun2020 21:56:06.496] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: [Dev: Applied effect Regeneration to Dev]
+[26Jun2020 21:56:06.508] [Render thread/INFO] [net.minecraft.client.gui.NewChatGui/]: [CHAT] Applied effect Regeneration to Dev
+[26Jun2020 21:56:36.173] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: [Dev: Applied effect Regeneration to Dev]
+[26Jun2020 21:56:36.192] [Render thread/INFO] [net.minecraft.client.gui.NewChatGui/]: [CHAT] Applied effect Regeneration to Dev
+[26Jun2020 21:56:41.046] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: [Dev: Applied effect Regeneration to Dev]
+[26Jun2020 21:56:41.067] [Render thread/INFO] [net.minecraft.client.gui.NewChatGui/]: [CHAT] Applied effect Regeneration to Dev
+[26Jun2020 21:56:46.453] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: [Dev: Applied effect Regeneration to Dev]
+[26Jun2020 21:56:46.478] [Render thread/INFO] [net.minecraft.client.gui.NewChatGui/]: [CHAT] Applied effect Regeneration to Dev
+[26Jun2020 21:56:55.613] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: [Dev: Applied effect Regeneration to Dev]
+[26Jun2020 21:56:55.619] [Render thread/INFO] [net.minecraft.client.gui.NewChatGui/]: [CHAT] Applied effect Regeneration to Dev
+[26Jun2020 21:57:01.325] [Server thread/INFO] [net.minecraft.server.integrated.IntegratedServer/]: Saving and pausing game...
+[26Jun2020 21:57:01.351] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'test'/minecraft:overworld

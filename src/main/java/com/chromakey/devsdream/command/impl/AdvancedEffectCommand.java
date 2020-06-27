@@ -18,13 +18,13 @@ import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.text.TranslationTextComponent;
 
-public class EffectCommand {
+public class AdvancedEffectCommand {
    private static final SimpleCommandExceptionType GIVE_FAILED_EXCEPTION = new SimpleCommandExceptionType(new TranslationTextComponent("commands.effect.give.failed"));
    private static final SimpleCommandExceptionType CLEAR_EVERYTHING_FAILED_EXCEPTION = new SimpleCommandExceptionType(new TranslationTextComponent("commands.effect.clear.everything.failed"));
    private static final SimpleCommandExceptionType CLEAR_SPECIFIC_FAILED_EXCEPTION = new SimpleCommandExceptionType(new TranslationTextComponent("commands.effect.clear.specific.failed"));
 
    public static void register(CommandDispatcher<CommandSource> dispatcher) {
-      dispatcher.register(Commands.literal("effect").requires((p_198359_0_) -> {
+      dispatcher.register(Commands.literal("advancedeffect").requires((p_198359_0_) -> {
          return p_198359_0_.hasPermissionLevel(2);
       }).then(Commands.literal("clear").executes((p_198352_0_) -> {
          return clearAllEffects(p_198352_0_.getSource(), ImmutableList.of(p_198352_0_.getSource().assertIsEntity()));
@@ -42,8 +42,8 @@ public class EffectCommand {
          return addEffect(p_229759_0_.getSource(), EntityArgument.getEntities(p_229759_0_, "targets"), PotionArgument.getMobEffect(p_229759_0_, "effect"), IntegerArgumentType.getInteger(p_229759_0_, "seconds"), IntegerArgumentType.getInteger(p_229759_0_, "amplifier"), !BoolArgumentType.getBool(p_229759_0_, "hideParticles"), false, false);
       }).then(Commands.argument("hideIcon", BoolArgumentType.bool()).executes((p_229759_0_) -> {
         return addEffect(p_229759_0_.getSource(), EntityArgument.getEntities(p_229759_0_, "targets"), PotionArgument.getMobEffect(p_229759_0_, "effect"), IntegerArgumentType.getInteger(p_229759_0_, "seconds"), IntegerArgumentType.getInteger(p_229759_0_, "amplifier"), !BoolArgumentType.getBool(p_229759_0_, "hideParticles"), !BoolArgumentType.getBool(p_229759_0_, "hideIcon"), false);
-     }).then(Commands.argument("ambient", BoolArgumentType.bool()).executes((p_229759_0_) -> {
-        return addEffect(p_229759_0_.getSource(), EntityArgument.getEntities(p_229759_0_, "targets"), PotionArgument.getMobEffect(p_229759_0_, "effect"), IntegerArgumentType.getInteger(p_229759_0_, "seconds"), IntegerArgumentType.getInteger(p_229759_0_, "amplifier"), !BoolArgumentType.getBool(p_229759_0_, "hideParticles"), !BoolArgumentType.getBool(p_229759_0_, "hideIcon"), !BoolArgumentType.getBool(p_229759_0_, "ambient"));
+     }).then(Commands.argument("notAmbient", BoolArgumentType.bool()).executes((p_229759_0_) -> {
+        return addEffect(p_229759_0_.getSource(), EntityArgument.getEntities(p_229759_0_, "targets"), PotionArgument.getMobEffect(p_229759_0_, "effect"), IntegerArgumentType.getInteger(p_229759_0_, "seconds"), IntegerArgumentType.getInteger(p_229759_0_, "amplifier"), !BoolArgumentType.getBool(p_229759_0_, "hideParticles"), !BoolArgumentType.getBool(p_229759_0_, "hideIcon"), !BoolArgumentType.getBool(p_229759_0_, "notAmbient"));
      }))))))))));
    }
 
