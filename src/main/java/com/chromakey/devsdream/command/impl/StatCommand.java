@@ -23,13 +23,17 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 public class StatCommand {
     private static final SimpleCommandExceptionType HEAL_FAILED_EXCEPTION = new SimpleCommandExceptionType(
-            new TranslationTextComponent("commands.stat.heal.failed"));
+            new TranslationTextComponent("commands.devsdream.stat.heal.failed"));
     private static final SimpleCommandExceptionType DAMAGE_FAILED_EXCEPTION = new SimpleCommandExceptionType(
-            new TranslationTextComponent("commands.stat.damage.failed"));
+            new TranslationTextComponent("commands.devsdream.stat.damage.failed"));
     private static final SimpleCommandExceptionType FEED_FAILED_EXCEPTION = new SimpleCommandExceptionType(
-            new TranslationTextComponent("commands.stat.feed.failed"));
+            new TranslationTextComponent("commands.devsdream.stat.feed.failed"));
     private static final SimpleCommandExceptionType EXHAUST_FAILED_EXCEPTION = new SimpleCommandExceptionType(
-            new TranslationTextComponent("commands.stat.exhaust.failed"));
+            new TranslationTextComponent("commands.devsdream.stat.exhaust.failed"));
+    private static final SimpleCommandExceptionType AIR_SET_FAILED_EXCEPTION = new SimpleCommandExceptionType(
+            new TranslationTextComponent("commands.devsdream.stat.air.set.failed"));
+    private static final SimpleCommandExceptionType AIR_ADD_FAILED_EXCEPTION = new SimpleCommandExceptionType(
+            new TranslationTextComponent("commands.devsdream.stat.air.add.failed"));
 
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
         dispatcher.register(Commands.literal("stat").requires((user) -> {
@@ -54,17 +58,21 @@ public class StatCommand {
             return damageEntity(damage.getSource(), EntityArgument.getEntities(damage, "targets"), setDamageProperties(StringArgumentType.getString(damage, "sourceString"), BoolArgumentType.getBool(damage, "isFire"), BoolArgumentType.getBool(damage, "pierceArmor"), BoolArgumentType.getBool(damage, "difficultyScaled"), BoolArgumentType.getBool(damage, "isMagic"), BoolArgumentType.getBool(damage, "damageCreative"), BoolArgumentType.getBool(damage, "isExplosion"), false, null, false), FloatArgumentType.getFloat(damage, "amount"));
         }).then(Commands.argument("isProjectile", BoolArgumentType.bool()).executes((damage) -> {
             return damageEntity(damage.getSource(), EntityArgument.getEntities(damage, "targets"), setDamageProperties(StringArgumentType.getString(damage, "sourceString"), BoolArgumentType.getBool(damage, "isFire"), BoolArgumentType.getBool(damage, "pierceArmor"), BoolArgumentType.getBool(damage, "difficultyScaled"), BoolArgumentType.getBool(damage, "isMagic"), BoolArgumentType.getBool(damage, "damageCreative"), BoolArgumentType.getBool(damage, "isExplosion"), BoolArgumentType.getBool(damage, "isProjectile"), null, false), FloatArgumentType.getFloat(damage, "amount"));
-        })).then(Commands.argument("sourceEntity", EntityArgument.entity()).executes((damage) -> {
+        }).then(Commands.argument("sourceEntity", EntityArgument.entity()).executes((damage) -> {
             return damageEntity(damage.getSource(), EntityArgument.getEntities(damage, "targets"), setDamageProperties(StringArgumentType.getString(damage, "sourceString"), BoolArgumentType.getBool(damage, "isFire"), BoolArgumentType.getBool(damage, "pierceArmor"), BoolArgumentType.getBool(damage, "difficultyScaled"), BoolArgumentType.getBool(damage, "isMagic"), BoolArgumentType.getBool(damage, "damageCreative"), BoolArgumentType.getBool(damage, "isExplosion"), BoolArgumentType.getBool(damage, "isProjectile"), EntityArgument.getEntity(damage, "sourceEntity"), false), FloatArgumentType.getFloat(damage, "amount"));
         }).then(Commands.argument("thorns", BoolArgumentType.bool()).executes((damage) -> {
             return damageEntity(damage.getSource(), EntityArgument.getEntities(damage, "targets"), setDamageProperties(StringArgumentType.getString(damage, "sourceString"), BoolArgumentType.getBool(damage, "isFire"), BoolArgumentType.getBool(damage, "pierceArmor"), BoolArgumentType.getBool(damage, "difficultyScaled"), BoolArgumentType.getBool(damage, "isMagic"), BoolArgumentType.getBool(damage, "damageCreative"), BoolArgumentType.getBool(damage, "isExplosion"), BoolArgumentType.getBool(damage, "isProjectile"), EntityArgument.getEntity(damage, "sourceEntity"), BoolArgumentType.getBool(damage, "thorns")), FloatArgumentType.getFloat(damage, "amount"));
-        }))))))))))))).then(Commands.literal("feed").then(Commands.argument("targets", EntityArgument.players()).then(Commands.argument("foodLevel", IntegerArgumentType.integer()).executes((feed) -> {
+        })))))))))))))).then(Commands.literal("feed").then(Commands.argument("targets", EntityArgument.players()).then(Commands.argument("foodLevel", IntegerArgumentType.integer()).executes((feed) -> {
             return feedPlayer(feed.getSource(), EntityArgument.getPlayers(feed, "targets"), IntegerArgumentType.getInteger(feed, "foodLevel"), 0);
         }).then(Commands.argument("saturation", FloatArgumentType.floatArg()).executes((feedWithSaturation) -> {
             return feedPlayer(feedWithSaturation.getSource(), EntityArgument.getPlayers(feedWithSaturation, "targets"), IntegerArgumentType.getInteger(feedWithSaturation, "foodLevel"), FloatArgumentType.getFloat(feedWithSaturation, "saturation"));
         }))))).then(Commands.literal("exhaust").then(Commands.argument("targets", EntityArgument.players()).then(Commands.argument("amount", FloatArgumentType.floatArg(0)).executes((exhaust) -> {
             return exhaustPlayer(exhaust.getSource(), EntityArgument.getPlayers(exhaust, "targets"), FloatArgumentType.getFloat(exhaust, "amount"));
-        })))));
+        })))).then(Commands.literal("air").then(Commands.argument("targets", EntityArgument.entities()).then(Commands.literal("set").then(Commands.argument("amount", IntegerArgumentType.integer(0)).executes((run) -> {
+            return setAir(run.getSource(), EntityArgument.getEntities(run, "targets"), IntegerArgumentType.getInteger(run, "amount"));
+        }))).then(Commands.literal("add").then(Commands.argument("amount", IntegerArgumentType.integer()).executes((run) -> {
+            return increaseAir(run.getSource(), EntityArgument.getEntities(run, "targets"), IntegerArgumentType.getInteger(run, "amount"));
+        }))))));
     }
 
     private static int healEntity(CommandSource source, Collection<? extends Entity> targets, float amount) throws CommandSyntaxException {
@@ -81,9 +89,9 @@ public class StatCommand {
             throw HEAL_FAILED_EXCEPTION.create();
          } else {
             if (targets.size() == 1) {
-               source.sendFeedback(new TranslationTextComponent("commands.stat.heal.success.single", targets.iterator().next().getDisplayName(), amount), true);
+               source.sendFeedback(new TranslationTextComponent("commands.devsdream.stat.heal.success.single", targets.iterator().next().getDisplayName(), amount), true);
             } else {
-               source.sendFeedback(new TranslationTextComponent("commands.stat.heal.success.multiple", targets.size(), amount), true);
+               source.sendFeedback(new TranslationTextComponent("commands.devsdream.stat.heal.success.multiple", targets.size(), amount), true);
             }
    
             return i;
@@ -195,6 +203,52 @@ public class StatCommand {
                source.sendFeedback(new TranslationTextComponent("commands.devsdream.stat.exhaust.success.single", targets.iterator().next().getDisplayName(), amount), true);
             } else {
                source.sendFeedback(new TranslationTextComponent("commands.devsdream.stat.exhaust.success.multiple", targets.size(), amount), true);
+            }
+   
+            return i;
+         }
+    }
+
+    private static int setAir(CommandSource source, Collection<? extends Entity> targets, int amount) throws CommandSyntaxException {
+        int i = 0;
+
+        for (Entity entity : targets) {
+            if (entity instanceof LivingEntity) {
+                ((LivingEntity)entity).setAir(amount);
+                i++;
+            }
+        }
+
+        if (i == 0) {
+            throw AIR_SET_FAILED_EXCEPTION.create();
+         } else {
+            if (targets.size() == 1) {
+               source.sendFeedback(new TranslationTextComponent("commands.devsdream.stat.air.set.success.single", targets.iterator().next().getDisplayName(), amount), true);
+            } else {
+               source.sendFeedback(new TranslationTextComponent("commands.devsdream.stat.air.set.success.multiple", targets.size(), amount), true);
+            }
+   
+            return i;
+         }
+    }
+
+    private static int increaseAir(CommandSource source, Collection<? extends Entity> targets, int amount) throws CommandSyntaxException {
+        int i = 0;
+
+        for (Entity entity : targets) {
+            if (entity instanceof LivingEntity) {
+                ((LivingEntity)entity).setAir(((LivingEntity)entity).getAir() + amount);
+                i++;
+            }
+        }
+
+        if (i == 0) {
+            throw AIR_ADD_FAILED_EXCEPTION.create();
+         } else {
+            if (targets.size() == 1) {
+               source.sendFeedback(new TranslationTextComponent("commands.devsdream.stat.air.increase.success.single", targets.iterator().next().getDisplayName(), amount), true);
+            } else {
+               source.sendFeedback(new TranslationTextComponent("commands.devsdream.stat.air.increase.success.multiple", targets.size(), amount), true);
             }
    
             return i;
