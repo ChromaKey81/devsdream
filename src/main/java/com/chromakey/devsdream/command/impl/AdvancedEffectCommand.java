@@ -24,14 +24,14 @@ public class AdvancedEffectCommand {
    private static final SimpleCommandExceptionType CLEAR_SPECIFIC_FAILED_EXCEPTION = new SimpleCommandExceptionType(new TranslationTextComponent("commands.effect.clear.specific.failed"));
 
    public static void register(CommandDispatcher<CommandSource> dispatcher) {
-      dispatcher.register(Commands.literal("advancedeffect").requires((p_198359_0_) -> {
-         return p_198359_0_.hasPermissionLevel(2);
-      }).then(Commands.literal("clear").executes((p_198352_0_) -> {
-         return clearAllEffects(p_198352_0_.getSource(), ImmutableList.of(p_198352_0_.getSource().assertIsEntity()));
-      }).then(Commands.argument("targets", EntityArgument.entities()).executes((p_198356_0_) -> {
-         return clearAllEffects(p_198356_0_.getSource(), EntityArgument.getEntities(p_198356_0_, "targets"));
-      }).then(Commands.argument("effect", PotionArgument.mobEffect()).executes((p_198351_0_) -> {
-         return clearEffect(p_198351_0_.getSource(), EntityArgument.getEntities(p_198351_0_, "targets"), PotionArgument.getMobEffect(p_198351_0_, "effect"));
+      dispatcher.register(Commands.literal("advancedeffect").requires((user) -> {
+         return user.hasPermissionLevel(2);
+      }).then(Commands.literal("clear").executes((clearAllUser) -> {
+         return clearAllEffects(clearAllUser.getSource(), ImmutableList.of(clearAllUser.getSource().assertIsEntity()));
+      }).then(Commands.argument("targets", EntityArgument.entities()).executes((clearAllTargets) -> {
+         return clearAllEffects(clearAllTargets.getSource(), EntityArgument.getEntities(clearAllTargets, "targets"));
+      }).then(Commands.argument("effect", PotionArgument.mobEffect()).executes((clearEffect) -> {
+         return clearEffect(clearEffect.getSource(), EntityArgument.getEntities(clearEffect, "targets"), PotionArgument.getMobEffect(clearEffect, "effect"));
       })))).then(Commands.literal("give").then(Commands.argument("targets", EntityArgument.entities()).then(Commands.argument("effect", PotionArgument.mobEffect()).executes((p_198357_0_) -> {
          return addEffect(p_198357_0_.getSource(), EntityArgument.getEntities(p_198357_0_, "targets"), PotionArgument.getMobEffect(p_198357_0_, "effect"), (Integer)null, 0, true, true, false);
       }).then(Commands.argument("seconds", IntegerArgumentType.integer(1, 1000000)).executes((p_198350_0_) -> {

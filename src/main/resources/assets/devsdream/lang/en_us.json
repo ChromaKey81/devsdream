@@ -1,0 +1,11 @@
+{
+    "commands.devsdream.modifybar.heal.success.single": "Healed %s by a value of %s",
+    "commands.devsdream.modifybar.heal.success.multiple": "Healed %s entities by a value of %s",
+    "commands.devsdream.modifybar.heal.failed": "Failed to heal the target(s)",
+
+    "commands.devsdream.modifybar.damage.success.single": "Damaged %s by a value of %s",
+    "commands.devsdream.modifybar.damage.success.multiple": "Damaged %s entities by a value of %s",
+    "commands.devsdream.modifybar.damage.failed": "Failed to damage the target(s)",
+
+    "block.devsdream.blank_slate_stone": "Blank Slate Stone"
+}

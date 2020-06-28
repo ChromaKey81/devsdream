@@ -16,6 +16,7 @@ import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import com.chromakey.devsdream.command.impl.AdvancedEffectCommand;
+import com.chromakey.devsdream.command.impl.StatCommand;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,6 +47,7 @@ public class Main {
     public void onServerStart(FMLServerStartingEvent event) {
       logger.info("Successfully set up server start");
       AdvancedEffectCommand.register(event.getCommandDispatcher());
+      StatCommand.register(event.getCommandDispatcher());
     }
 
     @Mod.EventBusSubscriber(bus= Mod.EventBusSubscriber.Bus.MOD)
