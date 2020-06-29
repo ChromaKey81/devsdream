@@ -26,9 +26,9 @@ public class HealthCommand {
             return user.hasPermissionLevel(2);
         }).then(Commands.literal("add").then(Commands.argument("targets", EntityArgument.entities()).then(Commands.argument("amount", FloatArgumentType.floatArg(0)).executes((heal) -> {
             return healEntity(heal.getSource(), EntityArgument.getEntities(heal, "targets"), FloatArgumentType.getFloat(heal, "amount"));
-        })))).then(Commands.literal("set").then(Commands.argument("amount", FloatArgumentType.floatArg(0)).executes((set) -> {
+        })))).then(Commands.literal("set").then(Commands.argument("targets", EntityArgument.entities()).then(Commands.argument("amount", FloatArgumentType.floatArg(0)).executes((set) -> {
             return setEntityHealth(set.getSource(), EntityArgument.getEntities(set, "targets"), FloatArgumentType.getFloat(set, "amount"));
-        }))));
+        })))));
     }
 
     private static int healEntity(CommandSource source, Collection<? extends Entity> targets, float amount) throws CommandSyntaxException {

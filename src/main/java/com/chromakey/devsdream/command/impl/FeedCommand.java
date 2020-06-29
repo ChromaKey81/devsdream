@@ -43,9 +43,9 @@ public class FeedCommand {
             throw FEED_FAILED_EXCEPTION.create();
          } else {
             if (targets.size() == 1) {
-               source.sendFeedback(new TranslationTextComponent("commands.devsdream.stat.feed.success.single", targets.iterator().next().getDisplayName(), foodLevel, saturation), true);
+               source.sendFeedback(new TranslationTextComponent("commands.devsdream.feed.success.single", targets.iterator().next().getDisplayName(), foodLevel, saturation), true);
             } else {
-               source.sendFeedback(new TranslationTextComponent("commands.devsdream.stat.feed.success.multiple", targets.size(), foodLevel, saturation), true);
+               source.sendFeedback(new TranslationTextComponent("commands.devsdream.feed.success.multiple", targets.size(), foodLevel, saturation), true);
             }
    
             return i;

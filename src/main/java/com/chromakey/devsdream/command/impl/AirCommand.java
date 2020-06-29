@@ -63,6 +63,9 @@ public class AirCommand {
                 if (((LivingEntity)entity).getAir() + amount <= ((LivingEntity)entity).getMaxAir()) {
                     ((LivingEntity)entity).setAir(((LivingEntity)entity).getAir() + amount);
                     i++;
+                } else {
+                    ((LivingEntity)entity).setAir(((LivingEntity)entity).getMaxAir());
+                    i++;
                 }
             }
         }
@@ -71,9 +74,9 @@ public class AirCommand {
             throw AIR_ADD_FAILED_EXCEPTION.create();
          } else {
             if (targets.size() == 1) {
-               source.sendFeedback(new TranslationTextComponent("commands.devsdream.air.increase.success.single", targets.iterator().next().getDisplayName(), amount), true);
+               source.sendFeedback(new TranslationTextComponent("commands.devsdream.air.add.success.single", targets.iterator().next().getDisplayName(), amount), true);
             } else {
-               source.sendFeedback(new TranslationTextComponent("commands.devsdream.air.increase.success.multiple", targets.size(), amount), true);
+               source.sendFeedback(new TranslationTextComponent("commands.devsdream.air.add.success.multiple", targets.size(), amount), true);
             }
    
             return i;
