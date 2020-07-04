@@ -1,5 +1,17 @@
 package com.chromakey.devsdream;
 
+import com.chromakey.devsdream.command.impl.AdvancedEffectCommand;
+import com.chromakey.devsdream.command.impl.AirCommand;
+import com.chromakey.devsdream.command.impl.DamageCommand;
+import com.chromakey.devsdream.command.impl.ExhaustCommand;
+import com.chromakey.devsdream.command.impl.FeedCommand;
+import com.chromakey.devsdream.command.impl.HealthCommand;
+import com.chromakey.devsdream.command.impl.IgniteCommand;
+import com.chromakey.devsdream.item.DevsFoods;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -14,16 +26,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-
-import com.chromakey.devsdream.command.impl.AdvancedEffectCommand;
-import com.chromakey.devsdream.command.impl.AirCommand;
-import com.chromakey.devsdream.command.impl.DamageCommand;
-import com.chromakey.devsdream.command.impl.ExhaustCommand;
-import com.chromakey.devsdream.command.impl.FeedCommand;
-import com.chromakey.devsdream.command.impl.HealthCommand;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @Mod("devsdream")
 
@@ -56,6 +58,7 @@ public class Main {
       FeedCommand.register(event.getCommandDispatcher());
       ExhaustCommand.register(event.getCommandDispatcher());
       AirCommand.register(event.getCommandDispatcher());
+      IgniteCommand.register(event.getCommandDispatcher());
     }
 
     @Mod.EventBusSubscriber(bus= Mod.EventBusSubscriber.Bus.MOD)
@@ -64,7 +67,9 @@ public class Main {
         @SubscribeEvent
         public static void registerBlocks(final RegistryEvent.Register<Block> event) {
           event.getRegistry().registerAll(
-            BlockList.blank_slate_stone = new Block(Block.Properties.create(Material.ROCK).sound(SoundType.STONE)).setRegistryName(new ResourceLocation(modid, "blank_slate_stone"))
+            BlockList.blank_slate_stone = new Block(Block.Properties.create(Material.ROCK).sound(SoundType.STONE)).setRegistryName(new ResourceLocation(modid, "blank_slate_stone")),
+            BlockList.blank_slate_hard_stone = new Block(Block.Properties.create(Material.ROCK).sound(SoundType.STONE)).setRegistryName(new ResourceLocation(modid, "blank_slate_hard_stone")),
+            BlockList.blank_slate_ore = new Block(Block.Properties.create(Material.ROCK).sound(SoundType.STONE)).setRegistryName(new ResourceLocation(modid, "blank_slate_ore"))
           );
           logger.info("Successfully registered blocks");
         }
@@ -72,7 +77,10 @@ public class Main {
         @SubscribeEvent
         public static void registerItems(final RegistryEvent.Register<Item> event) {
           event.getRegistry().registerAll(
-            ItemList.blank_slate_stone = new BlockItem(BlockList.blank_slate_stone, new Item.Properties().maxStackSize(64)).setRegistryName(new ResourceLocation(modid, "blank_slate_stone"))
+            ItemList.blank_slate_stone = new BlockItem(BlockList.blank_slate_stone, new Item.Properties().maxStackSize(64)).setRegistryName(new ResourceLocation(modid, "blank_slate_stone")),
+            ItemList.blank_slate_food = new Item(new Item.Properties().maxStackSize(64).food(DevsFoods.BLANK_SLATE_FOOD)).setRegistryName(new ResourceLocation(modid, "blank_slate_food")),
+            ItemList.blank_slate_fast_food = new Item(new Item.Properties().maxStackSize(64).food(DevsFoods.BLANK_SLATE_FAST_FOOD)).setRegistryName(new ResourceLocation(modid, "blank_slate_fast_food")),
+            ItemList.blank_slate_food_unstackable = new Item(new Item.Properties().maxStackSize(1).food(DevsFoods.BLANK_SLATE_FOOD)).setRegistryName(new ResourceLocation(modid, "blank_slate_food_unstackable"))
           );
           logger.info("Successfully registered items");
         }

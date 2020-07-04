@@ -17,10 +17,14 @@
 
     "commands.devsdream.air.set.success.single": "Set air of %s to %s",
     "commands.devsdream.air.set.success.multiple": "Set air for %s entities to %s",
-    "commands.devsdream.sir.set.failed": "Failed to set air of the target(s)",
+    "commands.devsdream.air.set.failed": "Failed to set air of the target(s)",
     "commands.devsdream.air.add.success.single": "Adjusted air for %s by %s",
     "commands.devsdream.air.add.success.multiple": "Adjusted air for %s entities by %s",
-    "commands.devsdream.sir.add.failed": "Failed to adjust air for the target(s)",
+    "commands.devsdream.air.add.failed": "Failed to adjust air for the target(s)",
+
+    "commands.devsdream.ignite.failed": "Failed to set the target(s) on fire",
+    "commands.devsdream.ignite.success.single": "Set %s on fire for %s seconds",
+    "commands.devsdream.ignite.success.multiple": "Set %s entities on fire for %s seconds",
 
     "block.devsdream.blank_slate_stone": "Blank Slate Stone"
 }

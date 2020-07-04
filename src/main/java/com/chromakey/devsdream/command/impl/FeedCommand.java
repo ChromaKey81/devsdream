@@ -2,11 +2,13 @@ package com.chromakey.devsdream.command.impl;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import com.google.common.collect.Lists;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 
 import java.util.Collection;
+import java.util.List;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.arguments.EntityArgument;
@@ -29,26 +31,25 @@ public class FeedCommand {
     }
 
     private static int feedPlayer(CommandSource source, Collection<? extends PlayerEntity> targets, int foodLevel, float saturation) throws CommandSyntaxException {
+        List<PlayerEntity> list = Lists.newArrayListWithCapacity(targets.size());
         
-        int i = 0;
-
-        for (PlayerEntity entity : targets) {
-            if (entity instanceof PlayerEntity) {
-                ((PlayerEntity)entity).getFoodStats().addStats(foodLevel, saturation);
-                i++;
+        for (PlayerEntity player : targets) {
+            if (player instanceof PlayerEntity) {
+                ((PlayerEntity)player).getFoodStats().addStats(foodLevel, saturation);
+                list.add(player);
             }
         }
 
-        if (i == 0) {
+        if (list.isEmpty()) {
             throw FEED_FAILED_EXCEPTION.create();
          } else {
-            if (targets.size() == 1) {
-               source.sendFeedback(new TranslationTextComponent("commands.devsdream.feed.success.single", targets.iterator().next().getDisplayName(), foodLevel, saturation), true);
+            if (list.size() == 1) {
+               source.sendFeedback(new TranslationTextComponent("commands.devsdream.feed.success.single", list.iterator().next().getDisplayName(), foodLevel, saturation), true);
             } else {
-               source.sendFeedback(new TranslationTextComponent("commands.devsdream.feed.success.multiple", targets.size(), foodLevel, saturation), true);
+               source.sendFeedback(new TranslationTextComponent("commands.devsdream.feed.success.multiple", list.size(), foodLevel, saturation), true);
             }
    
-            return i;
+            return list.size();
          }
     }
 }
