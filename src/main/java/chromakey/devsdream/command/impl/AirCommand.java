@@ -2,10 +2,12 @@ package chromakey.devsdream.command.impl;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import com.google.common.collect.Lists;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 
 import java.util.Collection;
+import java.util.List;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.arguments.EntityArgument;
@@ -56,30 +58,30 @@ public class AirCommand {
     }
 
     private static int increaseAir(CommandSource source, Collection<? extends Entity> targets, int amount) throws CommandSyntaxException {
-        int i = 0;
+        List<Entity> list = Lists.newArrayListWithCapacity(targets.size());
 
         for (Entity entity : targets) {
             if (entity instanceof LivingEntity) {
                 if (((LivingEntity)entity).getAir() + amount <= ((LivingEntity)entity).getMaxAir()) {
                     ((LivingEntity)entity).setAir(((LivingEntity)entity).getAir() + amount);
-                    i++;
+                    list.add(entity);
                 } else {
                     ((LivingEntity)entity).setAir(((LivingEntity)entity).getMaxAir());
-                    i++;
+                    list.add(entity);
                 }
             }
         }
 
-        if (i == 0) {
+        if (list.isEmpty()) {
             throw AIR_ADD_FAILED_EXCEPTION.create();
          } else {
-            if (targets.size() == 1) {
-               source.sendFeedback(new TranslationTextComponent("commands.devsdream.air.add.success.single", targets.iterator().next().getDisplayName(), amount), true);
+            if (list.size() == 1) {
+               source.sendFeedback(new TranslationTextComponent("commands.devsdream.air.add.success.single", list.iterator().next().getDisplayName(), amount), true);
             } else {
-               source.sendFeedback(new TranslationTextComponent("commands.devsdream.air.add.success.multiple", targets.size(), amount), true);
+               source.sendFeedback(new TranslationTextComponent("commands.devsdream.air.add.success.multiple", list.size(), amount), true);
             }
    
-            return i;
+            return amount;
          }
     }
 }

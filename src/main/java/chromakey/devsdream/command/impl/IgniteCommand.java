@@ -45,7 +45,7 @@ public class IgniteCommand {
               source.sendFeedback(new TranslationTextComponent("commands.devsdream.ignite.success.multiple", list.size(), burnTime), true);
            }
   
-           return list.size();
+           return (int)burnTime;
         }
     }
 }

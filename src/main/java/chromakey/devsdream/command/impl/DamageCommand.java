@@ -2,12 +2,14 @@ package chromakey.devsdream.command.impl;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import com.google.common.collect.Lists;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -93,25 +95,25 @@ public class DamageCommand {
     }
 
     private static int damageEntity(CommandSource source, Collection<? extends Entity> targets, EntityDamageSource damageSource, float amount) throws CommandSyntaxException {
-        int i = 0;
+        List<Entity> list = Lists.newArrayListWithCapacity(targets.size());
 
         for (Entity entity : targets) {
             if (entity instanceof LivingEntity) {
                 ((LivingEntity)entity).attackEntityFrom(damageSource, amount);
-                i++;
+                list.add(entity);
             }
         }
 
-        if (i == 0) {
+        if (list.isEmpty()) {
             throw DAMAGE_FAILED_EXCEPTION.create();
          } else {
-            if (targets.size() == 1) {
-               source.sendFeedback(new TranslationTextComponent("commands.devsdream.damage.success.single", targets.iterator().next().getDisplayName(), amount), true);
+            if (list.size() == 1) {
+               source.sendFeedback(new TranslationTextComponent("commands.devsdream.damage.success.single", list.iterator().next().getDisplayName(), amount), true);
             } else {
-               source.sendFeedback(new TranslationTextComponent("commands.devsdream.damage.success.multiple", targets.size(), amount), true);
+               source.sendFeedback(new TranslationTextComponent("commands.devsdream.damage.success.multiple", list.size(), amount), true);
             }
    
-            return i;
+            return (int)amount;
          }
     }
 }

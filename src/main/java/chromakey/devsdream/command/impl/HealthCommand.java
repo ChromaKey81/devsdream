@@ -57,25 +57,25 @@ public class HealthCommand {
      }
 
      private static int setEntityHealth(CommandSource source, Collection<? extends Entity> targets, float amount) throws CommandSyntaxException {
-        int i = 0;
+        List<Entity> list = Lists.newArrayListWithCapacity(targets.size());
 
         for (Entity entity : targets) {
             if (entity instanceof LivingEntity) {
                 ((LivingEntity)entity).setHealth(amount);
-                i++;
+                list.add(entity);
             }
         }
 
-        if (i == 0) {
+        if (list.isEmpty()) {
             throw HEALTH_SET_FAILED_EXCEPTION.create();
          } else {
-            if (targets.size() == 1) {
-               source.sendFeedback(new TranslationTextComponent("commands.devsdream.health.set.success.single", targets.iterator().next().getDisplayName(), amount), true);
+            if (list.size() == 1) {
+               source.sendFeedback(new TranslationTextComponent("commands.devsdream.health.set.success.single", list.iterator().next().getDisplayName(), amount), true);
             } else {
-               source.sendFeedback(new TranslationTextComponent("commands.devsdream.health.set.success.multiple", targets.size(), amount), true);
+               source.sendFeedback(new TranslationTextComponent("commands.devsdream.health.set.success.multiple", list.size(), amount), true);
             }
    
-            return i;
+            return (int)amount;
          }
      }
 }

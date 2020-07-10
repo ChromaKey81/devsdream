@@ -1,12 +1,15 @@
 package chromakey.devsdream.command.impl;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import java.util.Collection;
+import java.util.List;
+
 import javax.annotation.Nullable;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -48,7 +51,7 @@ public class AdvancedEffectCommand {
    }
 
    private static int addEffect(CommandSource source, Collection<? extends Entity> targets, Effect effect, @Nullable Integer seconds, int amplifier, boolean showParticles, boolean showIcon, boolean ambient) throws CommandSyntaxException {
-      int i = 0;
+      List<Entity> list = Lists.newArrayListWithCapacity(targets.size());
       int j;
       if (seconds != null) {
          if (effect.isInstant()) {
@@ -66,65 +69,65 @@ public class AdvancedEffectCommand {
          if (entity instanceof LivingEntity) {
             EffectInstance effectinstance = new EffectInstance(effect, j, amplifier, ambient, showParticles, showIcon);
             if (((LivingEntity)entity).addPotionEffect(effectinstance)) {
-               ++i;
+               list.add(entity);
             }
          }
       }
 
-      if (i == 0) {
+      if (list.isEmpty()) {
          throw GIVE_FAILED_EXCEPTION.create();
       } else {
-         if (targets.size() == 1) {
+         if (list.size() == 1) {
             source.sendFeedback(new TranslationTextComponent("commands.effect.give.success.single", effect.getDisplayName(), targets.iterator().next().getDisplayName(), j / 20), true);
          } else {
             source.sendFeedback(new TranslationTextComponent("commands.effect.give.success.multiple", effect.getDisplayName(), targets.size(), j / 20), true);
          }
 
-         return i;
+         return list.size();
       }
    }
 
    private static int clearAllEffects(CommandSource source, Collection<? extends Entity> targets) throws CommandSyntaxException {
-      int i = 0;
+      List<Entity> list = Lists.newArrayListWithCapacity(targets.size());
 
       for(Entity entity : targets) {
          if (entity instanceof LivingEntity && ((LivingEntity)entity).clearActivePotions()) {
-            ++i;
+            list.add(entity);
          }
       }
 
-      if (i == 0) {
+      if (list.isEmpty()) {
          throw CLEAR_EVERYTHING_FAILED_EXCEPTION.create();
       } else {
-         if (targets.size() == 1) {
+         if (list.size() == 1) {
             source.sendFeedback(new TranslationTextComponent("commands.effect.clear.everything.success.single", targets.iterator().next().getDisplayName()), true);
          } else {
             source.sendFeedback(new TranslationTextComponent("commands.effect.clear.everything.success.multiple", targets.size()), true);
          }
 
-         return i;
+         return list.size();
       }
    }
 
    private static int clearEffect(CommandSource source, Collection<? extends Entity> targets, Effect effect) throws CommandSyntaxException {
-      int i = 0;
+      List<Entity> list = Lists.newArrayListWithCapacity(targets.size());
 
       for(Entity entity : targets) {
          if (entity instanceof LivingEntity && ((LivingEntity)entity).removePotionEffect(effect)) {
-            ++i;
+            list.add(entity);
          }
       }
 
-      if (i == 0) {
+      if (list.isEmpty()) {
          throw CLEAR_SPECIFIC_FAILED_EXCEPTION.create();
       } else {
-         if (targets.size() == 1) {
-            source.sendFeedback(new TranslationTextComponent("commands.effect.clear.specific.success.single", effect.getDisplayName(), targets.iterator().next().getDisplayName()), true);
+         if (list.size() == 1) {
+            source.sendFeedback(new TranslationTextComponent("commands.effect.clear.specific.success.single", effect.getDisplayName(), list.iterator().next().getDisplayName()), true);
          } else {
-            source.sendFeedback(new TranslationTextComponent("commands.effect.clear.specific.success.multiple", effect.getDisplayName(), targets.size()), true);
+            source.sendFeedback(new TranslationTextComponent("commands.effect.clear.specific.success.multiple", effect.getDisplayName(), list.size()), true);
          }
 
-         return i;
+         return list.size();
       }
    }
 }

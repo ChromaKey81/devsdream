@@ -2,10 +2,12 @@ package chromakey.devsdream.command.impl;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import com.google.common.collect.Lists;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 
 import java.util.Collection;
+import java.util.List;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.arguments.EntityArgument;
@@ -27,25 +29,25 @@ public class ExhaustCommand {
 
     private static int exhaustPlayer(CommandSource source, Collection<? extends PlayerEntity> targets, float amount) throws CommandSyntaxException {
         
-        int i = 0;
+        List<PlayerEntity> list = Lists.newArrayListWithCapacity(targets.size());
 
         for (PlayerEntity entity : targets) {
             if (entity instanceof PlayerEntity) {
                 ((PlayerEntity)entity).getFoodStats().addExhaustion(amount);
-                i++;
+                list.add(entity);
             }
         }
 
-        if (i == 0) {
+        if (list.isEmpty()) {
             throw EXHAUST_FAILED_EXCEPTION.create();
          } else {
-            if (targets.size() == 1) {
-               source.sendFeedback(new TranslationTextComponent("commands.devsdream.exhaust.success.single", targets.iterator().next().getDisplayName(), amount), true);
+            if (list.size() == 1) {
+               source.sendFeedback(new TranslationTextComponent("commands.devsdream.exhaust.success.single", list.iterator().next().getDisplayName(), amount), true);
             } else {
-               source.sendFeedback(new TranslationTextComponent("commands.devsdream.exhaust.success.multiple", targets.size(), amount), true);
+               source.sendFeedback(new TranslationTextComponent("commands.devsdream.exhaust.success.multiple", list.size(), amount), true);
             }
    
-            return i;
+            return list.size();
          }
     }
 }
