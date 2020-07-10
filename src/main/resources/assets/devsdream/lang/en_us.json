@@ -26,5 +26,9 @@
     "commands.devsdream.ignite.success.single": "Set %s on fire for %s seconds",
     "commands.devsdream.ignite.success.multiple": "Set %s entities on fire for %s seconds",
 
+    "commands.devsdream.damageitem.failed": "Failed to damage the items of the target(s)",
+    "commands.devsdream.damageitem.success.single": "Damaged %s's %s by %s",
+    "commands.devsdream.damageitem.success.multiple": "Damaged the items of %s players by %s",
+
     "block.devsdream.blank_slate_stone": "Blank Slate Stone"
 }

@@ -51,7 +51,7 @@ public class DamageItemCommand {
            throw DAMAGEITEM_FAILED_EXCEPTION.create();
         } else {
            if (list.size() == 1) {
-              source.sendFeedback(new TranslationTextComponent("commands.devsdream.damageitem.success.single", list.iterator().next().getItemStackFromSlot(slot).getDisplayName(), amount), true);
+              source.sendFeedback(new TranslationTextComponent("commands.devsdream.damageitem.success.single", list.iterator().next().getDisplayName(), list.iterator().next().getItemStackFromSlot(slot).getDisplayName(), amount), true);
            } else {
               source.sendFeedback(new TranslationTextComponent("commands.devsdream.damageitem.success.multiple", list.size(), amount), true);
            }
