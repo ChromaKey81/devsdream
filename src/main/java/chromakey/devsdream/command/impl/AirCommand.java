@@ -1,4 +1,4 @@
-package com.chromakey.devsdream.command.impl;
+package chromakey.devsdream.command.impl;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;

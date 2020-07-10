@@ -1,4 +1,4 @@
-package com.chromakey.devsdream.command.impl;
+package chromakey.devsdream.command.impl;
 
 import java.util.Collection;
 import java.util.List;

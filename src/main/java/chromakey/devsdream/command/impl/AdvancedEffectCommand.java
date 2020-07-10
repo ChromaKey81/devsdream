@@ -1,4 +1,4 @@
-package com.chromakey.devsdream.command.impl;
+package chromakey.devsdream.command.impl;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.brigadier.CommandDispatcher;
