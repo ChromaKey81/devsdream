@@ -11,16 +11,16 @@
       "vmArgs": "-Dforge.logging.console.level\u003ddebug -Dforge.logging.markers\u003dSCAN,REGISTRIES,REGISTRYDUMP -XX:HeapDumpPath\u003dMojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump \"-Dos.name\u003dWindows 10\" -Dos.version\u003d10.0",
       "args": "",
       "env": {
-        "MOD_CLASSES": "devsdream%%${workspaceFolder}\\bin\\main;devsdream%%${workspaceFolder}\\bin\\main",
-        "MCP_MAPPINGS": "snapshot_20200514-1.15.1",
-        "MCP_VERSION": "20200515.085601",
-        "FORGE_VERSION": "31.2.27",
-        "assetIndex": "1.15",
+        "MOD_CLASSES": "examplemod%%${workspaceFolder}\\bin\\main;examplemod%%${workspaceFolder}\\bin\\main",
+        "MCP_MAPPINGS": "snapshot_20200514-1.16",
+        "MCP_VERSION": "20200625.160719",
+        "FORGE_VERSION": "32.0.63",
+        "assetIndex": "1.16",
         "assetDirectory": "C:\\Users\\willi\\.gradle\\caches\\forge_gradle\\assets",
         "nativesDirectory": "${workspaceFolder}\\build\\natives",
         "FORGE_GROUP": "net.minecraftforge",
         "target": "fmluserdevclient",
-        "MC_VERSION": "1.15.2"
+        "MC_VERSION": "1.16.1"
       }
     },
     {
@@ -31,15 +31,15 @@
       "projectName": "Developer\u0027s Dream",
       "cwd": "${workspaceFolder}\\run",
       "vmArgs": "-Dforge.logging.console.level\u003ddebug -Dforge.logging.markers\u003dSCAN,REGISTRIES,REGISTRYDUMP",
-      "args": "--mod devsdream --all --output \"C:\\Users\\willi\\OneDrive\\Desktop\\Developer\u0027s Dream\\src\\generated\\resources\"",
+      "args": "--mod examplemod --all --output \"C:\\Users\\willi\\OneDrive\\Desktop\\Developer\u0027s Dream\\src\\generated\\resources\"",
       "env": {
-        "MOD_CLASSES": "devsdream%%${workspaceFolder}\\bin\\main;devsdream%%${workspaceFolder}\\bin\\main",
-        "MCP_MAPPINGS": "snapshot_20200514-1.15.1",
-        "MCP_VERSION": "20200515.085601",
-        "FORGE_VERSION": "31.2.27",
+        "MOD_CLASSES": "examplemod%%${workspaceFolder}\\bin\\main;examplemod%%${workspaceFolder}\\bin\\main",
+        "MCP_MAPPINGS": "snapshot_20200514-1.16",
+        "MCP_VERSION": "20200625.160719",
+        "FORGE_VERSION": "32.0.63",
         "FORGE_GROUP": "net.minecraftforge",
         "target": "fmluserdevdata",
-        "MC_VERSION": "1.15.2"
+        "MC_VERSION": "1.16.1"
       }
     },
     {
@@ -52,13 +52,13 @@
       "vmArgs": "-Dforge.logging.console.level\u003ddebug -Dforge.logging.markers\u003dSCAN,REGISTRIES,REGISTRYDUMP",
       "args": "",
       "env": {
-        "MOD_CLASSES": "devsdream%%${workspaceFolder}\\bin\\main;devsdream%%${workspaceFolder}\\bin\\main",
-        "MCP_MAPPINGS": "snapshot_20200514-1.15.1",
-        "MCP_VERSION": "20200515.085601",
-        "FORGE_VERSION": "31.2.27",
+        "MOD_CLASSES": "examplemod%%${workspaceFolder}\\bin\\main;examplemod%%${workspaceFolder}\\bin\\main",
+        "MCP_MAPPINGS": "snapshot_20200514-1.16",
+        "MCP_VERSION": "20200625.160719",
+        "FORGE_VERSION": "32.0.63",
         "FORGE_GROUP": "net.minecraftforge",
         "target": "fmluserdevserver",
-        "MC_VERSION": "1.15.2"
+        "MC_VERSION": "1.16.1"
       }
     }
   ]
