@@ -40,6 +40,8 @@ public class AirCommand {
                 if (amount <= ((LivingEntity)entity).getMaxAir()) {
                     ((LivingEntity)entity).setAir(amount);
                     i++;
+                } else {
+                    ((LivingEntity)entity).setAir(((LivingEntity)entity).getMaxAir());
                 }
             }
         }

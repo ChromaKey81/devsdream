@@ -1,8 +1,12 @@
 package chromakey.devsdream;
 
+import net.minecraft.block.Block;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
+import net.minecraft.resources.DataPackRegistries;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -33,6 +37,7 @@ public class Main {
         instance = this;
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientRegistries);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverStart);
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -42,6 +47,10 @@ public class Main {
 
     private void clientRegistries(final FMLClientSetupEvent event) {
       logger.info("Successfully set up clientRegistries");
+    }
+
+    private void serverStart(FMLServerStartingEvent event) {
+      logger.info("Started the server");
     }
 
     @SubscribeEvent
