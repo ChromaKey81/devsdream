@@ -7,6 +7,8 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -27,7 +29,7 @@ public class AdvancedEffectCommand {
    private static final SimpleCommandExceptionType CLEAR_SPECIFIC_FAILED_EXCEPTION = new SimpleCommandExceptionType(new TranslationTextComponent("commands.effect.clear.specific.failed"));
 
    public static void register(CommandDispatcher<CommandSource> dispatcher) {
-      dispatcher.register(Commands.literal("advancedeffect").requires((user) -> {
+      LiteralCommandNode<CommandSource> literalCommandNode = dispatcher.register(Commands.literal("advancedeffect").requires((user) -> {
          return user.hasPermissionLevel(2);
       }).then(Commands.literal("clear").executes((clearAllUser) -> {
          return clearAllEffects(clearAllUser.getSource(), ImmutableList.of(clearAllUser.getSource().assertIsEntity()));
@@ -48,6 +50,9 @@ public class AdvancedEffectCommand {
      }).then(Commands.argument("isAmbient", BoolArgumentType.bool()).executes((p_229759_0_) -> {
         return addEffect(p_229759_0_.getSource(), EntityArgument.getEntities(p_229759_0_, "targets"), PotionArgument.getMobEffect(p_229759_0_, "effect"), IntegerArgumentType.getInteger(p_229759_0_, "seconds"), IntegerArgumentType.getInteger(p_229759_0_, "amplifier"), !BoolArgumentType.getBool(p_229759_0_, "hideParticles"), !BoolArgumentType.getBool(p_229759_0_, "hideIcon"), BoolArgumentType.getBool(p_229759_0_, "isAmbient"));
      }))))))))));
+     dispatcher.register(Commands.literal("adveffect").requires((user) -> {
+      return user.hasPermissionLevel(2);
+      }).redirect(literalCommandNode));
    }
 
    private static int addEffect(CommandSource source, Collection<? extends Entity> targets, Effect effect, @Nullable Integer seconds, int amplifier, boolean showParticles, boolean showIcon, boolean ambient) throws CommandSyntaxException {

@@ -1,6 +1,8 @@
 package chromakey.devsdream;
 
+import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -43,15 +45,15 @@ public class Main {
     }
 
     @SubscribeEvent
-    public void onServerStart(FMLServerStartingEvent event) {
-      logger.info("Successfully set up server start");
-      AdvancedEffectCommand.register(event.getCommandDispatcher());
-      HealthCommand.register(event.getCommandDispatcher());
-      DamageCommand.register(event.getCommandDispatcher());
-      FeedCommand.register(event.getCommandDispatcher());
-      ExhaustCommand.register(event.getCommandDispatcher());
-      AirCommand.register(event.getCommandDispatcher());
-      IgniteCommand.register(event.getCommandDispatcher());
-      DamageItemCommand.register(event.getCommandDispatcher());
+    public void onCommandsRegister(RegisterCommandsEvent event) {
+      logger.info("Successfully registered commands");
+      AdvancedEffectCommand.register(event.getDispatcher());
+      HealthCommand.register(event.getDispatcher());
+      DamageCommand.register(event.getDispatcher());
+      FeedCommand.register(event.getDispatcher());
+      ExhaustCommand.register(event.getDispatcher());
+      AirCommand.register(event.getDispatcher());
+      IgniteCommand.register(event.getDispatcher());
+      DamageItemCommand.register(event.getDispatcher());
     }
 }
