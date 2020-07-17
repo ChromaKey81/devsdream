@@ -16,6 +16,7 @@ import chromakey.devsdream.command.impl.ExhaustCommand;
 import chromakey.devsdream.command.impl.FeedCommand;
 import chromakey.devsdream.command.impl.HealthCommand;
 import chromakey.devsdream.command.impl.IgniteCommand;
+import chromakey.devsdream.command.impl.RandomNumberCommand;
 import chromakey.devsdream.command.impl.DamageItemCommand;
 
 import org.apache.logging.log4j.LogManager;
@@ -32,6 +33,7 @@ public class Main {
         instance = this;
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientRegistries);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverStart);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverStart);
         MinecraftForge.EVENT_BUS.register(this);
     }
@@ -59,5 +61,6 @@ public class Main {
       AirCommand.register(event.getDispatcher());
       IgniteCommand.register(event.getDispatcher());
       DamageItemCommand.register(event.getDispatcher());
+      RandomNumberCommand.register(event.getDispatcher());
     }
 }
