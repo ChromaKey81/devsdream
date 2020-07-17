@@ -1,9 +1,0 @@
-{
-    "type": "spawn_egg",
-    "entity_type": "minecraft:bat",
-    "base_color": 4996656,
-    "spot_color": 986895,
-    "properties": {
-        "group": "misc"
-    }
-}

@@ -1,8 +1,0 @@
-{
-    "type": "boat",
-    "boat": "minecraft:oak_boat",
-    "properties": {
-        "stack_size": 1,
-        "group": "transportation"
-    }
-}

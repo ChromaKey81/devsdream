@@ -1,9 +1,0 @@
-{
-    "type": "bucket_with_entity",
-    "entity_type": "minecraft:pufferfish",
-    "fluid": "minecraft:water",
-    "properties": {
-        "stack_size": 1,
-        "group": "misc"
-    }
-}

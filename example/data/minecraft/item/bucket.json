@@ -1,8 +1,0 @@
-{
-    "type": "bucket",
-    "fluid": "minecraft:empty",
-    "properties": {
-        "stack_size": 16,
-        "group": "misc"
-    }
-}

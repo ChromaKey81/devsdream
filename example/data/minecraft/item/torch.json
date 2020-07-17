@@ -1,8 +1,0 @@
-{
-    "type": "wall_or_floor_block",
-    "floor": "minecraft:torch",
-    "wall": "minecraft:wall_torch",
-    "properties": {
-        "group": "decorations"
-    }
-}

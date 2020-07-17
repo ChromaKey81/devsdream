@@ -1,9 +1,0 @@
-{
-    "type": "banner_pattern",
-    "pattern": "minecraft:flower",
-    "properties": {
-        "stack_size": 1,
-        "group": "misc",
-        "rarity": "uncommon"
-    }
-}

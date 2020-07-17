@@ -1,9 +1,0 @@
-{
-    "type": "generic",
-    "properties": {
-        "food": {
-            "restores": 6,
-            "saturation": 0.6
-        }
-    }
-}

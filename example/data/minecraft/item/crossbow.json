@@ -1,8 +1,0 @@
-{
-    "type": "crossbow",
-    "properties": {
-        "stack_size": 1,
-        "group": "combat",
-        "max_damage": 326
-    }
-}

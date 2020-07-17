@@ -1,8 +1,0 @@
-{
-    "type": "dyeable_armor",
-    "material": "minecraft:leather",
-    "slot": "head",
-    "properties": {
-        "group": "combat"
-    }
-}

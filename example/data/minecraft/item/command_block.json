@@ -1,7 +1,0 @@
-{
-    "type": "operator_only",
-    "block": "minecraft:command_block",
-    "properties": {
-        "rarity": "epic"
-    }
-}

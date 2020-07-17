@@ -1,8 +1,0 @@
-{
-    "type": "block",
-    "block": "minecraft:ancient_debris",
-    "properties": {
-        "group": "building_blocks",
-        "fireproof": "true"
-    }
-}

@@ -1,7 +1,0 @@
-{
-    "type": "block",
-    "block": "minecraft:diorite",
-    "properties": {
-        "group": "building_blocks"
-    }
-}
