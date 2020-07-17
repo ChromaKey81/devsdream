@@ -1,0 +1,10 @@
+{
+    "type": "sword",
+    "material": "minecraft:netherite",
+    "attack_damage": 3,
+    "attack_speed": -2.4,
+    "properties": {
+        "group": "combat",
+        "fireproof": true
+    }
+}

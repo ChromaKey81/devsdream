@@ -1,0 +1,16 @@
+{
+    "max_damage": 15,
+    "armor": {
+        "feet": 1,
+        "legs": 4,
+        "chest": 5,
+        "head": 2
+    },
+    "enchantability": 12,
+    "equip_sound": "minecraft:item.armor.equip_chain",
+    "armor_toughness": 0.0,
+    "knockback_resistance": 0.0,
+    "repair_material": {
+        "item": "minecraft:iron_ingot"
+    }
+}

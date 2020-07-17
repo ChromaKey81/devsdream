@@ -1,0 +1,8 @@
+{
+    "type": "clears_all_effects",
+    "properties": {
+        "container": "minecraft:bucket",
+        "stack_size": 1,
+        "group": "misc"
+    }
+}

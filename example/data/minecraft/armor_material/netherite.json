@@ -1,0 +1,16 @@
+{
+    "max_damage": 37,
+    "armor": {
+        "feet": 3,
+        "legs": 6,
+        "chest": 8,
+        "head": 3
+    },
+    "enchantability": 15,
+    "equip_sound": "minecraft:item.armor.equip_netherite",
+    "armor_toughness": 3.0,
+    "knockback_resistance": 0.1,
+    "repair_material": {
+        "item": "minecraft:netherite_ingot"
+    }
+}

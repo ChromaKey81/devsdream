@@ -1,0 +1,9 @@
+{
+    "type": "armor",
+    "armor_material": "minecraft:netherite",
+    "slot": "chest",
+    "properties": {
+        "group": "combat",
+        "fireproof": "true"
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "type": "bucket",
+    "fluid": "minecraft:lava",
+    "properties": {
+        "stack_size": 1,
+        "group": "misc"
+    }
+}

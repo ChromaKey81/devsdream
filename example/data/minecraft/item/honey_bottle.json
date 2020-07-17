@@ -1,0 +1,12 @@
+{
+    "type": "poison_cure",
+    "properties": {
+        "container": "minecraft:glass_bottle",
+        "food": {
+            "restores": 6,
+            "saturation": 0.1
+        },
+        "group": "food",
+        "stack_size": 16
+    }
+}

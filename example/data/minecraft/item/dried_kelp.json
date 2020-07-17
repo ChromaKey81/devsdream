@@ -1,0 +1,11 @@
+{
+    "type": "generic",
+    "properties": {
+        "group": "food",
+        "food": {
+            "restores": 1,
+            "saturation": 0.3,
+            "speed_eating": true
+        }
+    }
+}

@@ -1,0 +1,7 @@
+{
+    "type": "block",
+    "block": "minecraft:granite",
+    "properties": {
+        "group": "building_blocks"
+    }
+}

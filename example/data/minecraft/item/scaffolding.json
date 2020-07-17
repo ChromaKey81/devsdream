@@ -1,0 +1,7 @@
+{
+    "type": "scaffolding",
+    "block": "minecraft:scaffolding",
+    "properties": {
+        "group": "decorations"
+    }
+}

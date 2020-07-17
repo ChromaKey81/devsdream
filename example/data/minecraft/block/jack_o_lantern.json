@@ -1,0 +1,10 @@
+{
+    "type": "carved_pumpkin",
+    "properties": {
+        "material": "minecraft:gourd",
+        "material_color": "adobe",
+        "hardness_and_resistance": 1.0,
+        "sound_type": "wood",
+        "light_level": 15
+    }
+}

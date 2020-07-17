@@ -1,0 +1,10 @@
+{
+    "harvest_level": 1,
+    "max_uses": 131,
+    "efficiency": 4.0,
+    "attack_damage": 1.0,
+    "enchantability": 5,
+    "repair_material": {
+        "tag": "minecraft:stone_tool_materials"
+    }
+}

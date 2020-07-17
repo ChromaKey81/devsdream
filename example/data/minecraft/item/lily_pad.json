@@ -1,0 +1,7 @@
+{
+    "type": "water_surface_block",
+    "block": "minecraft:lily_pad",
+    "properties": {
+        "group": "decorations"
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "type": "block",
+    "block": "minecraft:beacon",
+    "properties": {
+        "rarity": "rare",
+        "group": "misc"
+    }
+}

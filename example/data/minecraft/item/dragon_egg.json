@@ -1,0 +1,7 @@
+{
+    "type": "block",
+    "block": "minecraft:dragon_egg",
+    "properties": {
+        "rarity": "epic"
+    }
+}
