@@ -30,5 +30,7 @@
     "commands.devsdream.damageitem.success.single": "Damaged %s's %s by %s",
     "commands.devsdream.damageitem.success.multiple": "Damaged the items of %s players by %s",
 
+    "commands.devsdream.rng.result": "Random number generated, value %s",
+
     "block.devsdream.blank_slate_stone": "Blank Slate Stone"
 }
