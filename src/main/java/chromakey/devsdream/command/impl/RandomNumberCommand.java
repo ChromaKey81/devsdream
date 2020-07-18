@@ -12,7 +12,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 public class RandomNumberCommand {
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
-        LiteralCommandNode<CommandSource> literalCommandNode = dispatcher.register(Commands.literal("random").requires((user) -> {
+        LiteralCommandNode<CommandSource> literalCommandNode = dispatcher.register(Commands.literal("randomnumber").requires((user) -> {
             return user.hasPermissionLevel(2);
         }).then(Commands.argument("maximum", IntegerArgumentType.integer(0, 2147483647)).executes((rng) -> {
             return rng(rng.getSource(), IntegerArgumentType.getInteger(rng, "maximum"));
