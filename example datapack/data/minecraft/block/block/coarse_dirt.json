@@ -1,0 +1,14 @@
+{
+    "type": "generic",
+    "properties": {
+        "material": {
+            "name": "minecraft:earth",
+            "map_color": {
+                "type": "material",
+                "name": "dirt"
+            }
+        },
+        "hardness_and_resistance": 0.5,
+        "sounds": "minecraft:ground"
+    }
+}

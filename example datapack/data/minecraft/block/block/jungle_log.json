@@ -1,0 +1,26 @@
+{
+    "type": "rotated_pillar",
+    "properties": {
+        "material": {
+            "name": "minecraft:wood",
+            "map_color": [
+                {
+                    "axis": "x",
+                    "color": {
+                        "type": "material",
+                        "name": "obsidian"
+                    }
+                },
+                {
+                    "axis": "y",
+                    "color": {
+                        "type": "material",
+                        "name": "dirt"
+                    }
+                }
+            ]
+        },
+        "hardness_and_resistance": 2.0,
+        "sounds": "minecraft:wood"
+    }
+}

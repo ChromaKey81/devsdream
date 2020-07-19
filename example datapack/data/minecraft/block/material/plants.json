@@ -1,0 +1,10 @@
+{
+    "map_color": {
+        "type": "material",
+        "name": "foliage"
+    },
+    "blocks_movement": false,
+    "opaque": false,
+    "solid": false,
+    "push_reaction": "destroy"
+}

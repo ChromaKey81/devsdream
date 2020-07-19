@@ -1,0 +1,12 @@
+{
+    "type": "generic",
+    "properties": {
+        "material": "minecraft:rock",
+        "hardness_and_resistance": {
+            "hardness": -1.0,
+            "resistance": 3600000
+        },
+        "loot_table": "empty",
+        "spawns_allowed": false
+    }
+}

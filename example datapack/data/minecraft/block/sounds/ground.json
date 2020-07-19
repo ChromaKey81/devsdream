@@ -1,0 +1,9 @@
+{
+    "volume": 1.0,
+    "pitch": 1.0,
+    "break": "minecraft:block.gravel.break",
+    "step": "minecraft:block.gravel.step",
+    "place": "minecraft:block.gravel.place",
+    "hit": "minecraft:block.gravel.hit",
+    "fall": "minecraft:block.gravel.fall"
+}

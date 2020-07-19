@@ -1,0 +1,11 @@
+{
+    "type": "sapling",
+    "tree": "oak",
+    "properties": {
+        "material": "minecraft:plants",
+        "blocks_movement": false,
+        "tick_randomly": true,
+        "hardness_and_resistance": 0.0,
+        "sounds": "minecraft:plant"
+    }
+}

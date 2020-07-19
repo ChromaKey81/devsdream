@@ -1,0 +1,9 @@
+{
+    "volume": 1.0,
+    "pitch": 1.0,
+    "break": "minecraft:block.nether_gold_ore.break",
+    "step": "minecraft:block.nether_gold_ore.step",
+    "place": "minecraft:block.nether_gold_ore.place",
+    "hit": "minecraft:block.nether_gold_ore.hit",
+    "fall": "minecraft:block.nether_gold_ore.fall"
+}

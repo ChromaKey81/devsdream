@@ -1,0 +1,9 @@
+{
+    "volume": 1.0,
+    "pitch": 1.0,
+    "break": "minecraft:block.wood.break",
+    "step": "minecraft:block.wood.step",
+    "place": "minecraft:block.wood.place",
+    "hit": "minecraft:block.wood.hit",
+    "fall": "minecraft:block.wood.fall"
+}

@@ -1,0 +1,18 @@
+{
+    "type": "ore",
+    "properties": {
+        "material": {
+            "name": "minecraft:rock",
+            "map_color": {
+                "type": "material",
+                "name": "netherrack"
+            }
+        },
+        "requires_tool": true,
+        "hardness_and_resistance": {
+            "hardness": 3.0,
+            "resistance": 3.0
+        },
+        "sounds": "minecraft:nether_gold_ore"
+    }
+}

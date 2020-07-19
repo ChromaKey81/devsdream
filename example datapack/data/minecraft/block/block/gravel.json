@@ -1,0 +1,14 @@
+{
+    "type": "gravel",
+    "properties": {
+        "material": {
+            "name": "minecraft:sand",
+            "map_color": {
+                "type": "material",
+                "name": "stone"
+            }
+        },
+        "hardness_and_resistance": 0.6,
+        "sounds": "minecraft:ground"
+    }
+}

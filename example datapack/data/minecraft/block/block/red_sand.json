@@ -1,0 +1,15 @@
+{
+    "type": "sand",
+    "particle_color": 11098145,
+    "properties": {
+        "material": {
+            "name": "minecraft:sand",
+            "map_color": {
+                "type": "material",
+                "name": "adobe"
+            }
+        },
+        "hardness_and_resistance": 0.5,
+        "sounds": "minecraft:sand"
+    }
+}

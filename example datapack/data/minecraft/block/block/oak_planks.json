@@ -1,0 +1,17 @@
+{
+    "type": "generic",
+    "properties": {
+        "material": {
+            "name": "minecraft:wood",
+            "map_color": {
+                "type": "material",
+                "name": "wood"
+            }
+        },
+        "hardness_and_resistance": {
+            "hardness": 2.0,
+            "resistance": 3.0
+        },
+        "sounds": "minecraft:wood"
+    }
+}

@@ -1,0 +1,10 @@
+{
+    "type": "flowing_fluid",
+    "fluid": "minecraft:water",
+    "properties": {
+        "material": "minecraft:water",
+        "blocks_movement": false,
+        "hardness_and_resistance": 100.0,
+        "loot_table": "empty"
+    }
+}

@@ -1,0 +1,7 @@
+{
+    "map_color": {
+        "type": "material",
+        "name": "wood"
+    },
+    "flammable": true
+}

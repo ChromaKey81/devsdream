@@ -1,0 +1,10 @@
+{
+    "map_color": {
+        "type": "material",
+        "name": "air"
+    },
+    "blocks_movement": false,
+    "opaque": false,
+    "solid": false,
+    "replaceable": true
+}
