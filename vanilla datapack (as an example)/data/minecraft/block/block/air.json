@@ -1,9 +1,0 @@
-{
-    "type": "air",
-    "properties": {
-        "material": "minecraft:air",
-        "blocks_movement": false,
-        "loot_table": "empty",
-        "air": true
-    }
-}

@@ -1,9 +1,0 @@
-{
-    "volume": 1.0,
-    "pitch": 1.0,
-    "break": "minecraft:block.sand.break",
-    "step": "minecraft:block.sand.step",
-    "place": "minecraft:block.sand.place",
-    "hit": "minecraft:block.sand.hit",
-    "fall": "minecraft:block.sand.fall"
-}

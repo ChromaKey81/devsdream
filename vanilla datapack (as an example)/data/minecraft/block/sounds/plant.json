@@ -1,9 +1,0 @@
-{
-    "volume": 1.0,
-    "pitch": 1.0,
-    "break": "minecraft:block.grass.break",
-    "step": "minecraft:block.grass.step",
-    "place": "minecraft:block.grass.place",
-    "hit": "minecraft:block.grass.hit",
-    "fall": "minecraft:block.grass.fall"
-}
