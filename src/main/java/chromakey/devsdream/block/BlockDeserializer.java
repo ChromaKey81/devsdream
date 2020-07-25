@@ -1,421 +1,1082 @@
 package chromakey.devsdream.block;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
-import net.minecraft.block.AbstractFireBlock;
-import net.minecraft.block.AirBlock;
-import net.minecraft.block.AnvilBlock;
-import net.minecraft.block.AttachedStemBlock;
-import net.minecraft.block.BambooBlock;
-import net.minecraft.block.BambooSaplingBlock;
-import net.minecraft.block.BannerBlock;
-import net.minecraft.block.BarrelBlock;
-import net.minecraft.block.BarrierBlock;
-import net.minecraft.block.BeaconBlock;
-import net.minecraft.block.BedBlock;
-import net.minecraft.block.BeehiveBlock;
-import net.minecraft.block.BeetrootBlock;
-import net.minecraft.block.BellBlock;
-import net.minecraft.block.BlastFurnaceBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.BreakableBlock;
-import net.minecraft.block.BrewingStandBlock;
-import net.minecraft.block.BubbleColumnBlock;
-import net.minecraft.block.BushBlock;
-import net.minecraft.block.CactusBlock;
-import net.minecraft.block.CakeBlock;
-import net.minecraft.block.CampfireBlock;
-import net.minecraft.block.CarpetBlock;
-import net.minecraft.block.CarrotBlock;
-import net.minecraft.block.CartographyTableBlock;
-import net.minecraft.block.CarvedPumpkinBlock;
-import net.minecraft.block.CauldronBlock;
-import net.minecraft.block.ChainBlock;
-import net.minecraft.block.ChestBlock;
-import net.minecraft.block.ChorusFlowerBlock;
-import net.minecraft.block.ChorusPlantBlock;
-import net.minecraft.block.CocoaBlock;
-import net.minecraft.block.CommandBlockBlock;
-import net.minecraft.block.ComparatorBlock;
-import net.minecraft.block.ComposterBlock;
-import net.minecraft.block.ConcretePowderBlock;
-import net.minecraft.block.ConduitBlock;
-import net.minecraft.block.CoralBlock;
-import net.minecraft.block.CoralFanBlock;
-import net.minecraft.block.CoralFinBlock;
-import net.minecraft.block.CoralPlantBlock;
-import net.minecraft.block.CoralWallFanBlock;
-import net.minecraft.block.CraftingTableBlock;
-import net.minecraft.block.CropsBlock;
-import net.minecraft.block.CryingObsidianBlock;
-import net.minecraft.block.DaylightDetectorBlock;
-import net.minecraft.block.DeadBushBlock;
-import net.minecraft.block.DeadCoralPlantBlock;
-import net.minecraft.block.DeadCoralWallFanBlock;
-import net.minecraft.block.DetectorRailBlock;
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.block.DoorBlock;
-import net.minecraft.block.DoublePlantBlock;
-import net.minecraft.block.DragonEggBlock;
-import net.minecraft.block.DropperBlock;
-import net.minecraft.block.EnchantingTableBlock;
-import net.minecraft.block.EndGatewayBlock;
-import net.minecraft.block.EndPortalBlock;
-import net.minecraft.block.EndPortalFrameBlock;
-import net.minecraft.block.EndRodBlock;
-import net.minecraft.block.EnderChestBlock;
-import net.minecraft.block.FallingBlock;
-import net.minecraft.block.FarmlandBlock;
-import net.minecraft.block.FenceBlock;
-import net.minecraft.block.FenceGateBlock;
-import net.minecraft.block.FireBlock;
-import net.minecraft.block.FletchingTableBlock;
-import net.minecraft.block.FlowerBlock;
-import net.minecraft.block.FlowerPotBlock;
-import net.minecraft.block.FlowingFluidBlock;
-import net.minecraft.block.FourWayBlock;
-import net.minecraft.block.FrostedIceBlock;
-import net.minecraft.block.StemGrownBlock;
+import net.minecraft.block.*;
 import net.minecraft.block.AbstractBlock.Properties;
+import net.minecraft.block.PressurePlateBlock.Sensitivity;
 import net.minecraft.block.material.Material;
-import net.minecraft.fluid.Fluids;
+import net.minecraft.block.material.MaterialColor;
 import net.minecraft.item.DyeColor;
+import net.minecraft.particles.IParticleData;
+import net.minecraft.particles.ParticleType;
 import net.minecraft.potion.Effect;
-import net.minecraft.potion.EffectType;
-import net.minecraft.tileentity.ChestTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.util.SoundEvent;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class BlockDeserializer {
 
   public static Block deserializeBlock(JsonObject object, String fileName) throws JsonSyntaxException {
-    if (!object.has("type")) {
-      throw new JsonSyntaxException("Missing block type, expected to find a string");
-    } else {
-      String type = object.get("type").getAsString();
-      switch (type) {
-        case "simple": {
-          return new Block(deserializeProperties(object));
+    String type = JSONUtils.getString(object, "type");
+    switch (type) {
+      case "simple": {
+        return new Block(deserializeProperties(object));
+      }
+      case "air": {
+        return new AirBlock(deserializeProperties(object));
+      }
+      case "anvil": {
+        return new AnvilBlock(deserializeProperties(object));
+      }
+      case "attached_stem": {
+        String blockString = JSONUtils.getString(object, "grown_fruit");
+        Block block = setRequiredBlockElement(object, "grown_fruit", blockString);
+        if (block instanceof StemGrownBlock) {
+          return new AttachedStemBlock((StemGrownBlock) block, deserializeProperties(object));
+        } else {
+          throw new JsonSyntaxException(blockString + " is not a stem grown block");
         }
-        case "air": {
-          return new AirBlock(deserializeProperties(object));
+      }
+      case "bamboo": {
+        return new BambooBlock(deserializeProperties(object));
+      }
+      case "bamboo_sapling": {
+        return new BambooSaplingBlock(deserializeProperties(object));
+      }
+      case "banner": {
+        return new BannerBlock(DyeColor.byTranslationKey(JSONUtils.getString(object, "color"), DyeColor.WHITE),
+            deserializeProperties(object));
+      }
+      case "barrel": {
+        return new BarrelBlock(deserializeProperties(object));
+      }
+      case "barrier": {
+        return new BarrierBlock(deserializeProperties(object));
+      }
+      case "beacon": {
+        return new BeaconBlock(deserializeProperties(object));
+      }
+      case "bed": {
+        return new BedBlock(DyeColor.byTranslationKey(JSONUtils.getString(object, "color"), DyeColor.WHITE),
+            deserializeProperties(object));
+      }
+      case "beehive": {
+        return new BeehiveBlock(deserializeProperties(object));
+      }
+      case "beetroot": {
+        return new BeetrootBlock(deserializeProperties(object));
+      }
+      case "bell": {
+        return new BellBlock(deserializeProperties(object));
+      }
+      case "blast_furnace": {
+        return new BlastFurnaceBlock(deserializeProperties(object));
+      }
+      case "breakable": {
+        return new BreakableBlock(deserializeProperties(object));
+      }
+      case "brewing_stand": {
+        return new BrewingStandBlock(deserializeProperties(object));
+      }
+      case "bubble_column": {
+        return new BubbleColumnBlock(deserializeProperties(object));
+      }
+      case "bush": {
+        return new BushBlock(deserializeProperties(object));
+      }
+      case "cactus": {
+        return new CactusBlock(deserializeProperties(object));
+      }
+      case "cake": {
+        return new CakeBlock(deserializeProperties(object));
+      }
+      case "campfire": {
+        int damageScale = 1;
+        boolean doParticles = true;
+        if (object.has("damage_scale")) {
+          damageScale = JSONUtils.getInt(object, "damage_scale");
         }
-        case "anvil": {
-          return new AnvilBlock(deserializeProperties(object));
+        if (object.has("do_particles")) {
+          doParticles = JSONUtils.getBoolean(object, "do_particles");
         }
-        case "attached_stem": {
-          String blockString = JSONUtils.getString(object, "grown_fruit");
-          Block block = setRequiredBlockElement(object, "grown_fruit", blockString);
-          if (block instanceof StemGrownBlock) {
-            return new AttachedStemBlock((StemGrownBlock) block, deserializeProperties(object));
-          } else {
-            throw new JsonSyntaxException(blockString + " is not a stem grown block");
-          }
+        return new CampfireBlock(doParticles, damageScale, deserializeProperties(object));
+      }
+      case "carpet": {
+        return new CarpetBlock(DyeColor.byTranslationKey(JSONUtils.getString(object, "color"), DyeColor.WHITE),
+            deserializeProperties(object));
+      }
+      case "carrot": {
+        return new CarrotBlock(deserializeProperties(object));
+      }
+      case "cartography_table": {
+        return new CartographyTableBlock(deserializeProperties(object));
+      }
+      case "carved_pumpkin": {
+        return new CarvedPumpkinBlock(deserializeProperties(object));
+      }
+      case "cauldron": {
+        return new CauldronBlock(deserializeProperties(object));
+      }
+      case "chain": {
+        return new ChainBlock(deserializeProperties(object));
+      }
+      case "chest": {
+        return new ChestBlock(deserializeProperties(object), () -> {
+          return TileEntityType.CHEST;
+        });
+      }
+      case "chorus_flower": {
+        String blockString = JSONUtils.getString(object, "grown_fruit");
+        Block block = setRequiredBlockElement(object, "grown_fruit", blockString);
+        if (block instanceof ChorusPlantBlock) {
+          return new ChorusFlowerBlock((ChorusPlantBlock) block, deserializeProperties(object));
+        } else {
+          throw new JsonSyntaxException(blockString + " is not a stem grown block");
         }
-        case "bamboo": {
-          return new BambooBlock(deserializeProperties(object));
-        }
-        case "bamboo_sapling": {
-          return new BambooSaplingBlock(deserializeProperties(object));
-        }
-        case "banner": {
-          return new BannerBlock(DyeColor.byTranslationKey(JSONUtils.getString(object, "color"), DyeColor.WHITE),
-              deserializeProperties(object));
-        }
-        case "barrel": {
-          return new BarrelBlock(deserializeProperties(object));
-        }
-        case "barrier": {
-          return new BarrierBlock(deserializeProperties(object));
-        }
-        case "beacon": {
-          return new BeaconBlock(deserializeProperties(object));
-        }
-        case "bed": {
-          return new BedBlock(DyeColor.byTranslationKey(JSONUtils.getString(object, "color"), DyeColor.WHITE),
-              deserializeProperties(object));
-        }
-        case "beehive": {
-          return new BeehiveBlock(deserializeProperties(object));
-        }
-        case "beetroot": {
-          return new BeetrootBlock(deserializeProperties(object));
-        }
-        case "bell": {
-          return new BellBlock(deserializeProperties(object));
-        }
-        case "blast_furnace": {
-          return new BlastFurnaceBlock(deserializeProperties(object));
-        }
-        case "breakable": {
-          return new BreakableBlock(deserializeProperties(object));
-        }
-        case "brewing_stand": {
-          return new BrewingStandBlock(deserializeProperties(object));
-        }
-        case "bubble_column": {
-          return new BubbleColumnBlock(deserializeProperties(object));
-        }
-        case "bush": {
-          return new BushBlock(deserializeProperties(object));
-        }
-        case "cactus": {
-          return new CactusBlock(deserializeProperties(object));
-        }
-        case "cake": {
-          return new CakeBlock(deserializeProperties(object));
-        }
-        case "campfire": {
-          int damageScale = 1;
-          boolean doParticles = true;
-          if (object.has("damage_scale")) {
-            damageScale = JSONUtils.getInt(object, "damage_scale");
-          }
-          if (object.has("do_particles")) {
-            doParticles = JSONUtils.getBoolean(object, "do_particles");
-          }
-          return new CampfireBlock(doParticles, damageScale, deserializeProperties(object));
-        }
-        case "carpet": {
-          return new CarpetBlock(DyeColor.byTranslationKey(JSONUtils.getString(object, "color"), DyeColor.WHITE),
-              deserializeProperties(object));
-        }
-        case "carrot": {
-          return new CarrotBlock(deserializeProperties(object));
-        }
-        case "cartography_table": {
-          return new CartographyTableBlock(deserializeProperties(object));
-        }
-        case "carved_pumpkin": {
-          return new CarvedPumpkinBlock(deserializeProperties(object));
-        }
-        case "cauldron": {
-          return new CauldronBlock(deserializeProperties(object));
-        }
-        case "chain": {
-          return new ChainBlock(deserializeProperties(object));
-        }
-        case "chest": {
-          return new ChestBlock(deserializeProperties(object), () -> {
-            return TileEntityType.CHEST;
-          });
-        }
-        case "chorus_flower": {
-          String blockString = JSONUtils.getString(object, "grown_fruit");
-          Block block = setRequiredBlockElement(object, "grown_fruit", blockString);
-          if (block instanceof ChorusPlantBlock) {
-            return new ChorusFlowerBlock((ChorusPlantBlock) block, deserializeProperties(object));
-          } else {
-            throw new JsonSyntaxException(blockString + " is not a stem grown block");
-          }
-        }
-        case "chorus_plant": {
-          return new ChorusPlantBlock(deserializeProperties(object));
-        }
-        case "cocoa": {
-          return new CocoaBlock(deserializeProperties(object));
-        }
-        case "command_block": {
-          return new CommandBlockBlock(deserializeProperties(object));
-        }
-        case "comparator": {
-          return new ComparatorBlock(deserializeProperties(object));
-        }
-        case "composter": {
-          return new ComposterBlock(deserializeProperties(object));
-        }
-        case "concrete_powder": {
-          return new ConcretePowderBlock(setRequiredBlockElement(object, "solidified_block", JSONUtils.getString(object, "solidified_block")), deserializeProperties(object));
-        }
-        case "conduit": {
-          return new ConduitBlock(deserializeProperties(object));
-        }
-        case "coral": {
-          if(object.has("dead_block")) {
-            String deadBlockString = JSONUtils.getString(object, "dead_block");
-            ResourceLocation resourcelocation = new ResourceLocation(JSONUtils.getString(object, "dead_block"));
-            Block block = Registry.BLOCK.getValue(resourcelocation).orElseThrow(() -> {
-              return new JsonSyntaxException("Unknown block type '" + resourcelocation + "'");
-            });
-            return new CoralBlock(block, deserializeProperties(object));
-          } else {
-            throw new JsonSyntaxException("Missing dead_block, expected to find a string");
-          }
-        }
-        case "coral_fan": {
-          return new CoralFanBlock(deserializeProperties(object));
-        }
-        case "coral_fin": {
-          return new CoralFinBlock(setRequiredBlockElement(object, "dead_block", JSONUtils.getString(object, "dead_block")), deserializeProperties(object));
-        }
-        case "coral_plant": {
-          return new CoralPlantBlock(setRequiredBlockElement(object, "dead_block", JSONUtils.getString(object, "dead_block")), deserializeProperties(object));
-        }
-        case "coral_wall_fan": {
-          return new CoralWallFanBlock(setRequiredBlockElement(object, "dead_block", JSONUtils.getString(object, "dead_block")), deserializeProperties(object));
+      }
+      case "chorus_plant": {
+        return new ChorusPlantBlock(deserializeProperties(object));
+      }
+      case "cocoa": {
+        return new CocoaBlock(deserializeProperties(object));
+      }
+      case "command_block": {
+        return new CommandBlockBlock(deserializeProperties(object));
+      }
+      case "comparator": {
+        return new ComparatorBlock(deserializeProperties(object));
+      }
+      case "composter": {
+        return new ComposterBlock(deserializeProperties(object));
+      }
+      case "concrete_powder": {
+        return new ConcretePowderBlock(
+            setRequiredBlockElement(object, "solidified_block", JSONUtils.getString(object, "solidified_block")),
+            deserializeProperties(object));
+      }
+      case "conduit": {
+        return new ConduitBlock(deserializeProperties(object));
+      }
+      case "coral": {
+        return new CoralBlock(setRequiredBlockElement(object, "dead_block", JSONUtils.getString(object, "dead_block")),
+            deserializeProperties(object));
+      }
+      case "coral_fan": {
+        return new CoralFanBlock(deserializeProperties(object));
+      }
+      case "coral_fin": {
+        return new CoralFinBlock(
+            setRequiredBlockElement(object, "dead_block", JSONUtils.getString(object, "dead_block")),
+            deserializeProperties(object));
+      }
+      case "coral_plant": {
+        return new CoralPlantBlock(
+            setRequiredBlockElement(object, "dead_block", JSONUtils.getString(object, "dead_block")),
+            deserializeProperties(object));
+      }
+      case "coral_wall_fan": {
+        return new CoralWallFanBlock(
+            setRequiredBlockElement(object, "dead_block", JSONUtils.getString(object, "dead_block")),
+            deserializeProperties(object));
 
-        }
-        case "crafting_table": {
-          return new CraftingTableBlock(deserializeProperties(object));
-        }
-        case "crops": {
-          return new CropsBlock(deserializeProperties(object));
-        }
-        case "crying_obsidian": {
-          return new CryingObsidianBlock(deserializeProperties(object));
-        }
-        case "daylight_detector": {
-          return new DaylightDetectorBlock(deserializeProperties(object));
-        }
-        case "dead_bush": {
-          return new DeadBushBlock(deserializeProperties(object));
-        }
-        case "dead_coral_plant": {
-          return new DeadCoralPlantBlock(deserializeProperties(object));
-        }
-        case "dead_coral_wall_fan": {
-          return new DeadCoralWallFanBlock(deserializeProperties(object));
-        }
-        case "detector_rail": {
-          return new DetectorRailBlock(deserializeProperties(object));
-        }
-        case "dispenser": {
-          return new DispenserBlock(deserializeProperties(object));
-        }
-        case "door": {
-          return new DoorBlock(deserializeProperties(object));
-        }
-        case "double_plant": {
-          return new DoublePlantBlock(deserializeProperties(object));
-        }
-        case "dragon_egg": {
-          return new DragonEggBlock(deserializeProperties(object));
-        }
-        case "dropper": {
-          return new DropperBlock(deserializeProperties(object));
-        }
-        case "enchanting_table": {
-          return new EnchantingTableBlock(deserializeProperties(object));
-        }
-        case "end_gateway": {
-          return new EndGatewayBlock(deserializeProperties(object));
-        }
-        case "end_portal": {
-          return new EndPortalBlock(deserializeProperties(object));
-        }
-        case "end_portal_frame": {
-          return new EndPortalFrameBlock(deserializeProperties(object));
-        }
-        case "end_rod": {
-          return new EndRodBlock(deserializeProperties(object));
-        }
-        case "ender_chest": {
-          return new EnderChestBlock(deserializeProperties(object));
-        }
-        case "falling": {
-          return new FallingBlock(deserializeProperties(object));
-        }
-        case "farmland": {
-          return new FarmlandBlock(deserializeProperties(object));
-        }
-        case "fence": {
-          return new FenceBlock(deserializeProperties(object));
-        }
-        case "fence_gate": {
-          return new FenceGateBlock(deserializeProperties(object));
-        }
-        case "fire": {
-          return new FireBlock(deserializeProperties(object));
-        }
-        case "fletching_table": {
-          return new FletchingTableBlock(deserializeProperties(object));
-        }
-        case "flower": {
-          String effectString = JSONUtils.getString(object, "effect");
-          ResourceLocation resourcelocation = new ResourceLocation(effectString);
-          Effect effect = Registry.EFFECTS.getValue(resourcelocation).orElseThrow(() -> {
-            return new JsonSyntaxException("Unknown effect '" + resourcelocation + "'");
-          });
-          if (object.has("duration")) {
-            return new FlowerBlock(effect, JSONUtils.getInt(object, "duration"), deserializeProperties(object));
-          } else {
-            throw new JsonSyntaxException("Missing duration, expected an integer");
+      }
+      case "crafting_table": {
+        return new CraftingTableBlock(deserializeProperties(object));
+      }
+      case "crops": {
+        return new CropsBlock(deserializeProperties(object));
+      }
+      case "crying_obsidian": {
+        return new CryingObsidianBlock(deserializeProperties(object));
+      }
+      case "daylight_detector": {
+        return new DaylightDetectorBlock(deserializeProperties(object));
+      }
+      case "dead_bush": {
+        return new DeadBushBlock(deserializeProperties(object));
+      }
+      case "dead_coral_plant": {
+        return new DeadCoralPlantBlock(deserializeProperties(object));
+      }
+      case "dead_coral_wall_fan": {
+        return new DeadCoralWallFanBlock(deserializeProperties(object));
+      }
+      case "detector_rail": {
+        return new DetectorRailBlock(deserializeProperties(object));
+      }
+      case "dispenser": {
+        return new DispenserBlock(deserializeProperties(object));
+      }
+      case "door": {
+        return new DoorBlock(deserializeProperties(object));
+      }
+      case "double_plant": {
+        return new DoublePlantBlock(deserializeProperties(object));
+      }
+      case "dragon_egg": {
+        return new DragonEggBlock(deserializeProperties(object));
+      }
+      case "dropper": {
+        return new DropperBlock(deserializeProperties(object));
+      }
+      case "enchanting_table": {
+        return new EnchantingTableBlock(deserializeProperties(object));
+      }
+      case "end_gateway": {
+        return new EndGatewayBlock(deserializeProperties(object));
+      }
+      case "end_portal": {
+        return new EndPortalBlock(deserializeProperties(object));
+      }
+      case "end_portal_frame": {
+        return new EndPortalFrameBlock(deserializeProperties(object));
+      }
+      case "end_rod": {
+        return new EndRodBlock(deserializeProperties(object));
+      }
+      case "ender_chest": {
+        return new EnderChestBlock(deserializeProperties(object));
+      }
+      case "falling": {
+        return new FallingBlock(deserializeProperties(object));
+      }
+      case "farmland": {
+        return new FarmlandBlock(deserializeProperties(object));
+      }
+      case "fence": {
+        return new FenceBlock(deserializeProperties(object));
+      }
+      case "fence_gate": {
+        return new FenceGateBlock(deserializeProperties(object));
+      }
+      case "fire": {
+        return new FireBlock(deserializeProperties(object));
+      }
+      case "fletching_table": {
+        return new FletchingTableBlock(deserializeProperties(object));
+      }
+      case "flower": {
+        String effectString = JSONUtils.getString(object, "effect");
+        ResourceLocation resourcelocation = new ResourceLocation(effectString);
+        Effect effect = RegistryObject.of(resourcelocation, ForgeRegistries.POTIONS).orElseThrow(() -> {
+          return new JsonSyntaxException("Unknown effect '" + effectString + "'");
+        });
+        return new FlowerBlock(effect, JSONUtils.getInt(object, "duration"), deserializeProperties(object));
+      }
+      case "flower_pot": {
+        return new FlowerPotBlock(null, () -> {
+          return setRequiredBlockElement(object, "potted_block", JSONUtils.getString(object, "potted"));
+        }, deserializeProperties(object));
+      }
+      case "flowing_fluid": {
+        throw new JsonSyntaxException("Flowing fluid blocks are not yet supported (sorry!)");
+      }
+      case "four_way": {
+        JsonObject node = JSONUtils.getJsonObject(object, "node");
+        JsonObject extension = JSONUtils.getJsonObject(object, "extension");
+        return new FourWayBlock(JSONUtils.getFloat(node, "width"), JSONUtils.getFloat(extension, "width"),
+            JSONUtils.getFloat(node, "height"), JSONUtils.getFloat(extension, "height"),
+            JSONUtils.getFloat(object, "vertical_collision"), deserializeProperties(object));
+      }
+      case "frosted_ice": {
+        return new FrostedIceBlock(deserializeProperties(object));
+      }
+      case "fungus": {
+        throw new JsonSyntaxException("Fungus blocks are not yet supported (sorry!)");
+      }
+      case "furnace": {
+        return new FurnaceBlock(deserializeProperties(object));
+      }
+      case "glass": {
+        return new GlassBlock(deserializeProperties(object));
+      }
+      case "glazed_terracotta": {
+        return new GlazedTerracottaBlock(deserializeProperties(object));
+      }
+      case "grass": {
+        return new GrassBlock(deserializeProperties(object));
+      }
+      case "grass_path": {
+        return new GrassPathBlock(deserializeProperties(object));
+      }
+      case "gravel": {
+        return new GravelBlock(deserializeProperties(object));
+      }
+      case "grindstone": {
+        return new GrindstoneBlock(deserializeProperties(object));
+      }
+      case "hay": {
+        return new HayBlock(deserializeProperties(object));
+      }
+      case "honey": {
+        return new HoneyBlock(deserializeProperties(object));
+      }
+      case "hopper": {
+        return new HopperBlock(deserializeProperties(object));
+      }
+      case "horizontal_face": {
+        return new HorizontalFaceBlock(deserializeProperties(object));
+      }
+      case "huge_mushroom": {
+        return new HugeMushroomBlock(deserializeProperties(object));
+      }
+      case "ice": {
+        return new IceBlock(deserializeProperties(object));
+      }
+      case "jigsaw": {
+        return new JigsawBlock(deserializeProperties(object));
+      }
+      case "jukebox": {
+        return new JukeboxBlock(deserializeProperties(object));
+      }
+      case "kelp": {
+        return new KelpBlock(deserializeProperties(object));
+      }
+      case "kelp_top": {
+        return new KelpTopBlock(deserializeProperties(object));
+      }
+      case "ladder": {
+        return new LadderBlock(deserializeProperties(object));
+      }
+      case "lantern": {
+        return new LanternBlock(deserializeProperties(object));
+      }
+      case "leaves": {
+        return new LeavesBlock(deserializeProperties(object));
+      }
+      case "lectern": {
+        return new LecternBlock(deserializeProperties(object));
+      }
+      case "lever": {
+        return new LeverBlock(deserializeProperties(object));
+      }
+      case "lily_pad": {
+        return new LilyPadBlock(deserializeProperties(object));
+      }
+      case "loom": {
+        return new LoomBlock(deserializeProperties(object));
+      }
+      case "magma": {
+        return new MagmaBlock(deserializeProperties(object));
+      }
+      case "melon": {
+        return new MelonBlock(deserializeProperties(object));
+      }
+      case "moving_piston": {
+        return new MovingPistonBlock(deserializeProperties(object));
+      }
+      case "mushroom": {
+        return new MushroomBlock(deserializeProperties(object));
+      }
+      case "mycelium": {
+        return new MyceliumBlock(deserializeProperties(object));
+      }
+      case "nether_portal": {
+        return new NetherPortalBlock(deserializeProperties(object));
+      }
+      case "nether_roots": {
+        return new NetherRootsBlock(deserializeProperties(object));
+      }
+      case "nether_sprouts": {
+        return new NetherSproutsBlock(deserializeProperties(object));
+      }
+      case "nether_wart": {
+        return new NetherWartBlock(deserializeProperties(object));
+      }
+      case "netherrack": {
+        return new NetherrackBlock(deserializeProperties(object));
+      }
+      case "note": {
+        return new NoteBlock(deserializeProperties(object));
+      }
+      case "nylium": {
+        return new NyliumBlock(deserializeProperties(object));
+      }
+      case "observer": {
+        return new ObserverBlock(deserializeProperties(object));
+      }
+      case "ore": {
+        return new OreBlock(deserializeProperties(object));
+      }
+      case "pane": {
+        return new PaneBlock(deserializeProperties(object));
+      }
+      case "piston": {
+        return new PistonBlock(JSONUtils.getBoolean(object, "sticky"), deserializeProperties(object));
+      }
+      case "piston_head": {
+        return new PistonHeadBlock(deserializeProperties(object));
+      }
+      case "potato": {
+        return new PotatoBlock(deserializeProperties(object));
+      }
+      case "powered_rail": {
+        return new PoweredRailBlock(deserializeProperties(object));
+      }
+      case "pressure_plate": {
+        String sensitivityString = JSONUtils.getString(object, "sensitivity");
+        switch (sensitivityString) {
+          case "everything": {
+            return new PressurePlateBlock(Sensitivity.EVERYTHING, deserializeProperties(object));
+          }
+          case "mobs": {
+            return new PressurePlateBlock(Sensitivity.MOBS, deserializeProperties(object));
+          }
+          default: {
+            throw new JsonSyntaxException(
+                "Unknown sensitivity '" + sensitivityString + "'; only 'everything' or 'mobs' are accepted");
           }
         }
-        case "flower_pot": {
-          return new FlowerPotBlock(null, () -> {
-            return setRequiredBlockElement(object, "potted_block", JSONUtils.getString(object, "potted"));
-          }, deserializeProperties(object));
+      }
+      case "pumpkin": {
+        return new PumpkinBlock(deserializeProperties(object));
+      }
+      case "rail": {
+        return new RailBlock(deserializeProperties(object));
+      }
+      case "redstone": {
+        return new RedstoneBlock(deserializeProperties(object));
+      }
+      case "redstone_lamp": {
+        return new RedstoneLampBlock(deserializeProperties(object));
+      }
+      case "redstone_ore": {
+        return new RedstoneOreBlock(deserializeProperties(object));
+      }
+      case "redstone_torch": {
+        return new RedstoneTorchBlock(deserializeProperties(object));
+      }
+      case "redstone_wall_torch": {
+        return new RedstoneWallTorchBlock(deserializeProperties(object));
+      }
+      case "redstone_wire": {
+        return new RedstoneWireBlock(deserializeProperties(object));
+      }
+      case "repeater": {
+        return new RepeaterBlock(deserializeProperties(object));
+      }
+      case "respawn_anchor": {
+        return new RespawnAnchorBlock(deserializeProperties(object));
+      }
+      case "rotated_pillar": {
+        return new RotatedPillarBlock(deserializeProperties(object));
+      }
+      case "sand": {
+        return new SandBlock(JSONUtils.getInt(object, "dust_color"), deserializeProperties(object));
+      }
+      case "sapling": {
+        throw new JsonSyntaxException("Saplings are not currently supported (sorry!)");
+      }
+      case "scaffolding": {
+        return new ScaffoldingBlock(deserializeProperties(object));
+      }
+      case "sea_grass": {
+        return new SeaGrassBlock(deserializeProperties(object));
+      }
+      case "sea_pickle": {
+        return new SeaPickleBlock(deserializeProperties(object));
+      }
+      case "shulker_box": {
+        DyeColor color = null;
+        if (object.has("color")) {
+          color = DyeColor.byTranslationKey(JSONUtils.getString(object, "color"), DyeColor.WHITE);
         }
-        case "flowing_fluid": {
-          switch (JSONUtils.getString(object, "fluid")) {
-            case "water": {
-              return new FlowingFluidBlock(Fluids.WATER, deserializeProperties(object));
-            }
-            case "lava": {
-              return new FlowingFluidBlock(Fluids.LAVA, deserializeProperties(object));
-            }
-            default: {
-              throw new JsonSyntaxException("Custom fluids are not currently supported");
-            }
+        return new ShulkerBoxBlock(color, deserializeProperties(object));
+      }
+      case "silverfish": {
+        return new SilverfishBlock(setRequiredBlockElement(object, "mimics", JSONUtils.getString(object, "mimics")),
+            deserializeProperties(object));
+      }
+      case "six_way": {
+        return new SixWayBlock(JSONUtils.getFloat(object, "apothem"), deserializeProperties(object));
+      }
+      case "skull": {
+        String skullTypeString = JSONUtils.getString(object, "skull_type");
+        switch (skullTypeString) {
+          case "skeleton": {
+            return new SkullBlock(SkullBlock.Types.SKELETON, deserializeProperties(object));
+          }
+          case "wither_skeleton": {
+            return new SkullBlock(SkullBlock.Types.WITHER_SKELETON, deserializeProperties(object));
+          }
+          case "player": {
+            return new SkullBlock(SkullBlock.Types.PLAYER, deserializeProperties(object));
+          }
+          case "zombie": {
+            return new SkullBlock(SkullBlock.Types.ZOMBIE, deserializeProperties(object));
+          }
+          case "creeper": {
+            return new SkullBlock(SkullBlock.Types.CREEPER, deserializeProperties(object));
+          }
+          case "dragon": {
+            return new SkullBlock(SkullBlock.Types.DRAGON, deserializeProperties(object));
+          }
+          default: {
+            throw new JsonSyntaxException("Unknown skull type: '" + skullTypeString + "'");
           }
         }
-        case "four_way": {
-          if (!object.has("node_width")) {
-            throw new JsonSyntaxException("Missing node_width, expected to find a float");
-          }
-          if (!object.has("extension_width")) {
-            throw new JsonSyntaxException("Missing extension_width, expected to find a float");
-          }
-          if (!object.has("unmapped_argument_one")) {
-            throw new JsonSyntaxException("Missing unmapped_argument_one, expected to find a float");
-          }
-          if (!object.has("unmapped_argument_two")) {
-            throw new JsonSyntaxException("Missing unmapped_argument_two, expected to find a float");
-          }
-          if (!object.has("collision_y")) {
-            throw new JsonSyntaxException("Missing collision_y, expected to find a float");
-          }
-          return new FourWayBlock(JSONUtils.getFloat(object, "node_width"), JSONUtils.getFloat(object, "extension_width"), JSONUtils.getFloat(object, "unmapped_argument_one"), JSONUtils.getFloat(object, "unmapped_argument_two"), JSONUtils.getFloat(object, "collision_y"), deserializeProperties(object));
+      }
+      case "skull_player": {
+        return new SkullPlayerBlock(deserializeProperties(object));
+      }
+      case "skull_wall_player": {
+        return new SkullWallPlayerBlock(deserializeProperties(object));
+      }
+      case "slab": {
+        return new SlabBlock(deserializeProperties(object));
+      }
+      case "slime": {
+        return new SlimeBlock(deserializeProperties(object));
+      }
+      case "smithing_table": {
+        return new SmithingTableBlock(deserializeProperties(object));
+      }
+      case "smoker": {
+        return new SmokerBlock(deserializeProperties(object));
+      }
+      case "snow": {
+        return new SnowBlock(deserializeProperties(object));
+      }
+      case "snowy_dirt": {
+        return new SnowyDirtBlock(deserializeProperties(object));
+      }
+      case "soul_fire": {
+        return new SoulFireBlock(deserializeProperties(object));
+      }
+      case "soul_sand": {
+        return new SoulSandBlock(deserializeProperties(object));
+      }
+      case "spawner": {
+        return new SpawnerBlock(deserializeProperties(object));
+      }
+      case "sponge": {
+        return new SpongeBlock(deserializeProperties(object));
+      }
+      case "stained_glass": {
+        DyeColor color = null;
+        if (object.has("color")) {
+          color = DyeColor.byTranslationKey(JSONUtils.getString(object, "color"), DyeColor.WHITE);
         }
-        case "frosted_ice": {
-          return new FrostedIceBlock(deserializeProperties(object));
+        return new StainedGlassBlock(color, deserializeProperties(object));
+      }
+      case "stained_glass_pane": {
+        DyeColor color = null;
+        if (object.has("color")) {
+          color = DyeColor.byTranslationKey(JSONUtils.getString(object, "color"), DyeColor.WHITE);
         }
-        default: {
-          throw new JsonSyntaxException("Unknown block type: " + type);
+        return new StainedGlassPaneBlock(color, deserializeProperties(object));
+      }
+      case "stairs": {
+        return new StairsBlock(() -> {
+          return setRequiredBlockElement(object, "source_block", JSONUtils.getString(object, "source_block"))
+              .getDefaultState();
+        }, deserializeProperties(object));
+      }
+      case "standing_sign": {
+        throw new JsonSyntaxException("Signs are not currently supported (sorry!)");
+      }
+      case "stem": {
+        String blockString = JSONUtils.getString(object, "grown_fruit");
+        Block block = setRequiredBlockElement(object, "grown_fruit", blockString);
+        if (block instanceof StemGrownBlock) {
+          return new StemBlock((StemGrownBlock) block, deserializeProperties(object));
+        } else {
+          throw new JsonSyntaxException(blockString + " is not a stem grown block");
         }
+      }
+      case "stone_button": {
+        return new StoneButtonBlock(deserializeProperties(object));
+      }
+      case "stonecutter": {
+        return new StonecutterBlock(deserializeProperties(object));
+      }
+      case "structure": {
+        return new StructureBlock(deserializeProperties(object));
+      }
+      case "structure_void": {
+        return new StructureVoidBlock(deserializeProperties(object));
+      }
+      case "sugar_cane": {
+        return new SugarCaneBlock(deserializeProperties(object));
+      }
+      case "sweet_berry_bush": {
+        return new SweetBerryBushBlock(deserializeProperties(object));
+      }
+      case "tnt": {
+        return new TNTBlock(deserializeProperties(object));
+      }
+      case "tall_flower": {
+        return new TallFlowerBlock(deserializeProperties(object));
+      }
+      case "tall_grass": {
+        return new TallGrassBlock(deserializeProperties(object));
+      }
+      case "tall_sea_grass": {
+        return new TallSeaGrassBlock(deserializeProperties(object));
+      }
+      case "target": {
+        return new TargetBlock(deserializeProperties(object));
+      }
+      case "torch": {
+        String particleString = JSONUtils.getString(object, "effect");
+        ResourceLocation resourcelocation = new ResourceLocation(particleString);
+        ParticleType<?> particle = RegistryObject.of(resourcelocation, ForgeRegistries.PARTICLE_TYPES)
+            .orElseThrow(() -> {
+              return new JsonSyntaxException("Unknown particle type '" + particleString + "'");
+            });
+        return new TorchBlock(deserializeProperties(object), (IParticleData) particle);
+      }
+      case "trap_door": {
+        return new TrapDoorBlock(deserializeProperties(object));
+      }
+      case "trapped_chest": {
+        return new TrappedChestBlock(deserializeProperties(object));
+      }
+      case "trip_wire": {
+        String blockString = JSONUtils.getString(object, "hook");
+        Block block = setRequiredBlockElement(object, "hook", blockString);
+        if (block instanceof TripWireHookBlock) {
+          return new TripWireBlock((TripWireHookBlock) block, deserializeProperties(object));
+        } else {
+          throw new JsonSyntaxException(blockString + " is not a trip wire hook");
+        }
+      }
+      case "trip_wire_hook": {
+        return new TripWireHookBlock(deserializeProperties(object));
+      }
+      case "turtle_egg": {
+        return new TurtleEggBlock(deserializeProperties(object));
+      }
+      case "twisting_vines": {
+        return new TwistingVinesBlock(deserializeProperties(object));
+      }
+      case "twisting_vines_top": {
+        return new TwistingVinesTopBlock(deserializeProperties(object));
+      }
+      case "vine": {
+        return new VineBlock(deserializeProperties(object));
+      }
+      case "wall_banner": {
+        return new BannerBlock(DyeColor.byTranslationKey(JSONUtils.getString(object, "color"), DyeColor.WHITE),
+            deserializeProperties(object));
+      }
+      case "wall": {
+        return new WallBlock(deserializeProperties(object));
+      }
+      case "wall_sign": {
+        throw new JsonSyntaxException("Signs are not currently supported (sorry!)");
+      }
+      case "wall_skull": {
+        String skullTypeString = JSONUtils.getString(object, "skull_type");
+        switch (skullTypeString) {
+          case "skeleton": {
+            return new WallSkullBlock(SkullBlock.Types.SKELETON, deserializeProperties(object));
+          }
+          case "wither_skeleton": {
+            return new WallSkullBlock(SkullBlock.Types.WITHER_SKELETON, deserializeProperties(object));
+          }
+          case "player": {
+            return new WallSkullBlock(SkullBlock.Types.PLAYER, deserializeProperties(object));
+          }
+          case "zombie": {
+            return new WallSkullBlock(SkullBlock.Types.ZOMBIE, deserializeProperties(object));
+          }
+          case "creeper": {
+            return new WallSkullBlock(SkullBlock.Types.CREEPER, deserializeProperties(object));
+          }
+          case "dragon": {
+            return new WallSkullBlock(SkullBlock.Types.DRAGON, deserializeProperties(object));
+          }
+          default: {
+            throw new JsonSyntaxException("Unknown skull type '" + skullTypeString + "'");
+          }
+        }
+      }
+      case "wall_torch": {
+        String particleString = JSONUtils.getString(object, "effect");
+        ResourceLocation resourcelocation = new ResourceLocation(particleString);
+        ParticleType<?> particle = RegistryObject.of(resourcelocation, ForgeRegistries.PARTICLE_TYPES)
+            .orElseThrow(() -> {
+              return new JsonSyntaxException("Unknown particle type '" + particleString + "'");
+            });
+        return new TorchBlock(deserializeProperties(object), (IParticleData) particle);
+      }
+      case "web": {
+        return new WebBlock(deserializeProperties(object));
+      }
+      case "weeping_vines": {
+        return new WeepingVinesBlock(deserializeProperties(object));
+      }
+      case "weeping_vines_top": {
+        return new WeepingVinesTopBlock(deserializeProperties(object));
+      }
+      case "weighted_pressure_plate": {
+        return new WeightedPressurePlateBlock(JSONUtils.getInt(object, "max_weight"), deserializeProperties(object));
+      }
+      case "wet_sponge": {
+        return new WetSpongeBlock(deserializeProperties(object));
+      }
+      case "wither_rose": {
+        String effectString = JSONUtils.getString(object, "effect");
+        ResourceLocation resourcelocation = new ResourceLocation(effectString);
+        Effect effect = RegistryObject.of(resourcelocation, ForgeRegistries.POTIONS).orElseThrow(() -> {
+          return new JsonSyntaxException("Unknown effect '" + effectString + "'");
+        });
+        return new WitherRoseBlock(effect, deserializeProperties(object));
+      }
+      case "wither_skeleton_skull": {
+        return new WitherSkeletonSkullBlock(deserializeProperties(object));
+      }
+      case "wither_skeleton_wall_skull": {
+        return new WitherSkeletonWallSkullBlock(deserializeProperties(object));
+      }
+      case "wood_button": {
+        return new WoodButtonBlock(deserializeProperties(object));
+      }
+      default: {
+        throw new JsonSyntaxException("Unknown block type: " + type);
       }
     }
   }
 
-  public static Properties deserializeProperties(JsonObject object) {
-    Properties properties = Properties.create(Material.ROCK);
-    if (!object.has("light_level")) {
-      properties.setLightLevel((light) -> {
-        return 0;
-      });
+  private static Properties deserializeProperties(JsonObject object) throws JsonSyntaxException {
+    JsonObject propertiesObj = JSONUtils.getJsonObject(object, "properties");
+    Properties properties;
+    if (propertiesObj.has("map_color")) {
+      properties = Properties.create(deserializeMaterial(propertiesObj), deserializeColor(propertiesObj));
     } else {
-      properties.setLightLevel((light) -> {
-        return JSONUtils.getInt(object, "light_level");
-      });
+      properties = Properties.create(deserializeMaterial(propertiesObj));
+    }
+    if (propertiesObj.has("blocks_movement")) {
+      if (JSONUtils.getBoolean(propertiesObj, "blocks_movement") == false) {
+        properties.doesNotBlockMovement();
+      }
     }
     return properties;
   }
 
+  private static Material deserializeMaterial(JsonObject object) throws JsonSyntaxException {
+    String materialString = JSONUtils.getString(object, "material");
+    switch (materialString) {
+      case "air": {
+        return Material.AIR;
+      }
+      case "structure_void": {
+        return Material.STRUCTURE_VOID;
+      }
+      case "portal": {
+        return Material.PORTAL;
+      }
+      case "carpet": {
+        return Material.CARPET;
+      }
+      case "plants": {
+        return Material.PLANTS;
+      }
+      case "ocean_plant": {
+        return Material.OCEAN_PLANT;
+      }
+      case "tall_plants": {
+        return Material.TALL_PLANTS;
+      }
+      case "sea_grass": {
+        return Material.SEA_GRASS;
+      }
+      case "water": {
+        return Material.WATER;
+      }
+      case "bubble_column": {
+        return Material.BUBBLE_COLUMN;
+      }
+      case "lava": {
+        return Material.LAVA;
+      }
+      case "snow": {
+        return Material.SNOW;
+      }
+      case "fire": {
+        return Material.FIRE;
+      }
+      case "miscellaneous": {
+        return Material.MISCELLANEOUS;
+      }
+      case "web": {
+        return Material.WEB;
+      }
+      case "redstone_light": {
+        return Material.REDSTONE_LIGHT;
+      }
+      case "clay": {
+        return Material.CLAY;
+      }
+      case "earth": {
+        return Material.EARTH;
+      }
+      case "organic": {
+        return Material.ORGANIC;
+      }
+      case "packed_ice": {
+        return Material.PACKED_ICE;
+      }
+      case "sand": {
+        return Material.SAND;
+      }
+      case "sponge": {
+        return Material.SPONGE;
+      }
+      case "shulker": {
+        return Material.SHULKER;
+      }
+      case "wood": {
+        return Material.WOOD;
+      }
+      case "hyphae": {
+        return Material.field_237214_y_;
+      }
+      case "bamboo_sapling": {
+        return Material.BAMBOO_SAPLING;
+      }
+      case "bamboo": {
+        return Material.WOOL;
+      }
+      case "tnt": {
+        return Material.TNT;
+      }
+      case "leaves": {
+        return Material.LEAVES;
+      }
+      case "glass": {
+        return Material.GLASS;
+      }
+      case "ice": {
+        return Material.ICE;
+      }
+      case "cactus": {
+        return Material.CACTUS;
+      }
+      case "rock": {
+        return Material.ROCK;
+      }
+      case "iron": {
+        return Material.IRON;
+      }
+      case "snow_block": {
+        return Material.SNOW_BLOCK;
+      }
+      case "anvil": {
+        return Material.ANVIL;
+      }
+      case "barrier": {
+        return Material.BARRIER;
+      }
+      case "piston": {
+        return Material.PISTON;
+      }
+      case "coral": {
+        return Material.CORAL;
+      }
+      case "gourd": {
+        return Material.GOURD;
+      }
+      case "dragon_egg": {
+        return Material.DRAGON_EGG;
+      }
+      case "cake": {
+        return Material.CAKE;
+      }
+      default: {
+        throw new JsonSyntaxException("Unknown material '" + materialString + "'");
+      }
+    }
+  }
+
+  private static MaterialColor deserializeColor(JsonObject object) throws JsonSyntaxException {
+    String color = JSONUtils.getString(object, "map_color");
+    switch (color) {
+      case "air": {
+        return MaterialColor.AIR;
+      }
+      case "grass": {
+        return MaterialColor.GRASS;
+      }
+      case "sand": {
+        return MaterialColor.SAND;
+      }
+      case "wool": {
+        return MaterialColor.WOOL;
+      }
+      case "tnt": {
+        return MaterialColor.TNT;
+      }
+      case "ice": {
+        return MaterialColor.ICE;
+      }
+      case "iron": {
+        return MaterialColor.IRON;
+      }
+      case "foliage": {
+        return MaterialColor.FOLIAGE;
+      }
+      case "snow": {
+        return MaterialColor.SNOW;
+      }
+      case "clay": {
+        return MaterialColor.CLAY;
+      }
+      case "dirt": {
+        return MaterialColor.DIRT;
+      }
+      case "stone": {
+        return MaterialColor.STONE;
+      }
+      case "water": {
+        return MaterialColor.WATER;
+      }
+      case "wood": {
+        return MaterialColor.WOOD;
+      }
+      case "quartz": {
+        return MaterialColor.QUARTZ;
+      }
+      case "adobe": {
+        return MaterialColor.ADOBE;
+      }
+      case "magenta": {
+        return MaterialColor.MAGENTA;
+      }
+      case "light_blue": {
+        return MaterialColor.LIGHT_BLUE;
+      }
+      case "yellow": {
+        return MaterialColor.YELLOW;
+      }
+      case "lime": {
+        return MaterialColor.LIME;
+      }
+      case "pink": {
+        return MaterialColor.PINK;
+      }
+      case "gray": {
+        return MaterialColor.GRAY;
+      }
+      case "light_gray": {
+        return MaterialColor.LIGHT_GRAY;
+      }
+      case "cyan": {
+        return MaterialColor.CYAN;
+      }
+      case "purple": {
+        return MaterialColor.PURPLE;
+      }
+      case "blue": {
+        return MaterialColor.BLUE;
+      }
+      case "brown": {
+        return MaterialColor.BROWN;
+      }
+      case "green": {
+        return MaterialColor.GREEN;
+      }
+      case "red": {
+        return MaterialColor.RED;
+      }
+      case "black": {
+        return MaterialColor.BLACK;
+      }
+      case "gold": {
+        return MaterialColor.GOLD;
+      }
+      case "diamond": {
+        return MaterialColor.DIAMOND;
+      }
+      case "lapis": {
+        return MaterialColor.LAPIS;
+      }
+      case "emerald": {
+        return MaterialColor.EMERALD;
+      }
+      case "obsidian": {
+        return MaterialColor.OBSIDIAN;
+      }
+      case "netherrack": {
+        return MaterialColor.NETHERRACK;
+      }
+      case "light_blue_terracotta": {
+        return MaterialColor.LIGHT_BLUE_TERRACOTTA;
+      }
+      case "yellow_terracotta": {
+        return MaterialColor.YELLOW_TERRACOTTA;
+      }
+      case "lime_terracotta": {
+        return MaterialColor.LIME_TERRACOTTA;
+      }
+      case "pink_terracotta": {
+        return MaterialColor.PINK_TERRACOTTA;
+      }
+      case "gray_terracotta": {
+        return MaterialColor.GRAY_TERRACOTTA;
+      }
+      case "light_gray_terracotta": {
+        return MaterialColor.LIGHT_GRAY_TERRACOTTA;
+      }
+      case "cyan_terracotta": {
+        return MaterialColor.CYAN_TERRACOTTA;
+      }
+      case "purple_terracotta": {
+        return MaterialColor.PURPLE_TERRACOTTA;
+      }
+      case "blue_terracotta": {
+        return MaterialColor.BLUE_TERRACOTTA;
+      }
+      case "brown_terracotta": {
+        return MaterialColor.BROWN_TERRACOTTA;
+      }
+      case "green_terracotta": {
+        return MaterialColor.GREEN_TERRACOTTA;
+      }
+      case "red_terracotta": {
+        return MaterialColor.RED_TERRACOTTA;
+      }
+      case "black_terracotta": {
+        return MaterialColor.BLACK_TERRACOTTA;
+      }
+      case "crimson_nylium": {
+        return MaterialColor.field_241539_ab_;
+      }
+      case "crimson_stem": {
+        return MaterialColor.field_241540_ac_;
+      }
+      case "crimson_hyphae": {
+        return MaterialColor.field_241541_ad_;
+      }
+      case "warped_nylium": {
+        return MaterialColor.field_241542_ae_;
+      }
+      case "warped_stem": {
+        return MaterialColor.field_241543_af_;
+      }
+      case "warped_hyphae": {
+        return MaterialColor.field_241544_ag_;
+      }
+      case "warped_wart": {
+        return MaterialColor.field_241545_ah_;
+      }
+      default: {
+        throw new JsonSyntaxException("Unknown color '" + color + "'");
+      }
+    }
+  }
+
   private static Block setRequiredBlockElement(JsonObject object, String element, String argument) {
-    if(object.has(element)) {
       ResourceLocation resourcelocation = new ResourceLocation(argument);
-      Block block = Registry.BLOCK.getValue(resourcelocation).orElseThrow(() -> {
-        return new JsonSyntaxException("Unknown block type '" + resourcelocation + "'");
+      Block block = RegistryObject.of(resourcelocation, ForgeRegistries.BLOCKS).orElseThrow(() -> {
+        return new JsonSyntaxException("Unknown block type '" + argument + "'");
       });
       return block;
-    } else {
-      throw new JsonSyntaxException("Missing " + element + ", expected to find a string");
-    }
   }
 }
