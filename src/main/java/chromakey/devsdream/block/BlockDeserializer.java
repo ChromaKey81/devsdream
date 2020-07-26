@@ -156,34 +156,26 @@ public class BlockDeserializer {
         return new ComposterBlock(deserializeProperties(object));
       }
       case "concrete_powder": {
-        return new ConcretePowderBlock(
-            setRequiredBlockElement(object, "solidified_block"),
+        return new ConcretePowderBlock(setRequiredBlockElement(object, "solidified_block"),
             deserializeProperties(object));
       }
       case "conduit": {
         return new ConduitBlock(deserializeProperties(object));
       }
       case "coral": {
-        return new CoralBlock(setRequiredBlockElement(object, "dead_block"),
-            deserializeProperties(object));
+        return new CoralBlock(setRequiredBlockElement(object, "dead_block"), deserializeProperties(object));
       }
       case "coral_fan": {
         return new CoralFanBlock(deserializeProperties(object));
       }
       case "coral_fin": {
-        return new CoralFinBlock(
-            setRequiredBlockElement(object, "dead_block"),
-            deserializeProperties(object));
+        return new CoralFinBlock(setRequiredBlockElement(object, "dead_block"), deserializeProperties(object));
       }
       case "coral_plant": {
-        return new CoralPlantBlock(
-            setRequiredBlockElement(object, "dead_block"),
-            deserializeProperties(object));
+        return new CoralPlantBlock(setRequiredBlockElement(object, "dead_block"), deserializeProperties(object));
       }
       case "coral_wall_fan": {
-        return new CoralWallFanBlock(
-            setRequiredBlockElement(object, "dead_block"),
-            deserializeProperties(object));
+        return new CoralWallFanBlock(setRequiredBlockElement(object, "dead_block"), deserializeProperties(object));
 
       }
       case "crafting_table": {
@@ -490,8 +482,7 @@ public class BlockDeserializer {
         return new ShulkerBoxBlock(color, deserializeProperties(object));
       }
       case "silverfish": {
-        return new SilverfishBlock(setRequiredBlockElement(object, "mimics"),
-            deserializeProperties(object));
+        return new SilverfishBlock(setRequiredBlockElement(object, "mimics"), deserializeProperties(object));
       }
       case "six_way": {
         return new SixWayBlock(JSONUtils.getFloat(object, "apothem"), deserializeProperties(object));
@@ -574,8 +565,7 @@ public class BlockDeserializer {
       }
       case "stairs": {
         return new StairsBlock(() -> {
-          return setRequiredBlockElement(object, "source_block")
-              .getDefaultState();
+          return setRequiredBlockElement(object, "source_block").getDefaultState();
         }, deserializeProperties(object));
       }
       case "standing_sign": {
@@ -759,8 +749,15 @@ public class BlockDeserializer {
       }
     }
     if (propertiesObj.has("sounds")) {
+      if (propertiesObj.get("sounds").isJsonObject()) {
         JsonObject soundsObj = propertiesObj.get("sounds").getAsJsonObject();
-        properties.sound(new SoundType(JSONUtils.getFloat(soundsObj, "volume"), JSONUtils.getFloat(soundsObj, "pitch"), setRequiredSoundElement(soundsObj, "break"), setRequiredSoundElement(soundsObj, "step"), setRequiredSoundElement(soundsObj, "place"), setRequiredSoundElement(soundsObj, "hit"), setRequiredSoundElement(soundsObj, "fall")));
+        properties.sound(new SoundType(JSONUtils.getFloat(soundsObj, "volume"), JSONUtils.getFloat(soundsObj, "pitch"),
+            setRequiredSoundElement(soundsObj, "break"), setRequiredSoundElement(soundsObj, "step"),
+            setRequiredSoundElement(soundsObj, "place"), setRequiredSoundElement(soundsObj, "hit"),
+            setRequiredSoundElement(soundsObj, "fall")));
+      } else {
+        properties.sound(deserializeSounds(propertiesObj));
+      }
     }
     if (propertiesObj.has("light")) {
       int lightLevel = JSONUtils.getInt(propertiesObj, "light");
@@ -768,11 +765,14 @@ public class BlockDeserializer {
         return lightLevel;
       });
     }
-    if (propertiesObj.get("hardness_and_resistance").isJsonObject()) {
-      JsonObject hardnessResistanceObj = propertiesObj.get("hardness_and_resistance").getAsJsonObject();
-      properties.hardnessAndResistance(JSONUtils.getFloat(hardnessResistanceObj, "hardness"), JSONUtils.getFloat(hardnessResistanceObj, "resistance"));
-    } else {
-      properties.hardnessAndResistance(JSONUtils.getFloat(propertiesObj, "hardness_and_resistance"));
+    if (propertiesObj.has("hardness_and_resistance")) {
+      if (propertiesObj.get("hardness_and_resistance").isJsonObject()) {
+        JsonObject hardnessResistanceObj = propertiesObj.get("hardness_and_resistance").getAsJsonObject();
+        properties.hardnessAndResistance(JSONUtils.getFloat(hardnessResistanceObj, "hardness"),
+            JSONUtils.getFloat(hardnessResistanceObj, "resistance"));
+      } else {
+        properties.hardnessAndResistance(JSONUtils.getFloat(propertiesObj, "hardness_and_resistance"));
+      }
     }
     if (propertiesObj.has("requires_tool")) {
       if (JSONUtils.getBoolean(propertiesObj, "requires_tool") == true) {
@@ -825,8 +825,14 @@ public class BlockDeserializer {
           properties.harvestTool(ToolType.HOE);
         }
         default: {
-          throw new JsonSyntaxException("Unknown tool type '" + toolType + "'; only 'pickaxe', 'axe', 'shovel', or 'hoe' are accepted");
+          throw new JsonSyntaxException(
+              "Unknown tool type '" + toolType + "'; only 'pickaxe', 'axe', 'shovel', or 'hoe' are accepted");
         }
+      }
+    }
+    if (propertiesObj.has("variable_opacity")) {
+      if (JSONUtils.getBoolean(propertiesObj, "transparent") == true) {
+        properties.variableOpacity();
       }
     }
     return properties;
@@ -1144,13 +1150,163 @@ public class BlockDeserializer {
     }
   }
 
+  private static SoundType deserializeSounds(JsonObject object) {
+    String sounds = JSONUtils.getString(object, "sounds");
+    switch (sounds) {
+      case "wood": {
+        return SoundType.WOOD;
+      }
+      case "ground": {
+        return SoundType.GROUND;
+      }
+      case "plant": {
+        return SoundType.PLANT;
+      }
+      case "lily_pad": {
+        return SoundType.field_235600_d_;
+      }
+      case "stone": {
+        return SoundType.STONE;
+      }
+      case "metal": {
+        return SoundType.METAL;
+      }
+      case "glass": {
+        return SoundType.GLASS;
+      }
+      case "cloth": {
+        return SoundType.CLOTH;
+      }
+      case "sand": {
+        return SoundType.SAND;
+      }
+      case "snow": {
+        return SoundType.SNOW;
+      }
+      case "ladder": {
+        return SoundType.LADDER;
+      }
+      case "anvil": {
+        return SoundType.ANVIL;
+      }
+      case "slime": {
+        return SoundType.SLIME;
+      }
+      case "honey": {
+        return SoundType.field_226947_m_;
+      }
+      case "wet_grass": {
+        return SoundType.WET_GRASS;
+      }
+      case "coral": {
+        return SoundType.CORAL;
+      }
+      case "bamboo": {
+        return SoundType.BAMBOO;
+      }
+      case "bamboo_sapling": {
+        return SoundType.BAMBOO_SAPLING;
+      }
+      case "scaffolding": {
+        return SoundType.SCAFFOLDING;
+      }
+      case "sweet_berry_bush": {
+        return SoundType.SWEET_BERRY_BUSH;
+      }
+      case "crop": {
+        return SoundType.CROP;
+      }
+      case "stem": {
+        return SoundType.STEM;
+      }
+      case "vine": {
+        return SoundType.field_235601_w_;
+      }
+      case "nether_wart": {
+        return SoundType.NETHER_WART;
+      }
+      case "lantern": {
+        return SoundType.LANTERN;
+      }
+      case "hyphae": {
+        return SoundType.field_235602_z_;
+      }
+      case "nylium": {
+        return SoundType.field_235579_A_;
+      }
+      case "fungus": {
+        return SoundType.field_235580_B_;
+      }
+      case "root": {
+        return SoundType.field_235581_C_;
+      }
+      case "shroomlight": {
+        return SoundType.field_235582_D_;
+      }
+      case "nether_vine": {
+        return SoundType.field_235583_E_;
+      }
+      case "low_pitch_nether_vine": {
+        return SoundType.field_235584_F_;
+      }
+      case "soul_sand": {
+        return SoundType.field_235585_G_;
+      }
+      case "soul_soil": {
+        return SoundType.field_235586_H_;
+      }
+      case "basalt": {
+        return SoundType.field_235587_I_;
+      }
+      case "wart_block": {
+        return SoundType.field_235588_J_;
+      }
+      case "netherrack": {
+        return SoundType.field_235589_K_;
+      }
+      case "nether_brick": {
+        return SoundType.field_235590_L_;
+      }
+      case "nether_sprout": {
+        return SoundType.field_235591_M_;
+      }
+      case "nether_quartz_ore": {
+        return SoundType.field_235592_N_;
+      }
+      case "bone": {
+        return SoundType.field_235593_O_;
+      }
+      case "netherite": {
+        return SoundType.field_235594_P_;
+      }
+      case "ancient_debris": {
+        return SoundType.field_235595_Q_;
+      }
+      case "lodestone": {
+        return SoundType.field_235596_R_;
+      }
+      case "chain": {
+        return SoundType.field_235597_S_;
+      }
+      case "nether_gold_ore": {
+        return SoundType.field_235598_T_;
+      }
+      case "gilded_blackstone": {
+        return SoundType.field_235599_U_;
+      }
+      default: {
+        throw new JsonSyntaxException("Unknown sound type '" + sounds + "'");
+      }
+    }
+  }
+
   private static Block setRequiredBlockElement(JsonObject object, String element) throws JsonSyntaxException {
-      String argument = JSONUtils.getString(object, element);
-      ResourceLocation resourcelocation = new ResourceLocation(argument);
-      Block block = RegistryObject.of(resourcelocation, ForgeRegistries.BLOCKS).orElseThrow(() -> {
-        return new JsonSyntaxException("Unknown block '" + argument + "'");
-      });
-      return block;
+    String argument = JSONUtils.getString(object, element);
+    ResourceLocation resourcelocation = new ResourceLocation(argument);
+    Block block = RegistryObject.of(resourcelocation, ForgeRegistries.BLOCKS).orElseThrow(() -> {
+      return new JsonSyntaxException("Unknown block '" + argument + "'");
+    });
+    return block;
   }
 
   private static SoundEvent setRequiredSoundElement(JsonObject object, String element) throws JsonSyntaxException {
@@ -1160,5 +1316,5 @@ public class BlockDeserializer {
       return new JsonSyntaxException("Unknown sound event '" + argument + "'");
     });
     return sound;
-}
+  }
 }
