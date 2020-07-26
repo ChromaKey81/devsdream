@@ -1,0 +1,9 @@
+{
+    "type": "snowy_dirt",
+    "properties": {
+        "material": "earth",
+        "map_color": "obsidian",
+        "hardness_and_resistance": 0.5,
+        "sounds": "ground"
+    }
+}

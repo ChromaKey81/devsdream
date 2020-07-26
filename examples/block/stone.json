@@ -1,0 +1,12 @@
+{
+    "type": "simple",
+    "properties": {
+        "material": "rock",
+        "map_color": "stone",
+        "requires_tool": true,
+        "hardness_and_resistance": {
+            "hardness": 1.5,
+            "resistance": 6.0
+        }
+    }
+}

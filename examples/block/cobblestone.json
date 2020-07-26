@@ -1,0 +1,11 @@
+{
+    "type": "simple",
+    "properties": {
+        "material": "rock",
+        "requires_tool": true,
+        "hardness_and_resistance": {
+            "hardness": 2.0,
+            "resistance": 6.0
+        }
+    }
+}
