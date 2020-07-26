@@ -16,6 +16,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -35,7 +36,7 @@ public class BlockDeserializer {
       }
       case "attached_stem": {
         String blockString = JSONUtils.getString(object, "grown_fruit");
-        Block block = setRequiredBlockElement(object, "grown_fruit", blockString);
+        Block block = setRequiredBlockElement(object, "grown_fruit");
         if (block instanceof StemGrownBlock) {
           return new AttachedStemBlock((StemGrownBlock) block, deserializeProperties(object));
         } else {
@@ -131,12 +132,12 @@ public class BlockDeserializer {
         });
       }
       case "chorus_flower": {
-        String blockString = JSONUtils.getString(object, "grown_fruit");
-        Block block = setRequiredBlockElement(object, "grown_fruit", blockString);
+        String blockString = JSONUtils.getString(object, "chorus_plant");
+        Block block = setRequiredBlockElement(object, "chorus_plant");
         if (block instanceof ChorusPlantBlock) {
           return new ChorusFlowerBlock((ChorusPlantBlock) block, deserializeProperties(object));
         } else {
-          throw new JsonSyntaxException(blockString + " is not a stem grown block");
+          throw new JsonSyntaxException(blockString + " is not a chorus plant block");
         }
       }
       case "chorus_plant": {
@@ -156,14 +157,14 @@ public class BlockDeserializer {
       }
       case "concrete_powder": {
         return new ConcretePowderBlock(
-            setRequiredBlockElement(object, "solidified_block", JSONUtils.getString(object, "solidified_block")),
+            setRequiredBlockElement(object, "solidified_block"),
             deserializeProperties(object));
       }
       case "conduit": {
         return new ConduitBlock(deserializeProperties(object));
       }
       case "coral": {
-        return new CoralBlock(setRequiredBlockElement(object, "dead_block", JSONUtils.getString(object, "dead_block")),
+        return new CoralBlock(setRequiredBlockElement(object, "dead_block"),
             deserializeProperties(object));
       }
       case "coral_fan": {
@@ -171,17 +172,17 @@ public class BlockDeserializer {
       }
       case "coral_fin": {
         return new CoralFinBlock(
-            setRequiredBlockElement(object, "dead_block", JSONUtils.getString(object, "dead_block")),
+            setRequiredBlockElement(object, "dead_block"),
             deserializeProperties(object));
       }
       case "coral_plant": {
         return new CoralPlantBlock(
-            setRequiredBlockElement(object, "dead_block", JSONUtils.getString(object, "dead_block")),
+            setRequiredBlockElement(object, "dead_block"),
             deserializeProperties(object));
       }
       case "coral_wall_fan": {
         return new CoralWallFanBlock(
-            setRequiredBlockElement(object, "dead_block", JSONUtils.getString(object, "dead_block")),
+            setRequiredBlockElement(object, "dead_block"),
             deserializeProperties(object));
 
       }
@@ -270,7 +271,7 @@ public class BlockDeserializer {
       }
       case "flower_pot": {
         return new FlowerPotBlock(null, () -> {
-          return setRequiredBlockElement(object, "potted_block", JSONUtils.getString(object, "potted"));
+          return setRequiredBlockElement(object, "potted_block");
         }, deserializeProperties(object));
       }
       case "flowing_fluid": {
@@ -489,7 +490,7 @@ public class BlockDeserializer {
         return new ShulkerBoxBlock(color, deserializeProperties(object));
       }
       case "silverfish": {
-        return new SilverfishBlock(setRequiredBlockElement(object, "mimics", JSONUtils.getString(object, "mimics")),
+        return new SilverfishBlock(setRequiredBlockElement(object, "mimics"),
             deserializeProperties(object));
       }
       case "six_way": {
@@ -573,7 +574,7 @@ public class BlockDeserializer {
       }
       case "stairs": {
         return new StairsBlock(() -> {
-          return setRequiredBlockElement(object, "source_block", JSONUtils.getString(object, "source_block"))
+          return setRequiredBlockElement(object, "source_block")
               .getDefaultState();
         }, deserializeProperties(object));
       }
@@ -582,7 +583,7 @@ public class BlockDeserializer {
       }
       case "stem": {
         String blockString = JSONUtils.getString(object, "grown_fruit");
-        Block block = setRequiredBlockElement(object, "grown_fruit", blockString);
+        Block block = setRequiredBlockElement(object, "grown_fruit");
         if (block instanceof StemGrownBlock) {
           return new StemBlock((StemGrownBlock) block, deserializeProperties(object));
         } else {
@@ -639,7 +640,7 @@ public class BlockDeserializer {
       }
       case "trip_wire": {
         String blockString = JSONUtils.getString(object, "hook");
-        Block block = setRequiredBlockElement(object, "hook", blockString);
+        Block block = setRequiredBlockElement(object, "hook");
         if (block instanceof TripWireHookBlock) {
           return new TripWireBlock((TripWireHookBlock) block, deserializeProperties(object));
         } else {
@@ -755,6 +756,77 @@ public class BlockDeserializer {
     if (propertiesObj.has("blocks_movement")) {
       if (JSONUtils.getBoolean(propertiesObj, "blocks_movement") == false) {
         properties.doesNotBlockMovement();
+      }
+    }
+    if (propertiesObj.has("sounds")) {
+        JsonObject soundsObj = propertiesObj.get("sounds").getAsJsonObject();
+        properties.sound(new SoundType(JSONUtils.getFloat(soundsObj, "volume"), JSONUtils.getFloat(soundsObj, "pitch"), setRequiredSoundElement(soundsObj, "break"), setRequiredSoundElement(soundsObj, "step"), setRequiredSoundElement(soundsObj, "place"), setRequiredSoundElement(soundsObj, "hit"), setRequiredSoundElement(soundsObj, "fall")));
+    }
+    if (propertiesObj.has("light")) {
+      int lightLevel = JSONUtils.getInt(propertiesObj, "light");
+      properties.setLightLevel((light) -> {
+        return lightLevel;
+      });
+    }
+    if (propertiesObj.get("hardness_and_resistance").isJsonObject()) {
+      JsonObject hardnessResistanceObj = propertiesObj.get("hardness_and_resistance").getAsJsonObject();
+      properties.hardnessAndResistance(JSONUtils.getFloat(hardnessResistanceObj, "hardness"), JSONUtils.getFloat(hardnessResistanceObj, "resistance"));
+    } else {
+      properties.hardnessAndResistance(JSONUtils.getFloat(propertiesObj, "hardness_and_resistance"));
+    }
+    if (propertiesObj.has("requires_tool")) {
+      if (JSONUtils.getBoolean(propertiesObj, "requires_tool") == true) {
+        properties.setRequiresTool();
+      }
+    }
+    if (propertiesObj.has("ticks_randomly")) {
+      if (JSONUtils.getBoolean(propertiesObj, "ticks_randomly") == true) {
+        properties.tickRandomly();
+      }
+    }
+    if (propertiesObj.has("slipperiness")) {
+      properties.slipperiness(JSONUtils.getFloat(propertiesObj, "slipperiness"));
+    }
+    if (propertiesObj.has("speed_factor")) {
+      properties.speedFactor(JSONUtils.getFloat(propertiesObj, "speed_factor"));
+    }
+    if (propertiesObj.has("jump_factor")) {
+      properties.jumpFactor(JSONUtils.getFloat(propertiesObj, "jump_factor"));
+    }
+    if (propertiesObj.has("loot_from")) {
+      properties.lootFrom(setRequiredBlockElement(propertiesObj, "loot_from"));
+    }
+    if (propertiesObj.has("solid")) {
+      if (JSONUtils.getBoolean(propertiesObj, "solid") == false) {
+        properties.notSolid();
+      }
+    }
+    if (propertiesObj.has("air")) {
+      if (JSONUtils.getBoolean(propertiesObj, "air") == true) {
+        properties.setAir();
+      }
+    }
+    if (propertiesObj.has("harvest_level")) {
+      properties.harvestLevel(JSONUtils.getInt(propertiesObj, "harvest_level"));
+    }
+    if (propertiesObj.has("harvest_tool")) {
+      String toolType = JSONUtils.getString(propertiesObj, "harvest_tool");
+      switch (toolType) {
+        case "pickaxe": {
+          properties.harvestTool(ToolType.PICKAXE);
+        }
+        case "axe": {
+          properties.harvestTool(ToolType.AXE);
+        }
+        case "shovel": {
+          properties.harvestTool(ToolType.SHOVEL);
+        }
+        case "hoe": {
+          properties.harvestTool(ToolType.HOE);
+        }
+        default: {
+          throw new JsonSyntaxException("Unknown tool type '" + toolType + "'; only 'pickaxe', 'axe', 'shovel', or 'hoe' are accepted");
+        }
       }
     }
     return properties;
@@ -1072,11 +1144,21 @@ public class BlockDeserializer {
     }
   }
 
-  private static Block setRequiredBlockElement(JsonObject object, String element, String argument) {
+  private static Block setRequiredBlockElement(JsonObject object, String element) throws JsonSyntaxException {
+      String argument = JSONUtils.getString(object, element);
       ResourceLocation resourcelocation = new ResourceLocation(argument);
       Block block = RegistryObject.of(resourcelocation, ForgeRegistries.BLOCKS).orElseThrow(() -> {
-        return new JsonSyntaxException("Unknown block type '" + argument + "'");
+        return new JsonSyntaxException("Unknown block '" + argument + "'");
       });
       return block;
   }
+
+  private static SoundEvent setRequiredSoundElement(JsonObject object, String element) throws JsonSyntaxException {
+    String argument = JSONUtils.getString(object, element);
+    ResourceLocation resourcelocation = new ResourceLocation(argument);
+    SoundEvent sound = RegistryObject.of(resourcelocation, ForgeRegistries.SOUND_EVENTS).orElseThrow(() -> {
+      return new JsonSyntaxException("Unknown sound event '" + argument + "'");
+    });
+    return sound;
+}
 }
