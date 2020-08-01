@@ -36,7 +36,6 @@ public class Main {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientRegistries);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverStart);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverStart);
         MinecraftForge.EVENT_BUS.register(this);
     }
 
