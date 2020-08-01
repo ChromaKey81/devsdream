@@ -1,8 +1,9 @@
-package chromakey.devsdream.block;
+package chromakey.devsdream.deserialization;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
+import chromakey.devsdream.util.JSONHelper;
 import net.minecraft.block.*;
 import net.minecraft.block.AbstractBlock.Properties;
 import net.minecraft.block.PressurePlateBlock.Sensitivity;
@@ -11,18 +12,15 @@ import net.minecraft.block.material.MaterialColor;
 import net.minecraft.item.DyeColor;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
-import net.minecraft.potion.Effect;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraftforge.common.ToolType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class BlockDeserializer {
 
-  public static Block deserializeBlock(JsonObject object, String fileName) throws JsonSyntaxException {
+  public static Block deserializeBlock(JsonObject object) throws JsonSyntaxException {
     String type = JSONUtils.getString(object, "type");
     switch (type) {
       case "simple": {
@@ -36,7 +34,7 @@ public class BlockDeserializer {
       }
       case "attached_stem": {
         String blockString = JSONUtils.getString(object, "grown_fruit");
-        Block block = setRequiredBlockElement(object, "grown_fruit");
+        Block block = JSONHelper.setRequiredBlockElement(object, "grown_fruit");
         if (block instanceof StemGrownBlock) {
           return new AttachedStemBlock((StemGrownBlock) block, deserializeProperties(object));
         } else {
@@ -133,7 +131,7 @@ public class BlockDeserializer {
       }
       case "chorus_flower": {
         String blockString = JSONUtils.getString(object, "chorus_plant");
-        Block block = setRequiredBlockElement(object, "chorus_plant");
+        Block block = JSONHelper.setRequiredBlockElement(object, "chorus_plant");
         if (block instanceof ChorusPlantBlock) {
           return new ChorusFlowerBlock((ChorusPlantBlock) block, deserializeProperties(object));
         } else {
@@ -156,26 +154,26 @@ public class BlockDeserializer {
         return new ComposterBlock(deserializeProperties(object));
       }
       case "concrete_powder": {
-        return new ConcretePowderBlock(setRequiredBlockElement(object, "solidified_block"),
+        return new ConcretePowderBlock(JSONHelper.setRequiredBlockElement(object, "solidified_block"),
             deserializeProperties(object));
       }
       case "conduit": {
         return new ConduitBlock(deserializeProperties(object));
       }
       case "coral": {
-        return new CoralBlock(setRequiredBlockElement(object, "dead_block"), deserializeProperties(object));
+        return new CoralBlock(JSONHelper.setRequiredBlockElement(object, "dead_block"), deserializeProperties(object));
       }
       case "coral_fan": {
         return new CoralFanBlock(deserializeProperties(object));
       }
       case "coral_fin": {
-        return new CoralFinBlock(setRequiredBlockElement(object, "dead_block"), deserializeProperties(object));
+        return new CoralFinBlock(JSONHelper.setRequiredBlockElement(object, "dead_block"), deserializeProperties(object));
       }
       case "coral_plant": {
-        return new CoralPlantBlock(setRequiredBlockElement(object, "dead_block"), deserializeProperties(object));
+        return new CoralPlantBlock(JSONHelper.setRequiredBlockElement(object, "dead_block"), deserializeProperties(object));
       }
       case "coral_wall_fan": {
-        return new CoralWallFanBlock(setRequiredBlockElement(object, "dead_block"), deserializeProperties(object));
+        return new CoralWallFanBlock(JSONHelper.setRequiredBlockElement(object, "dead_block"), deserializeProperties(object));
 
       }
       case "crafting_table": {
@@ -254,16 +252,11 @@ public class BlockDeserializer {
         return new FletchingTableBlock(deserializeProperties(object));
       }
       case "flower": {
-        String effectString = JSONUtils.getString(object, "effect");
-        ResourceLocation resourcelocation = new ResourceLocation(effectString);
-        Effect effect = RegistryObject.of(resourcelocation, ForgeRegistries.POTIONS).orElseThrow(() -> {
-          return new JsonSyntaxException("Unknown effect '" + effectString + "'");
-        });
-        return new FlowerBlock(effect, JSONUtils.getInt(object, "duration"), deserializeProperties(object));
+        return new FlowerBlock(JSONHelper.setRequiredEffectElement(object, "effect"), JSONUtils.getInt(object, "duration"), deserializeProperties(object));
       }
       case "flower_pot": {
         return new FlowerPotBlock(null, () -> {
-          return setRequiredBlockElement(object, "potted_block");
+          return JSONHelper.setRequiredBlockElement(object, "potted_block");
         }, deserializeProperties(object));
       }
       case "flowing_fluid": {
@@ -482,7 +475,7 @@ public class BlockDeserializer {
         return new ShulkerBoxBlock(color, deserializeProperties(object));
       }
       case "silverfish": {
-        return new SilverfishBlock(setRequiredBlockElement(object, "mimics"), deserializeProperties(object));
+        return new SilverfishBlock(JSONHelper.setRequiredBlockElement(object, "mimics"), deserializeProperties(object));
       }
       case "six_way": {
         return new SixWayBlock(JSONUtils.getFloat(object, "apothem"), deserializeProperties(object));
@@ -565,7 +558,7 @@ public class BlockDeserializer {
       }
       case "stairs": {
         return new StairsBlock(() -> {
-          return setRequiredBlockElement(object, "source_block").getDefaultState();
+          return JSONHelper.setRequiredBlockElement(object, "source_block").getDefaultState();
         }, deserializeProperties(object));
       }
       case "standing_sign": {
@@ -573,7 +566,7 @@ public class BlockDeserializer {
       }
       case "stem": {
         String blockString = JSONUtils.getString(object, "grown_fruit");
-        Block block = setRequiredBlockElement(object, "grown_fruit");
+        Block block = JSONHelper.setRequiredBlockElement(object, "grown_fruit");
         if (block instanceof StemGrownBlock) {
           return new StemBlock((StemGrownBlock) block, deserializeProperties(object));
         } else {
@@ -630,7 +623,7 @@ public class BlockDeserializer {
       }
       case "trip_wire": {
         String blockString = JSONUtils.getString(object, "hook");
-        Block block = setRequiredBlockElement(object, "hook");
+        Block block = JSONHelper.setRequiredBlockElement(object, "hook");
         if (block instanceof TripWireHookBlock) {
           return new TripWireBlock((TripWireHookBlock) block, deserializeProperties(object));
         } else {
@@ -713,12 +706,7 @@ public class BlockDeserializer {
         return new WetSpongeBlock(deserializeProperties(object));
       }
       case "wither_rose": {
-        String effectString = JSONUtils.getString(object, "effect");
-        ResourceLocation resourcelocation = new ResourceLocation(effectString);
-        Effect effect = RegistryObject.of(resourcelocation, ForgeRegistries.POTIONS).orElseThrow(() -> {
-          return new JsonSyntaxException("Unknown effect '" + effectString + "'");
-        });
-        return new WitherRoseBlock(effect, deserializeProperties(object));
+        return new WitherRoseBlock(JSONHelper.setRequiredEffectElement(object, "effect"), deserializeProperties(object));
       }
       case "wither_skeleton_skull": {
         return new WitherSkeletonSkullBlock(deserializeProperties(object));
@@ -752,9 +740,9 @@ public class BlockDeserializer {
       if (propertiesObj.get("sounds").isJsonObject()) {
         JsonObject soundsObj = propertiesObj.get("sounds").getAsJsonObject();
         properties.sound(new SoundType(JSONUtils.getFloat(soundsObj, "volume"), JSONUtils.getFloat(soundsObj, "pitch"),
-            setRequiredSoundElement(soundsObj, "break"), setRequiredSoundElement(soundsObj, "step"),
-            setRequiredSoundElement(soundsObj, "place"), setRequiredSoundElement(soundsObj, "hit"),
-            setRequiredSoundElement(soundsObj, "fall")));
+            JSONHelper.setRequiredSoundElement(soundsObj, "break"), JSONHelper.setRequiredSoundElement(soundsObj, "step"),
+            JSONHelper.setRequiredSoundElement(soundsObj, "place"), JSONHelper.setRequiredSoundElement(soundsObj, "hit"),
+            JSONHelper.setRequiredSoundElement(soundsObj, "fall")));
       } else {
         properties.sound(deserializeSounds(propertiesObj));
       }
@@ -794,7 +782,7 @@ public class BlockDeserializer {
       properties.jumpFactor(JSONUtils.getFloat(propertiesObj, "jump_factor"));
     }
     if (propertiesObj.has("loot_from")) {
-      properties.lootFrom(setRequiredBlockElement(propertiesObj, "loot_from"));
+      properties.lootFrom(JSONHelper.setRequiredBlockElement(propertiesObj, "loot_from"));
     }
     if (propertiesObj.has("solid")) {
       if (JSONUtils.getBoolean(propertiesObj, "solid") == false) {
@@ -810,25 +798,7 @@ public class BlockDeserializer {
       properties.harvestLevel(JSONUtils.getInt(propertiesObj, "harvest_level"));
     }
     if (propertiesObj.has("harvest_tool")) {
-      String toolType = JSONUtils.getString(propertiesObj, "harvest_tool");
-      switch (toolType) {
-        case "pickaxe": {
-          properties.harvestTool(ToolType.PICKAXE);
-        }
-        case "axe": {
-          properties.harvestTool(ToolType.AXE);
-        }
-        case "shovel": {
-          properties.harvestTool(ToolType.SHOVEL);
-        }
-        case "hoe": {
-          properties.harvestTool(ToolType.HOE);
-        }
-        default: {
-          throw new JsonSyntaxException(
-              "Unknown tool type '" + toolType + "'; only 'pickaxe', 'axe', 'shovel', or 'hoe' are accepted");
-        }
-      }
+      properties.harvestTool(JSONHelper.deserializeToolType(propertiesObj, "harvest_tool"));
     }
     if (propertiesObj.has("variable_opacity")) {
       if (JSONUtils.getBoolean(propertiesObj, "transparent") == true) {
@@ -1298,23 +1268,5 @@ public class BlockDeserializer {
         throw new JsonSyntaxException("Unknown sound type '" + sounds + "'");
       }
     }
-  }
-
-  private static Block setRequiredBlockElement(JsonObject object, String element) throws JsonSyntaxException {
-    String argument = JSONUtils.getString(object, element);
-    ResourceLocation resourcelocation = new ResourceLocation(argument);
-    Block block = RegistryObject.of(resourcelocation, ForgeRegistries.BLOCKS).orElseThrow(() -> {
-      return new JsonSyntaxException("Unknown block '" + argument + "'");
-    });
-    return block;
-  }
-
-  private static SoundEvent setRequiredSoundElement(JsonObject object, String element) throws JsonSyntaxException {
-    String argument = JSONUtils.getString(object, element);
-    ResourceLocation resourcelocation = new ResourceLocation(argument);
-    SoundEvent sound = RegistryObject.of(resourcelocation, ForgeRegistries.SOUND_EVENTS).orElseThrow(() -> {
-      return new JsonSyntaxException("Unknown sound event '" + argument + "'");
-    });
-    return sound;
   }
 }

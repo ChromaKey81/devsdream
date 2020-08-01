@@ -1,6 +1,7 @@
 package chromakey.devsdream;
 
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -17,6 +18,7 @@ import chromakey.devsdream.command.impl.FeedCommand;
 import chromakey.devsdream.command.impl.HealthCommand;
 import chromakey.devsdream.command.impl.IgniteCommand;
 import chromakey.devsdream.command.impl.RandomNumberCommand;
+import chromakey.devsdream.management.BlockManager;
 import chromakey.devsdream.command.impl.DamageItemCommand;
 
 import org.apache.logging.log4j.LogManager;
@@ -62,5 +64,10 @@ public class Main {
       IgniteCommand.register(event.getDispatcher());
       DamageItemCommand.register(event.getDispatcher());
       RandomNumberCommand.register(event.getDispatcher());
+    }
+
+    @SubscribeEvent
+    public void resourceReload(AddReloadListenerEvent event) {
+      event.addListener(new BlockManager());
     }
 }

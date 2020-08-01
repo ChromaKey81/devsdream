@@ -18,4 +18,5 @@ public class BlockCommandSourceHelper {
     public static Vector3d getVectorFromBlockPos(BlockPos pos) {
         return new Vector3d(pos.getX(), pos.getY(), pos.getZ());
     }
+
 }
