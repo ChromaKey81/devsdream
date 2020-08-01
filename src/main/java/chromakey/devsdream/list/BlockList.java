@@ -12,6 +12,8 @@ import net.minecraft.block.Block;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.registries.ForgeRegistries;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -69,6 +71,10 @@ public class BlockList {
          }
       }
 
+      blocks.forEach((resourcelocation, block) -> {
+         block.setRegistryName(resourcelocation);
+         ForgeRegistries.BLOCKS.register(block);
+      });
       LOGGER.info("Loaded {} blocks", (int)this.blocks.size());
    }
 

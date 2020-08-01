@@ -1,13 +1,11 @@
 package chromakey.devsdream;
 
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import chromakey.devsdream.command.impl.AdvancedEffectCommand;
@@ -35,7 +33,6 @@ public class Main {
         instance = this;
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientRegistries);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverStart);
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -45,10 +42,6 @@ public class Main {
 
     private void clientRegistries(final FMLClientSetupEvent event) {
       logger.info("Successfully set up clientRegistries");
-    }
-
-    private void serverStart(FMLServerStartingEvent event) {
-      logger.info("Started the server");
     }
 
     @SubscribeEvent
@@ -66,7 +59,7 @@ public class Main {
     }
 
     @SubscribeEvent
-    public void resourceReload(AddReloadListenerEvent event) {
+    public void resourceReload(AddDevsDreamReloadListenerEvent event) {
       event.addListener(new BlockManager());
     }
 }
