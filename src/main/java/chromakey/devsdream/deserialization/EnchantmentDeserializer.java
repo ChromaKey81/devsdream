@@ -109,7 +109,7 @@ public class EnchantmentDeserializer {
             slots[i] = JSONHelper.setRequiredSlotElement(slotsJson.get(i));
         }
 
-        return new CustomEnchantment(rarity, type, slots);
+        return new CustomEnchantment(rarity, type, slots, false, 0, 0, 0, 0, null, false, false);
 
     }
 }

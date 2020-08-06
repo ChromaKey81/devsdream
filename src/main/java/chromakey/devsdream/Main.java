@@ -1,7 +1,6 @@
 package chromakey.devsdream;
 
 import net.minecraft.block.Block;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
@@ -22,13 +21,11 @@ import chromakey.devsdream.command.impl.RandomNumberCommand;
 import chromakey.devsdream.util.JSONHelper;
 import chromakey.devsdream.command.impl.DamageItemCommand;
 import chromakey.devsdream.deserialization.BlockDeserializer;
-import chromakey.devsdream.deserialization.EnchantmentDeserializer;
 
 import java.io.File;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
 import org.apache.commons.io.FilenameUtils;
@@ -94,31 +91,6 @@ public class Main {
         event.getRegistry().register(block);
       });
       logger.info("Registered " + blockList.size() + " blocks");
-    }
-
-    @SubscribeEvent
-    public static void registerEnchantments(final RegistryEvent.Register<Enchantment> event) {
-      List<Enchantment> enchantmentList = Lists.newArrayList();
-      try {
-        final File[] REGISTRY = new File("C:/Users/willi/AppData/Roaming/.minecraft/devsdream-registry").listFiles();
-        for (final File namespace : REGISTRY) {
-          for (final File enchantment : new File(namespace.getPath() + "/enchantments").listFiles()) {
-            try {
-              Enchantment newEnchantment = EnchantmentDeserializer.deserializeEnchantment(JSONHelper.getObjectFromFile(enchantment, "enchantment")).setRegistryName(namespace.getName(), FilenameUtils.getBaseName(enchantment.getName()));
-              enchantmentList.add(newEnchantment);
-            } catch (JsonSyntaxException e) {
-              logger.catching(e);
-            }
-          }
-        }
-      } catch (NullPointerException e) {
-      } catch (JsonSyntaxException e) {
-        logger.catching(e);
-      }
-      enchantmentList.iterator().forEachRemaining((enchantment) -> {
-        event.getRegistry().register(enchantment);
-      });
-      logger.info("Registered " + enchantmentList.size() + " enchantments");
     }
   }
 }

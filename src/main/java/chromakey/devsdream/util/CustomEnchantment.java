@@ -2,32 +2,25 @@ package chromakey.devsdream.util;
 
 import java.util.List;
 
-import com.google.common.collect.Lists;
-
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.util.DamageSource;
 
 public class CustomEnchantment extends Enchantment {
 
-    private final boolean isCurse;
     private final int minLevel;
     private final int maxLevel;
     private final int minEnchantability;
     private final int maxEnchantability;
-    private List<Enchantment> incompatibleWith = Lists.newArrayList();
     private final boolean isAllowedOnBooks;
     private boolean enchantabilityMultiply = false;
 
     public CustomEnchantment(Rarity rarityIn, EnchantmentType typeIn, EquipmentSlotType[] slots, boolean curse, int minLevel, int maxLevel, int minEnchantability, int maxEnchantability, List<Enchantment> incompatibleWith, boolean isAllowedOnBooks, boolean enchantabilityMultiply) {
         super(rarityIn, typeIn, slots);
-        this.isCurse = curse;
         this.minLevel = minLevel;
         this.maxLevel = maxLevel;
         this.minEnchantability = minEnchantability;
         this.maxEnchantability = maxEnchantability;
-        this.incompatibleWith = incompatibleWith;
         this.isAllowedOnBooks = isAllowedOnBooks;
         this.enchantabilityMultiply = enchantabilityMultiply;
     }
