@@ -1,53 +1,66 @@
--------------------------------------------
-Source installation information for modders
--------------------------------------------
-This code follows the Minecraft Forge installation methodology. It will apply
-some small patches to the vanilla MCP source code, giving you and it access 
-to some of the data and functions you need to build a successful mod.
+This mod adds new tools for datapack developers to take advantage of.
 
-Note also that the patches are built against "unrenamed" MCP source code (aka
-srgnames) - this means that you will not be able to read them directly against
-normal code.
+=================================================
+Commands:
 
-Source pack installation information:
+/advancedeffect give <targets> <effect> [<amplifier>] [<seconds>] [<hideParticles>] [<hideIcon>] [<isAmbient>]
 
-Standalone source installation
-==============================
+/advancedeffect clear [<targets>] [<effect>]
 
-See the Forge Documentation online for more detailed instructions:
-http://mcforge.readthedocs.io/en/latest/gettingstarted/
+This command is an extension of the classic effect command. It adds two additional boolean parameters: hideIcon and isAmbient.
+hideIcon determines whether the effect’s icon will be displayed in the upper-right hand corner of the screen. This defaults to false unless hideParticles is set to true.
+isAmbient determines whether the effect’s particles will be transparent and its icon be outlined in blue, in the same style as passive beacon effects.
 
-Step 1: Open your command-line and browse to the folder where you extracted the zip file.
 
-Step 2: You're left with a choice.
-If you prefer to use Eclipse:
-1. Run the following command: "gradlew genEclipseRuns" (./gradlew genEclipseRuns if you are on Mac/Linux)
-2. Open Eclipse, Import > Existing Gradle Project > Select Folder 
-   or run "gradlew eclipse" to generate the project.
-(Current Issue)
-4. Open Project > Run/Debug Settings > Edit runClient and runServer > Environment
-5. Edit MOD_CLASSES to show [modid]%%[Path]; 2 times rather then the generated 4.
+air <targets> (add|set) <value>
 
-If you prefer to use IntelliJ:
-1. Open IDEA, and import project.
-2. Select your build.gradle file and have it import.
-3. Run the following command: "gradlew genIntellijRuns" (./gradlew genIntellijRuns if you are on Mac/Linux)
-4. Refresh the Gradle Project in IDEA if required.
+This can be used to set the amount of air the targets have or add more. When using add, the value can be negative, allowing you to subtract air as well.
+If the air you set the target to have is higher than their maximum air, their air will be filled to the maximum.
+Value must be an integer.
 
-If at any point you are missing libraries in your IDE, or you've run into problems you can run "gradlew --refresh-dependencies" to refresh the local cache. "gradlew clean" to reset everything {this does not affect your code} and then start the processs again.
 
-Should it still not work, 
-Refer to #ForgeGradle on EsperNet for more information about the gradle environment.
-or the Forge Project Discord discord.gg/UvedJ9m
+/damage <targets> <amount> <sourceString> <sourceEntity> [<isFire>] [<pierceArmor>] [<difficultyScaled>] [<isMagic>] [<damageCreative>] [<isExplosion>] [<isProjectile>] [<absolute>] [<thorns>]
 
-Forge source installation
-=========================
-MinecraftForge ships with this code and installs it as part of the forge
-installation process, no further action is required on your part.
+This command is a versatile method of dealing damage to targets. The message displayed on death screen and in the chat is a translated key in the format death.attack.<sourceString> and passes to the key’s variables:
+	-The display name of the victim
+	-The display name of <sourceEntity>
+	-The display name of the item in the mainhand slot of <sourceEntity>
+in that order.
+So, if you wanted to deal 5.2 points of explosion damage to John from Kevin using a Boom Boom Stick, you would run damage John 5.2 explosion.player.item Kevin false false true false false true
+The death message would consequently be “John was blown up by Kevin using Boom Boom Stick,” as the vanilla translation key death.attack.explosion.player.item translates to %1$s was blown up by %2$s using %3$s.
+Of course, you can add your own translation keys to a language file allowing for highly customized death messages.
+The damage amount must be a float no less than zero.
 
-LexManos' Install Video
-=======================
-https://www.youtube.com/watch?v=8VEdtQLuLO0&feature=youtu.be
 
-For more details update more often refer to the Forge Forums:
-http://www.minecraftforge.net/forum/index.php/topic,14048.0.html
+/damageitem <targets> <amount> (chest|feet|head|legs|mainhand|offhand)
+
+Adds the given amount to the current value at the Damage path of the item in the specified equipment slot.
+If the item does not have a Damage tag, one will be created.
+
+
+/exhaust <players> <amount>
+
+Exhausts the target players by a given amount. Pretty simple.
+Will soon be changed to exhaustion <players> (add|set) <amount>
+Amount must be a float no less than zero.
+
+
+/feed <players> <foodLevel> [<saturation>]
+
+Feeds the players by the given food level and saturates them by the given saturation.
+Accepts values less than zero.
+Food level must be an integer, while saturation must be a float.
+Saturation defaults to zero when not set.
+
+
+/health (add|set) <targets> <amount>
+
+Sets the health of the targets or adds to their current amount.
+Amount must be a float no less than zero.
+
+
+/ignite <targets> <seconds>
+
+Sets the targets on fire for a given amount of time.
+Seconds must be an integer.
+=================================================
