@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
@@ -67,8 +68,8 @@ public class JSONHelper {
         }
     }
 
-    public static EquipmentSlotType setRequiredSlotElement(JsonObject object, String element) throws JsonSyntaxException {
-        String argument = JSONUtils.getString(object, element);
+    public static EquipmentSlotType setRequiredSlotElement(JsonElement element) throws JsonSyntaxException {
+        String argument = JSONUtils.getString(element, "equipment slot");
         switch (argument) {
             case "feet": {
                 return EquipmentSlotType.FEET;
