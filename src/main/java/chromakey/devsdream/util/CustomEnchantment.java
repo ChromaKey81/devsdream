@@ -61,8 +61,4 @@ public class CustomEnchantment extends Enchantment {
     public boolean isAllowedOnBooks() {
         return this.isAllowedOnBooks;
     }
-
-    public final boolean isCompatibleWith(Enchantment enchantmentIn) {
-        return 
-    }  
 }
