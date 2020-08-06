@@ -68,7 +68,7 @@ public class Main {
     RandomNumberCommand.register(event.getDispatcher());
   }
 
-  @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
+  @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
   public static class RegistryEvents {
     @SubscribeEvent
     public static void registerBlocks(final RegistryEvent.Register<Block> event) {
@@ -78,14 +78,15 @@ public class Main {
         for (final File namespace : REGISTRY) {
           for (final File block : new File(namespace.getPath() + "/blocks").listFiles()) {
             try {
-              Block newBlock = BlockDeserializer.deserializeBlock(JSONHelper.getObjectFromFile(block, "block")).setRegistryName(namespace.getName(), FilenameUtils.getBaseName(block.getName()));
+              Block newBlock = BlockDeserializer.deserializeBlock(JSONHelper.getObjectFromFile(block, "block"))
+                  .setRegistryName(namespace.getName(), FilenameUtils.getBaseName(block.getName()));
               blockList.add(newBlock);
             } catch (JsonSyntaxException e) {
               logger.catching(e);
             }
           }
         }
-      } catch (NullPointerException e) { 
+      } catch (NullPointerException e) {
       }
       blockList.iterator().forEachRemaining((block) -> {
         event.getRegistry().register(block);

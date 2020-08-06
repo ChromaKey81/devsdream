@@ -10,9 +10,10 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.server.ServerWorld;
 
 public class BlockCommandSourceHelper {
-    
+
     public static CommandSource blockCommandSource(ServerWorld world, BlockPos pos) {
-        return new CommandSource(ICommandSource.DUMMY, getVectorFromBlockPos(pos), Vector2f.ZERO, world, 4, "Server", new StringTextComponent("Server"), world.getServer(), (Entity)null);
+        return new CommandSource(ICommandSource.DUMMY, getVectorFromBlockPos(pos), Vector2f.ZERO, world, 4, "Server",
+                new StringTextComponent("Server"), world.getServer(), (Entity) null);
     }
 
     public static Vector3d getVectorFromBlockPos(BlockPos pos) {

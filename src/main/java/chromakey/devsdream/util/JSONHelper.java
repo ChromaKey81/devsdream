@@ -38,7 +38,7 @@ public class JSONHelper {
         });
         return effect;
     }
-    
+
     public static SoundEvent setRequiredSoundElement(JsonObject object, String element) throws JsonSyntaxException {
         String argument = JSONUtils.getString(object, element);
         ResourceLocation resourcelocation = new ResourceLocation(argument);
@@ -98,22 +98,22 @@ public class JSONHelper {
     public static ToolType deserializeToolType(JsonObject object, String element) throws JsonSyntaxException {
         String toolType = JSONUtils.getString(object, element);
         switch (toolType) {
-          case "pickaxe": {
-            return ToolType.PICKAXE;
-          }
-          case "axe": {
-            return ToolType.AXE;
-          }
-          case "shovel": {
-            return ToolType.SHOVEL;
-          }
-          case "hoe": {
-            return ToolType.HOE;
-          }
-          default: {
-            throw new JsonSyntaxException(
-                "Unknown tool type '" + toolType + "'; only 'pickaxe', 'axe', 'shovel', or 'hoe' are accepted");
-          }
+            case "pickaxe": {
+                return ToolType.PICKAXE;
+            }
+            case "axe": {
+                return ToolType.AXE;
+            }
+            case "shovel": {
+                return ToolType.SHOVEL;
+            }
+            case "hoe": {
+                return ToolType.HOE;
+            }
+            default: {
+                throw new JsonSyntaxException(
+                        "Unknown tool type '" + toolType + "'; only 'pickaxe', 'axe', 'shovel', or 'hoe' are accepted");
+            }
         }
     }
 }

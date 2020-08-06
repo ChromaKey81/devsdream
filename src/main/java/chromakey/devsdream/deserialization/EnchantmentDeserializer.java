@@ -15,8 +15,7 @@ import net.minecraft.util.JSONUtils;
 public class EnchantmentDeserializer {
 
     public static Enchantment deserializeEnchantment(JsonObject object) throws JsonSyntaxException {
-        
-        
+
         String rarityJson = JSONUtils.getString(object, "rarity");
         String typeJson = JSONUtils.getString(object, "type");
         JsonArray slotsJson = JSONUtils.getJsonArray(object, "slots");

@@ -167,14 +167,16 @@ public class BlockDeserializer {
         return new CoralFanBlock(deserializeProperties(object));
       }
       case "coral_fin": {
-        return new CoralFinBlock(JSONHelper.setRequiredBlockElement(object, "dead_block"), deserializeProperties(object));
+        return new CoralFinBlock(JSONHelper.setRequiredBlockElement(object, "dead_block"),
+            deserializeProperties(object));
       }
       case "coral_plant": {
-        return new CoralPlantBlock(JSONHelper.setRequiredBlockElement(object, "dead_block"), deserializeProperties(object));
+        return new CoralPlantBlock(JSONHelper.setRequiredBlockElement(object, "dead_block"),
+            deserializeProperties(object));
       }
       case "coral_wall_fan": {
-        return new CoralWallFanBlock(JSONHelper.setRequiredBlockElement(object, "dead_block"), deserializeProperties(object));
-
+        return new CoralWallFanBlock(JSONHelper.setRequiredBlockElement(object, "dead_block"),
+            deserializeProperties(object));
       }
       case "crafting_table": {
         return new CraftingTableBlock(deserializeProperties(object));
@@ -252,7 +254,8 @@ public class BlockDeserializer {
         return new FletchingTableBlock(deserializeProperties(object));
       }
       case "flower": {
-        return new FlowerBlock(JSONHelper.setRequiredEffectElement(object, "effect"), JSONUtils.getInt(object, "duration"), deserializeProperties(object));
+        return new FlowerBlock(JSONHelper.setRequiredEffectElement(object, "effect"),
+            JSONUtils.getInt(object, "duration"), deserializeProperties(object));
       }
       case "flower_pot": {
         return new FlowerPotBlock(null, () -> {
@@ -706,7 +709,8 @@ public class BlockDeserializer {
         return new WetSpongeBlock(deserializeProperties(object));
       }
       case "wither_rose": {
-        return new WitherRoseBlock(JSONHelper.setRequiredEffectElement(object, "effect"), deserializeProperties(object));
+        return new WitherRoseBlock(JSONHelper.setRequiredEffectElement(object, "effect"),
+            deserializeProperties(object));
       }
       case "wither_skeleton_skull": {
         return new WitherSkeletonSkullBlock(deserializeProperties(object));
@@ -740,8 +744,10 @@ public class BlockDeserializer {
       if (propertiesObj.get("sounds").isJsonObject()) {
         JsonObject soundsObj = propertiesObj.get("sounds").getAsJsonObject();
         properties.sound(new SoundType(JSONUtils.getFloat(soundsObj, "volume"), JSONUtils.getFloat(soundsObj, "pitch"),
-            JSONHelper.setRequiredSoundElement(soundsObj, "break"), JSONHelper.setRequiredSoundElement(soundsObj, "step"),
-            JSONHelper.setRequiredSoundElement(soundsObj, "place"), JSONHelper.setRequiredSoundElement(soundsObj, "hit"),
+            JSONHelper.setRequiredSoundElement(soundsObj, "break"),
+            JSONHelper.setRequiredSoundElement(soundsObj, "step"),
+            JSONHelper.setRequiredSoundElement(soundsObj, "place"),
+            JSONHelper.setRequiredSoundElement(soundsObj, "hit"),
             JSONHelper.setRequiredSoundElement(soundsObj, "fall")));
       } else {
         properties.sound(deserializeSounds(propertiesObj));

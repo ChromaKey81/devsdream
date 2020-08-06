@@ -16,7 +16,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.text.TranslationTextComponent;
 
 public class IgniteCommand {
-   private static SimpleCommandExceptionType IGNITE_FAILED_EXCEPTION = new SimpleCommandExceptionType(new TranslationTextComponent("commands.devsdream.ignite.failed"));
+   private static SimpleCommandExceptionType IGNITE_FAILED_EXCEPTION = new SimpleCommandExceptionType(
+         new TranslationTextComponent("commands.devsdream.ignite.failed"));
 
    public static void register(CommandDispatcher<CommandSource> dispatcher) {
       dispatcher.register(Commands.literal("ignite").requires((user) -> {
@@ -28,24 +29,28 @@ public class IgniteCommand {
             }))));
    }
 
-   private static int burnEntity(CommandSource source, Collection<? extends Entity> targets, int burnTime) throws CommandSyntaxException {
-        List<Entity> list = Lists.newArrayListWithCapacity(targets.size());
-  
-        for(Entity entity : targets) {
-           ((Entity)entity).setFire(burnTime);
-           list.add(entity);
-        }
-  
-        if (list.isEmpty()) {
-           throw IGNITE_FAILED_EXCEPTION.create();
-        } else {
-           if (list.size() == 1) {
-              source.sendFeedback(new TranslationTextComponent("commands.devsdream.ignite.success.single", list.iterator().next().getDisplayName(), burnTime), true);
-           } else {
-              source.sendFeedback(new TranslationTextComponent("commands.devsdream.ignite.success.multiple", list.size(), burnTime), true);
-           }
-  
-           return (int)burnTime;
-        }
-    }
+   private static int burnEntity(CommandSource source, Collection<? extends Entity> targets, int burnTime)
+         throws CommandSyntaxException {
+      List<Entity> list = Lists.newArrayListWithCapacity(targets.size());
+
+      for (Entity entity : targets) {
+         ((Entity) entity).setFire(burnTime);
+         list.add(entity);
+      }
+
+      if (list.isEmpty()) {
+         throw IGNITE_FAILED_EXCEPTION.create();
+      } else {
+         if (list.size() == 1) {
+            source.sendFeedback(new TranslationTextComponent("commands.devsdream.ignite.success.single",
+                  list.iterator().next().getDisplayName(), burnTime), true);
+         } else {
+            source.sendFeedback(
+                  new TranslationTextComponent("commands.devsdream.ignite.success.multiple", list.size(), burnTime),
+                  true);
+         }
+
+         return (int) burnTime;
+      }
+   }
 }

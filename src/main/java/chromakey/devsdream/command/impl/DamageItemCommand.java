@@ -18,45 +18,58 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TranslationTextComponent;
 
 public class DamageItemCommand {
-    private static final SimpleCommandExceptionType DAMAGEITEM_FAILED_EXCEPTION = new SimpleCommandExceptionType(new TranslationTextComponent("commands.devsdream.damageitem.failed"));
+    private static final SimpleCommandExceptionType DAMAGEITEM_FAILED_EXCEPTION = new SimpleCommandExceptionType(
+            new TranslationTextComponent("commands.devsdream.damageitem.failed"));
 
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
         dispatcher.register(Commands.literal("damageitem").requires((user) -> {
             return user.hasPermissionLevel(2);
-        }).then(Commands.argument("targets", EntityArgument.players()).then(Commands.argument("amount", IntegerArgumentType.integer()).then(Commands.literal("mainhand").executes((damage) -> {
-            return damageItem(damage.getSource(), EntityArgument.getPlayers(damage, "targets"), EquipmentSlotType.MAINHAND, IntegerArgumentType.getInteger(damage, "amount"));
-        })).then(Commands.literal("offhand").executes((damage) -> {
-            return damageItem(damage.getSource(), EntityArgument.getPlayers(damage, "targets"), EquipmentSlotType.OFFHAND, IntegerArgumentType.getInteger(damage, "amount"));
-        })).then(Commands.literal("head").executes((damage) -> {
-            return damageItem(damage.getSource(), EntityArgument.getPlayers(damage, "targets"), EquipmentSlotType.HEAD, IntegerArgumentType.getInteger(damage, "amount"));
-        })).then(Commands.literal("chest").executes((damage) -> {
-            return damageItem(damage.getSource(), EntityArgument.getPlayers(damage, "targets"), EquipmentSlotType.CHEST, IntegerArgumentType.getInteger(damage, "amount"));
-        })).then(Commands.literal("legs").executes((damage) -> {
-            return damageItem(damage.getSource(), EntityArgument.getPlayers(damage, "targets"), EquipmentSlotType.LEGS, IntegerArgumentType.getInteger(damage, "amount"));
-        })).then(Commands.literal("feet").executes((damage) -> {
-            return damageItem(damage.getSource(), EntityArgument.getPlayers(damage, "targets"), EquipmentSlotType.FEET, IntegerArgumentType.getInteger(damage, "amount"));
-        })))));
+        }).then(Commands.argument("targets", EntityArgument.players())
+                .then(Commands.argument("amount", IntegerArgumentType.integer())
+                        .then(Commands.literal("mainhand").executes((damage) -> {
+                            return damageItem(damage.getSource(), EntityArgument.getPlayers(damage, "targets"),
+                                    EquipmentSlotType.MAINHAND, IntegerArgumentType.getInteger(damage, "amount"));
+                        })).then(Commands.literal("offhand").executes((damage) -> {
+                            return damageItem(damage.getSource(), EntityArgument.getPlayers(damage, "targets"),
+                                    EquipmentSlotType.OFFHAND, IntegerArgumentType.getInteger(damage, "amount"));
+                        })).then(Commands.literal("head").executes((damage) -> {
+                            return damageItem(damage.getSource(), EntityArgument.getPlayers(damage, "targets"),
+                                    EquipmentSlotType.HEAD, IntegerArgumentType.getInteger(damage, "amount"));
+                        })).then(Commands.literal("chest").executes((damage) -> {
+                            return damageItem(damage.getSource(), EntityArgument.getPlayers(damage, "targets"),
+                                    EquipmentSlotType.CHEST, IntegerArgumentType.getInteger(damage, "amount"));
+                        })).then(Commands.literal("legs").executes((damage) -> {
+                            return damageItem(damage.getSource(), EntityArgument.getPlayers(damage, "targets"),
+                                    EquipmentSlotType.LEGS, IntegerArgumentType.getInteger(damage, "amount"));
+                        })).then(Commands.literal("feet").executes((damage) -> {
+                            return damageItem(damage.getSource(), EntityArgument.getPlayers(damage, "targets"),
+                                    EquipmentSlotType.FEET, IntegerArgumentType.getInteger(damage, "amount"));
+                        })))));
     }
 
-    private static int damageItem(CommandSource source, Collection<? extends ServerPlayerEntity> targets, EquipmentSlotType slot, int amount) throws CommandSyntaxException {
+    private static int damageItem(CommandSource source, Collection<? extends ServerPlayerEntity> targets,
+            EquipmentSlotType slot, int amount) throws CommandSyntaxException {
         List<ServerPlayerEntity> list = Lists.newArrayListWithCapacity(targets.size());
-  
-        for(ServerPlayerEntity player : targets) {
+
+        for (ServerPlayerEntity player : targets) {
             ItemStack targetItem = player.getItemStackFromSlot(slot);
-                targetItem.setDamage(targetItem.getDamage() + amount);
-                list.add(player);
+            targetItem.setDamage(targetItem.getDamage() + amount);
+            list.add(player);
         }
-  
+
         if (list.isEmpty()) {
-           throw DAMAGEITEM_FAILED_EXCEPTION.create();
+            throw DAMAGEITEM_FAILED_EXCEPTION.create();
         } else {
-           if (list.size() == 1) {
-              source.sendFeedback(new TranslationTextComponent("commands.devsdream.damageitem.success.single", list.iterator().next().getDisplayName(), list.iterator().next().getItemStackFromSlot(slot).getDisplayName(), amount), true);
-           } else {
-              source.sendFeedback(new TranslationTextComponent("commands.devsdream.damageitem.success.multiple", list.size(), amount), true);
-           }
-  
-           return list.size();
+            if (list.size() == 1) {
+                source.sendFeedback(new TranslationTextComponent("commands.devsdream.damageitem.success.single",
+                        list.iterator().next().getDisplayName(),
+                        list.iterator().next().getItemStackFromSlot(slot).getDisplayName(), amount), true);
+            } else {
+                source.sendFeedback(new TranslationTextComponent("commands.devsdream.damageitem.success.multiple",
+                        list.size(), amount), true);
+            }
+
+            return list.size();
         }
     }
 }

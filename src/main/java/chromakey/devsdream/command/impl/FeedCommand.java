@@ -23,33 +23,41 @@ public class FeedCommand {
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
         dispatcher.register(Commands.literal("feed").requires((user) -> {
             return user.hasPermissionLevel(2);
-        }).then(Commands.argument("targets", EntityArgument.players()).then(Commands.argument("foodLevel", IntegerArgumentType.integer()).executes((feed) -> {
-            return feedPlayer(feed.getSource(), EntityArgument.getPlayers(feed, "targets"), IntegerArgumentType.getInteger(feed, "foodLevel"), 0);
-        }).then(Commands.argument("saturation", FloatArgumentType.floatArg()).executes((feedWithSaturation) -> {
-            return feedPlayer(feedWithSaturation.getSource(), EntityArgument.getPlayers(feedWithSaturation, "targets"), IntegerArgumentType.getInteger(feedWithSaturation, "foodLevel"), FloatArgumentType.getFloat(feedWithSaturation, "saturation"));
-        })))));
+        }).then(Commands.argument("targets", EntityArgument.players())
+                .then(Commands.argument("foodLevel", IntegerArgumentType.integer()).executes((feed) -> {
+                    return feedPlayer(feed.getSource(), EntityArgument.getPlayers(feed, "targets"),
+                            IntegerArgumentType.getInteger(feed, "foodLevel"), 0);
+                }).then(Commands.argument("saturation", FloatArgumentType.floatArg()).executes((feedWithSaturation) -> {
+                    return feedPlayer(feedWithSaturation.getSource(),
+                            EntityArgument.getPlayers(feedWithSaturation, "targets"),
+                            IntegerArgumentType.getInteger(feedWithSaturation, "foodLevel"),
+                            FloatArgumentType.getFloat(feedWithSaturation, "saturation"));
+                })))));
     }
 
-    private static int feedPlayer(CommandSource source, Collection<? extends PlayerEntity> targets, int foodLevel, float saturation) throws CommandSyntaxException {
+    private static int feedPlayer(CommandSource source, Collection<? extends PlayerEntity> targets, int foodLevel,
+            float saturation) throws CommandSyntaxException {
         List<PlayerEntity> list = Lists.newArrayListWithCapacity(targets.size());
-        
+
         for (PlayerEntity player : targets) {
             if (player instanceof PlayerEntity) {
-                ((PlayerEntity)player).getFoodStats().addStats(foodLevel, saturation);
+                ((PlayerEntity) player).getFoodStats().addStats(foodLevel, saturation);
                 list.add(player);
             }
         }
 
         if (list.isEmpty()) {
             throw FEED_FAILED_EXCEPTION.create();
-         } else {
+        } else {
             if (list.size() == 1) {
-               source.sendFeedback(new TranslationTextComponent("commands.devsdream.feed.success.single", list.iterator().next().getDisplayName(), foodLevel, saturation), true);
+                source.sendFeedback(new TranslationTextComponent("commands.devsdream.feed.success.single",
+                        list.iterator().next().getDisplayName(), foodLevel, saturation), true);
             } else {
-               source.sendFeedback(new TranslationTextComponent("commands.devsdream.feed.success.multiple", list.size(), foodLevel, saturation), true);
+                source.sendFeedback(new TranslationTextComponent("commands.devsdream.feed.success.multiple",
+                        list.size(), foodLevel, saturation), true);
             }
-   
+
             return list.size();
-         }
+        }
     }
 }

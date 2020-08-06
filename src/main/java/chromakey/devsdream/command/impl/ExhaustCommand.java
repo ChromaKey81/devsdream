@@ -22,32 +22,37 @@ public class ExhaustCommand {
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
         dispatcher.register(Commands.literal("exhaust").requires((user) -> {
             return user.hasPermissionLevel(2);
-        }).then(Commands.argument("targets", EntityArgument.players()).then(Commands.argument("amount", FloatArgumentType.floatArg(0)).executes((exhaust) -> {
-            return exhaustPlayer(exhaust.getSource(), EntityArgument.getPlayers(exhaust, "targets"), FloatArgumentType.getFloat(exhaust, "amount"));
-        }))));
+        }).then(Commands.argument("targets", EntityArgument.players())
+                .then(Commands.argument("amount", FloatArgumentType.floatArg(0)).executes((exhaust) -> {
+                    return exhaustPlayer(exhaust.getSource(), EntityArgument.getPlayers(exhaust, "targets"),
+                            FloatArgumentType.getFloat(exhaust, "amount"));
+                }))));
     }
 
-    private static int exhaustPlayer(CommandSource source, Collection<? extends PlayerEntity> targets, float amount) throws CommandSyntaxException {
-        
+    private static int exhaustPlayer(CommandSource source, Collection<? extends PlayerEntity> targets, float amount)
+            throws CommandSyntaxException {
+
         List<PlayerEntity> list = Lists.newArrayListWithCapacity(targets.size());
 
         for (PlayerEntity entity : targets) {
             if (entity instanceof PlayerEntity) {
-                ((PlayerEntity)entity).getFoodStats().addExhaustion(amount);
+                ((PlayerEntity) entity).getFoodStats().addExhaustion(amount);
                 list.add(entity);
             }
         }
 
         if (list.isEmpty()) {
             throw EXHAUST_FAILED_EXCEPTION.create();
-         } else {
+        } else {
             if (list.size() == 1) {
-               source.sendFeedback(new TranslationTextComponent("commands.devsdream.exhaust.success.single", list.iterator().next().getDisplayName(), amount), true);
+                source.sendFeedback(new TranslationTextComponent("commands.devsdream.exhaust.success.single",
+                        list.iterator().next().getDisplayName(), amount), true);
             } else {
-               source.sendFeedback(new TranslationTextComponent("commands.devsdream.exhaust.success.multiple", list.size(), amount), true);
+                source.sendFeedback(new TranslationTextComponent("commands.devsdream.exhaust.success.multiple",
+                        list.size(), amount), true);
             }
-   
+
             return list.size();
-         }
+        }
     }
 }
