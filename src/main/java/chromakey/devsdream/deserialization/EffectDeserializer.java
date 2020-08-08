@@ -13,7 +13,7 @@ public class EffectDeserializer {
     public static Effect deserializeEffect(JsonObject object) throws JsonSyntaxException {
         final EffectType effectType;
         final int liquidColor = JSONUtils.getInt(object, "color");
-        boolean instant = true;
+        boolean instant = false;
         if (object.has("instant")) {
             instant = JSONUtils.getBoolean(object, "instant");
         }
