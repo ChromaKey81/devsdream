@@ -804,7 +804,7 @@ public class BlockDeserializer {
       properties.harvestLevel(JSONUtils.getInt(propertiesObj, "harvest_level"));
     }
     if (propertiesObj.has("harvest_tool")) {
-      properties.harvestTool(JSONHelper.deserializeToolType(propertiesObj, "harvest_tool"));
+      properties.harvestTool(JSONHelper.setRequiredToolType(propertiesObj, "harvest_tool"));
     }
     if (propertiesObj.has("variable_opacity")) {
       if (JSONUtils.getBoolean(propertiesObj, "transparent") == true) {

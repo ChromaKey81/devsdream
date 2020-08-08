@@ -95,7 +95,7 @@ public class JSONHelper {
         }
     }
 
-    public static ToolType deserializeToolType(JsonObject object, String element) throws JsonSyntaxException {
+    public static ToolType setRequiredToolType(JsonObject object, String element) throws JsonSyntaxException {
         String toolType = JSONUtils.getString(object, element);
         switch (toolType) {
             case "pickaxe": {

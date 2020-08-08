@@ -1,14 +1,12 @@
 package chromakey.devsdream;
 
 import net.minecraft.block.Block;
+import net.minecraft.potion.Effect;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import chromakey.devsdream.command.impl.AdvancedEffectCommand;
 import chromakey.devsdream.command.impl.AirCommand;
@@ -21,6 +19,7 @@ import chromakey.devsdream.command.impl.RandomNumberCommand;
 import chromakey.devsdream.util.JSONHelper;
 import chromakey.devsdream.command.impl.DamageItemCommand;
 import chromakey.devsdream.deserialization.BlockDeserializer;
+import chromakey.devsdream.deserialization.EffectDeserializer;
 
 import java.io.File;
 import java.util.List;
@@ -41,17 +40,7 @@ public class Main {
 
   public Main() {
     instance = this;
-    FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-    FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientRegistries);
     MinecraftForge.EVENT_BUS.register(this);
-  }
-
-  private void setup(final FMLCommonSetupEvent event) {
-    logger.info("Common setup complete");
-  }
-
-  private void clientRegistries(final FMLClientSetupEvent event) {
-    logger.info("Successfully set up clientRegistries");
   }
 
   @SubscribeEvent
@@ -70,19 +59,21 @@ public class Main {
 
   @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
   public static class RegistryEvents {
+
     @SubscribeEvent
     public static void registerBlocks(final RegistryEvent.Register<Block> event) {
       List<Block> blockList = Lists.newArrayList();
       try {
-        final File[] REGISTRY = new File("C:/Users/willi/AppData/Roaming/.minecraft/devsdream-registry").listFiles();
-        for (final File namespace : REGISTRY) {
+        File[] objectpacks = new File(System.getProperty("user.dir") + "/objectpacks").listFiles();
+        for (final File namespace : objectpacks) {
           for (final File block : new File(namespace.getPath() + "/blocks").listFiles()) {
+            String id = namespace.getName() + ":" + FilenameUtils.getBaseName(block.getName());
             try {
               Block newBlock = BlockDeserializer.deserializeBlock(JSONHelper.getObjectFromFile(block, "block"))
-                  .setRegistryName(namespace.getName(), FilenameUtils.getBaseName(block.getName()));
+                  .setRegistryName(id);
               blockList.add(newBlock);
             } catch (JsonSyntaxException e) {
-              logger.catching(e);
+              logger.error("Couldn't load block '" + id + "': " + e.getMessage());
             }
           }
         }
@@ -92,6 +83,31 @@ public class Main {
         event.getRegistry().register(block);
       });
       logger.info("Registered " + blockList.size() + " blocks");
+    }
+
+    @SubscribeEvent
+    public static void registerEffects(final RegistryEvent.Register<Effect> event) {
+      List<Effect> effectList = Lists.newArrayList();
+      try {
+        File[] objectpacks = new File(System.getProperty("user.dir") + "/objectpacks").listFiles();
+        for (final File namespace : objectpacks) {
+          for (final File effect : new File(namespace.getPath() + "/effects").listFiles()) {
+            String id = namespace.getName() + ":" + FilenameUtils.getBaseName(effect.getName());
+            try {
+              Effect newEffect = EffectDeserializer.deserializeEffect(JSONHelper.getObjectFromFile(effect, "effect"))
+                  .setRegistryName(namespace.getName() + ":" + FilenameUtils.getBaseName(effect.getName()));
+              effectList.add(newEffect);
+            } catch (JsonSyntaxException e) {
+              logger.error("Couldn't load effect '" + id + "': " + e.getMessage());
+            }
+          }
+        }
+      } catch (NullPointerException e) {
+      }
+      effectList.iterator().forEachRemaining((effect) -> {
+        event.getRegistry().register(effect);
+      });
+      logger.info("Registered " + effectList.size() + " effects");
     }
   }
 }
