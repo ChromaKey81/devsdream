@@ -1,9 +1,0 @@
-{
-    "type": "simple",
-    "properties": {
-        "material": "earth",
-        "map_color": "dirt",
-        "hardness_and_resistance": 0.5,
-        "sounds": "ground"
-    }
-}
