@@ -80,7 +80,7 @@ public class Main {
       } catch (NullPointerException e) {
       }
       blockList.iterator().forEachRemaining((block) -> {
-        event.getRegistry().register(block);
+          event.getRegistry().register(block);
       });
       logger.info("Registered " + blockList.size() + " blocks");
     }
@@ -105,7 +105,7 @@ public class Main {
       } catch (NullPointerException e) {
       }
       effectList.iterator().forEachRemaining((effect) -> {
-        event.getRegistry().register(effect);
+          event.getRegistry().register(effect);
       });
       logger.info("Registered " + effectList.size() + " effects");
     }

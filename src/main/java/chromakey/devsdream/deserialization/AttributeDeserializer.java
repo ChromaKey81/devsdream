@@ -7,7 +7,6 @@ import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class AttributeDeserializer {
@@ -15,10 +14,12 @@ public class AttributeDeserializer {
     public static Attribute deserializeAttribute(JsonObject object) throws JsonSyntaxException {
         String argument = JSONUtils.getString(object, "attribute");
         ResourceLocation resourcelocation = new ResourceLocation(argument);
-        Attribute attribute = RegistryObject.of(resourcelocation, ForgeRegistries.ATTRIBUTES).orElseThrow(() -> {
-            return new JsonSyntaxException("Unknown attribute '" + argument + "'");
-        });
-        return attribute;
+        Attribute attribute = ForgeRegistries.ATTRIBUTES.getValue(resourcelocation);
+        if (attribute == null) {
+            throw new JsonSyntaxException("Unknown attribute '" + argument + "'");
+        } else {
+            return attribute;
+        }
     }
 
     public static Operation deserializeOperation(JsonObject object) throws JsonSyntaxException {

@@ -11,50 +11,46 @@ import com.google.gson.JsonSyntaxException;
 
 import net.minecraft.block.Block;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
 import net.minecraft.potion.Effect;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.ToolType;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class JSONHelper {
+
     public static Block setRequiredBlockElement(JsonObject object, String element) throws JsonSyntaxException {
         String argument = JSONUtils.getString(object, element);
         ResourceLocation resourcelocation = new ResourceLocation(argument);
-        Block block = RegistryObject.of(resourcelocation, ForgeRegistries.BLOCKS).orElseThrow(() -> {
-            return new JsonSyntaxException("Unknown block '" + argument + "'");
-        });
-        return block;
+        Block block = ForgeRegistries.BLOCKS.getValue(resourcelocation);
+        if (block == null) {
+            throw new JsonSyntaxException("Unknown block '" + argument + "'");
+        } else {
+            return block;
+        }
     }
 
     public static Effect setRequiredEffectElement(JsonObject object, String element) throws JsonSyntaxException {
         String argument = JSONUtils.getString(object, element);
         ResourceLocation resourcelocation = new ResourceLocation(argument);
-        Effect effect = RegistryObject.of(resourcelocation, ForgeRegistries.POTIONS).orElseThrow(() -> {
-            return new JsonSyntaxException("Unknown block '" + argument + "'");
-        });
-        return effect;
+        Effect effect = ForgeRegistries.POTIONS.getValue(resourcelocation);
+        if (effect == null) {
+            throw new JsonSyntaxException("Unknown effect '" + argument + "'");
+        } else {
+            return effect;
+        }
     }
 
     public static SoundEvent setRequiredSoundElement(JsonObject object, String element) throws JsonSyntaxException {
         String argument = JSONUtils.getString(object, element);
         ResourceLocation resourcelocation = new ResourceLocation(argument);
-        SoundEvent sound = RegistryObject.of(resourcelocation, ForgeRegistries.SOUND_EVENTS).orElseThrow(() -> {
-            return new JsonSyntaxException("Unknown block '" + argument + "'");
-        });
-        return sound;
-    }
-
-    public static Item setRequiredItemElement(JsonObject object, String element) throws JsonSyntaxException {
-        String argument = JSONUtils.getString(object, element);
-        ResourceLocation resourcelocation = new ResourceLocation(argument);
-        Item item = RegistryObject.of(resourcelocation, ForgeRegistries.ITEMS).orElseThrow(() -> {
-            return new JsonSyntaxException("Unknown item '" + argument + "'");
-        });
-        return item;
+        SoundEvent sound = ForgeRegistries.SOUND_EVENTS.getValue(resourcelocation);
+        if (sound == null) {
+            throw new JsonSyntaxException("Unknown sound event '" + argument + "'");
+        } else {
+            return sound;
+        }
     }
 
     public static JsonObject getObjectFromFile(File file, String expected) throws JsonSyntaxException {
