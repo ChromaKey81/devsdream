@@ -3,7 +3,7 @@ package chromakey.devsdream.deserialization;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
-import chromakey.devsdream.util.CustomEffect;
+import chromakey.devsdream.custom.CustomEffect;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectType;
 import net.minecraft.util.JSONUtils;

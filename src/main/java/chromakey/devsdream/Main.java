@@ -1,6 +1,9 @@
 package chromakey.devsdream;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.IArmorMaterial;
+import net.minecraft.item.IItemTier;
+import net.minecraft.item.Item;
 import net.minecraft.potion.Effect;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -20,11 +23,14 @@ import chromakey.devsdream.util.JSONHelper;
 import chromakey.devsdream.command.impl.DamageItemCommand;
 import chromakey.devsdream.deserialization.BlockDeserializer;
 import chromakey.devsdream.deserialization.EffectDeserializer;
+import chromakey.devsdream.deserialization.ItemDeserializer;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.gson.JsonSyntaxException;
 
 import org.apache.commons.io.FilenameUtils;
@@ -69,7 +75,7 @@ public class Main {
           for (final File block : new File(namespace.getPath() + "/blocks").listFiles()) {
             String id = namespace.getName() + ":" + FilenameUtils.getBaseName(block.getName());
             try {
-              Block newBlock = BlockDeserializer.deserializeBlock(JSONHelper.getObjectFromFile(block, "block"))
+              Block newBlock = BlockDeserializer.deserializeBlock(JSONHelper.getObjectFromFile(block))
                   .setRegistryName(id);
               blockList.add(newBlock);
             } catch (JsonSyntaxException e) {
@@ -94,7 +100,7 @@ public class Main {
           for (final File effect : new File(namespace.getPath() + "/effects").listFiles()) {
             String id = namespace.getName() + ":" + FilenameUtils.getBaseName(effect.getName());
             try {
-              Effect newEffect = EffectDeserializer.deserializeEffect(JSONHelper.getObjectFromFile(effect, "effect"))
+              Effect newEffect = EffectDeserializer.deserializeEffect(JSONHelper.getObjectFromFile(effect))
                   .setRegistryName(namespace.getName() + ":" + FilenameUtils.getBaseName(effect.getName()));
               effectList.add(newEffect);
             } catch (JsonSyntaxException e) {
@@ -109,5 +115,33 @@ public class Main {
       });
       logger.info("Registered " + effectList.size() + " effects");
     }
+
+    @SubscribeEvent
+    public static void registerItems(final RegistryEvent.Register<Item> event) {
+      List<Item> itemList = Lists.newArrayList();
+      Map<String, IArmorMaterial> armorMaterialsMap = Maps.newHashMap();
+      Map<String, IItemTier> itemTiersMap = Maps.newHashMap();
+      try {
+        File[] objectpacks = new File(System.getProperty("user.dir") + "/objectpacks").listFiles();
+        for (final File namespace : objectpacks) {
+          for (final File item : new File(namespace.getPath() + "/items").listFiles()) {
+            String id = namespace.getName() + ":" + FilenameUtils.getBaseName(item.getName());
+            try {
+              Item newItem = ItemDeserializer.deserializeItem(JSONHelper.getObjectFromFile(item))
+                  .setRegistryName(namespace.getName() + ":" + FilenameUtils.getBaseName(item.getName()));
+              itemList.add(newItem);
+            } catch (JsonSyntaxException e) {
+              logger.error("Couldn't load item '" + id + "': " + e.getMessage());
+            }
+          }
+        }
+      } catch (NullPointerException e) {
+      }
+      itemList.iterator().forEachRemaining((item) -> {
+          event.getRegistry().register(item);
+      });
+      logger.info("Registered " + itemList.size() + " items");
+    }
+
   }
 }

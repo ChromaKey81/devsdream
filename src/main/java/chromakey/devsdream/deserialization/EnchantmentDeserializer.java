@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
-import chromakey.devsdream.util.CustomEnchantment;
+import chromakey.devsdream.custom.CustomEnchantment;
 import chromakey.devsdream.util.JSONHelper;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;

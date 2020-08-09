@@ -1,4 +1,4 @@
-package chromakey.devsdream.util;
+package chromakey.devsdream.custom;
 
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;

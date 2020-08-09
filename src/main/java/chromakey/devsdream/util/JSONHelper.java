@@ -11,6 +11,7 @@ import com.google.gson.JsonSyntaxException;
 
 import net.minecraft.block.Block;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.Item;
 import net.minecraft.potion.Effect;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
@@ -42,6 +43,17 @@ public class JSONHelper {
         }
     }
 
+    public static Item setRequiredItemElement(JsonObject object, String element) throws JsonSyntaxException {
+        String argument = JSONUtils.getString(object, element);
+        ResourceLocation resourcelocation = new ResourceLocation(argument);
+        Item item = ForgeRegistries.ITEMS.getValue(resourcelocation);
+        if (item == null) {
+            throw new JsonSyntaxException("Unknown item '" + argument + "'");
+        } else {
+            return item;
+        }
+    }
+
     public static SoundEvent setRequiredSoundElement(JsonObject object, String element) throws JsonSyntaxException {
         String argument = JSONUtils.getString(object, element);
         ResourceLocation resourcelocation = new ResourceLocation(argument);
@@ -53,19 +65,21 @@ public class JSONHelper {
         }
     }
 
-    public static JsonObject getObjectFromFile(File file, String expected) throws JsonSyntaxException {
-        JsonSyntaxException exception = new JsonSyntaxException("Unknown " + expected + " '" + file + "'");
+    public static JsonObject getObjectFromFile(File file) throws JsonSyntaxException {
         try (FileReader reader = new FileReader(file)) {
             return JSONUtils.fromJson(reader, false);
         } catch (FileNotFoundException e) {
-            throw exception;
+            throw new JsonSyntaxException(e.getMessage());
         } catch (IOException e) {
-            throw exception;
+            throw new JsonSyntaxException(e.getMessage());
         }
     }
 
     public static EquipmentSlotType setRequiredSlotElement(JsonElement element) throws JsonSyntaxException {
         String argument = JSONUtils.getString(element, "equipment slot");
+        if (argument == null) {
+            throw new JsonSyntaxException("Missing slot, expected to find a String");
+        }
         switch (argument) {
             case "feet": {
                 return EquipmentSlotType.FEET;
