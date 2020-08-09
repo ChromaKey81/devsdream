@@ -1,5 +1,7 @@
 package chromakey.devsdream.deserialization;
 
+import java.util.Map;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
@@ -18,7 +20,7 @@ import net.minecraft.util.JSONUtils;
 
 public class ItemDeserializer {
 
-    public static Item deserializeItem(JsonObject object) throws JsonSyntaxException {
+    public static Item deserializeItem(JsonObject object, Map<String, IArmorMaterial> armorMaterialMap, Map<String, IItemTier> itemTierMap) throws JsonSyntaxException {
 
         String type = JSONUtils.getString(object, "type");
         switch (type) {
@@ -26,7 +28,8 @@ public class ItemDeserializer {
                 return new Item(deserializeProperties(object));
             }
             case "block": {
-                return new BlockItem(JSONHelper.setRequiredBlockElement(object, "block"), deserializeProperties(object));
+                return new BlockItem(JSONHelper.setRequiredBlockElement(object, "block"),
+                        deserializeProperties(object));
             }
             case "armor": {
                 if (object.has("armor_material")) {
@@ -35,7 +38,11 @@ public class ItemDeserializer {
                         return new ArmorItem(
                                 deserializeArmorMaterial(JSONUtils.getString(armorMaterial, "name"), armorMaterial),
                                 JSONHelper.setRequiredSlotElement(object.get("slot")), deserializeProperties(object));
+                    } else {
+                        return new ArmorItem(armorMaterialMap.get(JSONUtils.getString(object, "armor_material")), JSONHelper.setRequiredSlotElement(object.get("slot")), deserializeProperties(object));
                     }
+                } else {
+                    throw new JsonSyntaxException("Missing armor material, expected to find a JsonObject or a String");
                 }
             }
             default: {
@@ -47,7 +54,8 @@ public class ItemDeserializer {
 
     public static IArmorMaterial deserializeArmorMaterial(String name, JsonObject object) throws JsonSyntaxException {
         JsonObject damageReduction = JSONUtils.getJsonObject(object, "damage_reduction");
-        return new CustomArmorMaterial(name, JSONUtils.getInt(object, "max_damage_factor"),
+        return new CustomArmorMaterial(name,
+                JSONUtils.getInt(object, "max_damage_factor"),
                 new int[] { JSONUtils.getInt(damageReduction, "feet"), JSONUtils.getInt(damageReduction, "legs"),
                         JSONUtils.getInt(damageReduction, "chest"), JSONUtils.getInt(damageReduction, "head") },
                 JSONUtils.getInt(object, "enchantability"), JSONHelper.setRequiredSoundElement(object, "sound"),
@@ -69,7 +77,8 @@ public class ItemDeserializer {
         JsonObject propertiesObj = JSONUtils.getJsonObject(object, "properties");
         if (propertiesObj.has("harvesting")) {
             JsonObject harvesting = JSONUtils.getJsonObject(propertiesObj, "harvesting");
-            properties.addToolType(JSONHelper.setRequiredToolType(harvesting, "tool_type"), JSONUtils.getInt(harvesting, "level"));
+            properties.addToolType(JSONHelper.setRequiredToolType(harvesting, "tool_type"),
+                    JSONUtils.getInt(harvesting, "level"));
         }
         if (propertiesObj.has("container_item")) {
             properties.containerItem(JSONHelper.setRequiredItemElement(propertiesObj, "container_item"));

@@ -101,7 +101,7 @@ public class Main {
             String id = namespace.getName() + ":" + FilenameUtils.getBaseName(effect.getName());
             try {
               Effect newEffect = EffectDeserializer.deserializeEffect(JSONHelper.getObjectFromFile(effect))
-                  .setRegistryName(namespace.getName() + ":" + FilenameUtils.getBaseName(effect.getName()));
+                  .setRegistryName(id);
               effectList.add(newEffect);
             } catch (JsonSyntaxException e) {
               logger.error("Couldn't load effect '" + id + "': " + e.getMessage());
@@ -119,16 +119,26 @@ public class Main {
     @SubscribeEvent
     public static void registerItems(final RegistryEvent.Register<Item> event) {
       List<Item> itemList = Lists.newArrayList();
-      Map<String, IArmorMaterial> armorMaterialsMap = Maps.newHashMap();
-      Map<String, IItemTier> itemTiersMap = Maps.newHashMap();
+      Map<String, IArmorMaterial> armorMaterialMap = Maps.newHashMap();
+      Map<String, IItemTier> itemTierMap = Maps.newHashMap();
       try {
         File[] objectpacks = new File(System.getProperty("user.dir") + "/objectpacks").listFiles();
         for (final File namespace : objectpacks) {
+          for (final File armorMaterial : new File(namespace.getPath() + "/items/armor_materials").listFiles()) {
+            String name = FilenameUtils.getBaseName(armorMaterial.getName());
+            String id = namespace.getName() + ":" + name;
+            try {
+              IArmorMaterial newMaterial = ItemDeserializer.deserializeArmorMaterial(name, JSONHelper.getObjectFromFile(armorMaterial));
+              armorMaterialMap.put(id, newMaterial);
+            } catch (JsonSyntaxException e) {
+              logger.error("Couldn't load armor material '" + id + "': " + e.getMessage());
+            }
+          }
           for (final File item : new File(namespace.getPath() + "/items").listFiles()) {
             String id = namespace.getName() + ":" + FilenameUtils.getBaseName(item.getName());
             try {
-              Item newItem = ItemDeserializer.deserializeItem(JSONHelper.getObjectFromFile(item))
-                  .setRegistryName(namespace.getName() + ":" + FilenameUtils.getBaseName(item.getName()));
+              Item newItem = ItemDeserializer.deserializeItem(JSONHelper.getObjectFromFile(item), armorMaterialMap, itemTierMap)
+                  .setRegistryName(id);
               itemList.add(newItem);
             } catch (JsonSyntaxException e) {
               logger.error("Couldn't load item '" + id + "': " + e.getMessage());
