@@ -1,0 +1,8 @@
+{
+    "type": "armor",
+    "armor_material": "minecraft:diamond",
+    "slot": "feet",
+    "properties": {
+        "group": "combat"
+    }
+}
