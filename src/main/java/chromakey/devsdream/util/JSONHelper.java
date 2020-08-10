@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.potion.Effect;
@@ -124,6 +125,17 @@ public class JSONHelper {
                 throw new JsonSyntaxException(
                         "Unknown tool type '" + toolType + "'; only 'pickaxe', 'axe', 'shovel', or 'hoe' are accepted");
             }
+        }
+    }
+
+    public static Attribute deserializeAttribute(JsonObject object, String element) throws JsonSyntaxException {
+        String argument = JSONUtils.getString(object, element);
+        ResourceLocation resourcelocation = new ResourceLocation(argument);
+        Attribute attribute = ForgeRegistries.ATTRIBUTES.getValue(resourcelocation);
+        if (attribute == null) {
+            throw new JsonSyntaxException("Unknown attribute '" + argument + "'");
+        } else {
+            return attribute;
         }
     }
 }

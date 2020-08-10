@@ -1,9 +1,16 @@
 package chromakey.devsdream.deserialization;
 
+import java.util.Map;
+
+import com.google.common.collect.Maps;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
 import chromakey.devsdream.custom.CustomEffect;
+import chromakey.devsdream.util.JSONHelper;
+import net.minecraft.entity.ai.attributes.Attribute;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectType;
 import net.minecraft.util.JSONUtils;
@@ -35,9 +42,14 @@ public class EffectDeserializer {
                 throw new JsonSyntaxException("Unknown effect type '" + type + "'");
             }
         }
-        if (object.has("modifier")) {
-            JsonObject modifier = JSONUtils.getJsonObject(object, "modifier");
-            return new CustomEffect(effectType, liquidColor, instant, AttributeDeserializer.deserializeAttribute(modifier), JSONUtils.getString(modifier, "uuid"), (double) JSONUtils.getFloat(modifier, "amount"), AttributeDeserializer.deserializeOperation(modifier));
+        if (object.has("modifiers")) {
+            Map<Attribute, AttributeModifier> modifierMap = Maps.newHashMap();
+            JsonArray modifiers = JSONUtils.getJsonArray(object, "modifiers");
+            modifiers.iterator().forEachRemaining((modifier) -> {
+                JsonObject modifierObj = JSONUtils.getJsonObject(modifier, "attribute modifier");
+                modifierMap.put(JSONHelper.deserializeAttribute(modifierObj, "attribute"), AttributeModifierDeserializer.deserializeAttributeModifier(modifierObj));
+            });
+            return new CustomEffect(effectType, liquidColor, instant, modifierMap);
         } else {
             return new CustomEffect(effectType, liquidColor, instant);
         }

@@ -1,5 +1,7 @@
 package chromakey.devsdream.custom;
 
+import java.util.Map;
+
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.potion.Effect;
@@ -14,14 +16,18 @@ public class CustomEffect extends Effect {
         this.instant = instant;
     }
 
-    public CustomEffect(EffectType typeIn, int liquidColorIn, boolean instant, Attribute attribute, String modifierUUID, double modifierAmount, AttributeModifier.Operation operation) {
+    public CustomEffect(EffectType typeIn, int liquidColorIn, boolean instant, Map<Attribute, AttributeModifier> modifierMap) {
         super(typeIn, liquidColorIn);
         this.instant = instant;
-        this.addAttributesModifier(attribute, modifierUUID, modifierAmount, operation);
+        modifierMap.forEach((attribute, modifier) -> {
+            this.addAttributesModifier(attribute, modifier.getID().toString(), modifier.getAmount(), modifier.getOperation());
+        });
     }
 
     public boolean isInstant() {
         return this.instant;
     }
+
+
 
 }

@@ -1,26 +1,15 @@
 package chromakey.devsdream.deserialization;
 
+import java.util.UUID;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
-import net.minecraft.entity.ai.attributes.Attribute;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.registries.ForgeRegistries;
 
-public class AttributeDeserializer {
-
-    public static Attribute deserializeAttribute(JsonObject object) throws JsonSyntaxException {
-        String argument = JSONUtils.getString(object, "attribute");
-        ResourceLocation resourcelocation = new ResourceLocation(argument);
-        Attribute attribute = ForgeRegistries.ATTRIBUTES.getValue(resourcelocation);
-        if (attribute == null) {
-            throw new JsonSyntaxException("Unknown attribute '" + argument + "'");
-        } else {
-            return attribute;
-        }
-    }
+public class AttributeModifierDeserializer {
 
     public static Operation deserializeOperation(JsonObject object) throws JsonSyntaxException {
         String operation = JSONUtils.getString(object, "operation");
@@ -38,5 +27,9 @@ public class AttributeDeserializer {
                 throw new JsonSyntaxException("Unknown operation '" + operation + "'");
             }
         }
+    }
+
+    public static AttributeModifier deserializeAttributeModifier(JsonObject object) {
+        return new AttributeModifier(UUID.randomUUID(), "missingno", (double) JSONUtils.getFloat(object, "amount"), deserializeOperation(object));
     }
 }
