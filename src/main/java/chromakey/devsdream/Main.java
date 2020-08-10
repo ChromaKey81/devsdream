@@ -1,10 +1,12 @@
 package chromakey.devsdream;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.Item;
 import net.minecraft.potion.Effect;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
@@ -119,19 +121,28 @@ public class Main {
     @SubscribeEvent
     public static void registerItems(final RegistryEvent.Register<Item> event) {
       List<Item> itemList = Lists.newArrayList();
-      Map<String, IArmorMaterial> armorMaterialMap = Maps.newHashMap();
-      Map<String, IItemTier> itemTierMap = Maps.newHashMap();
+      Map<ResourceLocation, IArmorMaterial> armorMaterialMap = Maps.newHashMap();
+      Map<ResourceLocation, IItemTier> itemTierMap = Maps.newHashMap();
+
+      armorMaterialMap.put(new ResourceLocation("minecraft:leather"), ArmorMaterial.LEATHER);
+      armorMaterialMap.put(new ResourceLocation("minecraft:chain"), ArmorMaterial.CHAIN);
+      armorMaterialMap.put(new ResourceLocation("minecraft:iron"), ArmorMaterial.IRON);
+      armorMaterialMap.put(new ResourceLocation("minecraft:gold"), ArmorMaterial.GOLD);
+      armorMaterialMap.put(new ResourceLocation("minecraft:diamond"), ArmorMaterial.DIAMOND);
+      armorMaterialMap.put(new ResourceLocation("minecraft:netherite"), ArmorMaterial.NETHERITE);
+      armorMaterialMap.put(new ResourceLocation("minecraft:turtle"), ArmorMaterial.TURTLE);
+
       try {
         File[] objectpacks = new File(System.getProperty("user.dir") + "/objectpacks").listFiles();
         for (final File namespace : objectpacks) {
           for (final File armorMaterial : new File(namespace.getPath() + "/items/armor_materials").listFiles()) {
             String name = FilenameUtils.getBaseName(armorMaterial.getName());
-            String id = namespace.getName() + ":" + name;
+            ResourceLocation id = new ResourceLocation(namespace.getName() + ":" + name);
             try {
               IArmorMaterial newMaterial = ItemDeserializer.deserializeArmorMaterial(name, JSONHelper.getObjectFromFile(armorMaterial));
               armorMaterialMap.put(id, newMaterial);
             } catch (JsonSyntaxException e) {
-              logger.error("Couldn't load armor material '" + id + "': " + e.getMessage());
+              logger.error("Couldn't load armor material '" + id.getPath() + "': " + e.getMessage());
             }
           }
           for (final File item : new File(namespace.getPath() + "/items").listFiles()) {

@@ -17,10 +17,11 @@ import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.JSONUtils;
+import net.minecraft.util.ResourceLocation;
 
 public class ItemDeserializer {
 
-    public static Item deserializeItem(JsonObject object, Map<String, IArmorMaterial> armorMaterialMap, Map<String, IItemTier> itemTierMap) throws JsonSyntaxException {
+    public static Item deserializeItem(JsonObject object, Map<ResourceLocation, IArmorMaterial> armorMaterialMap, Map<ResourceLocation, IItemTier> itemTierMap) throws JsonSyntaxException {
 
         String type = JSONUtils.getString(object, "type");
         switch (type) {
@@ -39,7 +40,7 @@ public class ItemDeserializer {
                                 deserializeArmorMaterial(JSONUtils.getString(armorMaterial, "name"), armorMaterial),
                                 JSONHelper.setRequiredSlotElement(object.get("slot")), deserializeProperties(object));
                     } else {
-                        return new ArmorItem(armorMaterialMap.get(JSONUtils.getString(object, "armor_material")), JSONHelper.setRequiredSlotElement(object.get("slot")), deserializeProperties(object));
+                        return new ArmorItem(armorMaterialMap.get(new ResourceLocation(JSONUtils.getString(object, "armor_material"))), JSONHelper.setRequiredSlotElement(object.get("slot")), deserializeProperties(object));
                     }
                 } else {
                     throw new JsonSyntaxException("Missing armor material, expected to find a JsonObject or a String");
