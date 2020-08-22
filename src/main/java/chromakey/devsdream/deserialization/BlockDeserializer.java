@@ -890,7 +890,7 @@ public class BlockDeserializer {
         return Material.WOOD;
       }
       case "hyphae": {
-        return Material.field_237214_y_;
+        return Material.NETHER_WOOD;
       }
       case "bamboo_sapling": {
         return Material.BAMBOO_SAPLING;
@@ -1100,25 +1100,25 @@ public class BlockDeserializer {
         return MaterialColor.BLACK_TERRACOTTA;
       }
       case "crimson_nylium": {
-        return MaterialColor.field_241539_ab_;
+        return MaterialColor.CRIMSON_NYLIUM;
       }
       case "crimson_stem": {
-        return MaterialColor.field_241540_ac_;
+        return MaterialColor.CRIMSON_STEM;
       }
       case "crimson_hyphae": {
-        return MaterialColor.field_241541_ad_;
+        return MaterialColor.CRIMSON_HYPHAE;
       }
       case "warped_nylium": {
-        return MaterialColor.field_241542_ae_;
+        return MaterialColor.WARPED_NYLIUM;
       }
       case "warped_stem": {
-        return MaterialColor.field_241543_af_;
+        return MaterialColor.WARPED_STEM;
       }
       case "warped_hyphae": {
-        return MaterialColor.field_241544_ag_;
+        return MaterialColor.WARPED_HYPHAE;
       }
       case "warped_wart": {
-        return MaterialColor.field_241545_ah_;
+        return MaterialColor.WARPED_WART;
       }
       default: {
         throw new JsonSyntaxException("Unknown color '" + color + "'");
@@ -1139,7 +1139,7 @@ public class BlockDeserializer {
         return SoundType.PLANT;
       }
       case "lily_pad": {
-        return SoundType.field_235600_d_;
+        return SoundType.LILY_PADS;
       }
       case "stone": {
         return SoundType.STONE;
@@ -1169,7 +1169,7 @@ public class BlockDeserializer {
         return SoundType.SLIME;
       }
       case "honey": {
-        return SoundType.field_226947_m_;
+        return SoundType.HONEY;
       }
       case "wet_grass": {
         return SoundType.WET_GRASS;
@@ -1196,7 +1196,7 @@ public class BlockDeserializer {
         return SoundType.STEM;
       }
       case "vine": {
-        return SoundType.field_235601_w_;
+        return SoundType.VINE;
       }
       case "nether_wart": {
         return SoundType.NETHER_WART;
@@ -1205,70 +1205,70 @@ public class BlockDeserializer {
         return SoundType.LANTERN;
       }
       case "hyphae": {
-        return SoundType.field_235602_z_;
+        return SoundType.HYPHAE;
       }
       case "nylium": {
-        return SoundType.field_235579_A_;
+        return SoundType.NYLIUM;
       }
       case "fungus": {
-        return SoundType.field_235580_B_;
+        return SoundType.FUNGUS;
       }
       case "root": {
-        return SoundType.field_235581_C_;
+        return SoundType.ROOT;
       }
       case "shroomlight": {
-        return SoundType.field_235582_D_;
+        return SoundType.SHROOMLIGHT;
       }
       case "nether_vine": {
-        return SoundType.field_235583_E_;
+        return SoundType.NETHER_VINE;
       }
       case "low_pitch_nether_vine": {
-        return SoundType.field_235584_F_;
+        return SoundType.NETHER_VINE_LOWER_PITCH;
       }
       case "soul_sand": {
-        return SoundType.field_235585_G_;
+        return SoundType.SOUL_SAND;
       }
       case "soul_soil": {
-        return SoundType.field_235586_H_;
+        return SoundType.SOUL_SOIL;
       }
       case "basalt": {
-        return SoundType.field_235587_I_;
+        return SoundType.BASALT;
       }
       case "wart_block": {
-        return SoundType.field_235588_J_;
+        return SoundType.WART;
       }
       case "netherrack": {
-        return SoundType.field_235589_K_;
+        return SoundType.NETHERRACK;
       }
       case "nether_brick": {
-        return SoundType.field_235590_L_;
+        return SoundType.NETHER_BRICK;
       }
       case "nether_sprout": {
-        return SoundType.field_235591_M_;
+        return SoundType.NETHER_SPROUT;
       }
       case "nether_quartz_ore": {
-        return SoundType.field_235592_N_;
+        return SoundType.NETHER_ORE;
       }
       case "bone": {
-        return SoundType.field_235593_O_;
+        return SoundType.BONE;
       }
       case "netherite": {
-        return SoundType.field_235594_P_;
+        return SoundType.NETHERITE;
       }
       case "ancient_debris": {
-        return SoundType.field_235595_Q_;
+        return SoundType.ANCIENT_DEBRIS;
       }
       case "lodestone": {
-        return SoundType.field_235596_R_;
+        return SoundType.LODESTONE;
       }
       case "chain": {
-        return SoundType.field_235597_S_;
+        return SoundType.CHAIN;
       }
       case "nether_gold_ore": {
-        return SoundType.field_235598_T_;
+        return SoundType.NETHER_GOLD;
       }
       case "gilded_blackstone": {
-        return SoundType.field_235599_U_;
+        return SoundType.GILDED_BLACKSTONE;
       }
       default: {
         throw new JsonSyntaxException("Unknown sound type '" + sounds + "'");
