@@ -5,12 +5,12 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.ai.attributes.Attribute;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.potion.Effect;
@@ -76,11 +76,8 @@ public class JSONHelper {
         }
     }
 
-    public static EquipmentSlotType setRequiredSlotElement(JsonElement element) throws JsonSyntaxException {
-        String argument = JSONUtils.getString(element, "equipment slot");
-        if (argument == null) {
-            throw new JsonSyntaxException("Missing slot, expected to find a String");
-        }
+    public static EquipmentSlotType setRequiredSlotElement(JsonObject object, String element) throws JsonSyntaxException {
+        String argument = JSONUtils.getString(object, element);
         switch (argument) {
             case "feet": {
                 return EquipmentSlotType.FEET;
@@ -136,6 +133,17 @@ public class JSONHelper {
             throw new JsonSyntaxException("Unknown attribute '" + argument + "'");
         } else {
             return attribute;
+        }
+    }
+
+    public static Fluid deserializeFluid(JsonObject object, String element) throws JsonSyntaxException {
+        String argument = JSONUtils.getString(object, element);
+        ResourceLocation resourcelocation = new ResourceLocation(argument);
+        Fluid fluid = ForgeRegistries.FLUIDS.getValue(resourcelocation);
+        if (fluid == null) {
+            throw new JsonSyntaxException("Unknown fluid '" + argument + "'");
+        } else {
+            return fluid;
         }
     }
 }
