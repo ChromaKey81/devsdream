@@ -30,6 +30,6 @@ public class AttributeModifierDeserializer {
     }
 
     public static AttributeModifier deserializeAttributeModifier(JsonObject object) {
-        return new AttributeModifier(UUID.randomUUID(), "missingno", (double) JSONUtils.getFloat(object, "amount"), deserializeOperation(object));
+        return new AttributeModifier(UUID.randomUUID(), "Harrison Ford is irradiating our testicles with microwave satellite transmissions!", (double) JSONUtils.getFloat(object, "amount"), deserializeOperation(object));
     }
 }

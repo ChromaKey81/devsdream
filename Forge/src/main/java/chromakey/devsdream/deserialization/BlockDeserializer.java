@@ -811,6 +811,11 @@ public class BlockDeserializer {
         properties.variableOpacity();
       }
     }
+    if (propertiesObj.has("drops")) {
+      if (JSONUtils.getBoolean(propertiesObj, "drops") == false) {
+        properties.noDrops();
+      }
+    }
     return properties;
   }
 
