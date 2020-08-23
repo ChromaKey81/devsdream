@@ -1,6 +1,6 @@
-.gradle/
-.idea/
-build/
-run/
+Forge/.gradle/
+Forge/.idea/
+Forge/build/
+Forge/run/
 **/*.class
-bin/
+Forge/bin/
