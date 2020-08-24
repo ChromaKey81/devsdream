@@ -1,5 +1,10 @@
 package chromakey.devsdream.deserialization;
 
+import java.util.List;
+
+import com.google.common.collect.Lists;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
@@ -9,12 +14,15 @@ import net.minecraft.block.AbstractBlock.Properties;
 import net.minecraft.block.PressurePlateBlock.Sensitivity;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.DyeColor;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -727,6 +735,8 @@ public class BlockDeserializer {
     }
   }
 
+  private static List<EntityType<?>> allowedSpawnableEntitiesList = Lists.newArrayList();
+
   private static Properties deserializeProperties(JsonObject object) throws JsonSyntaxException {
     JsonObject propertiesObj = JSONUtils.getJsonObject(object, "properties");
     Properties properties;
@@ -816,7 +826,29 @@ public class BlockDeserializer {
         properties.noDrops();
       }
     }
+    if (propertiesObj.has("allows_spawn")) {
+      JsonElement allowsSpawn = propertiesObj.get("allows_spawn");
+      if (allowsSpawn.isJsonArray()) {
+        JsonArray spawnable = JSONUtils.getJsonArray(propertiesObj, "allows_spawn");
+        spawnable.iterator().forEachRemaining((entityType) -> {
+          allowedSpawnableEntitiesList.add(JSONHelper.getEntity(JSONUtils.getString(entityType, "entity type")));
+        });
+        properties.setAllowsSpawn(BlockDeserializer::allowsSpawn);
+      } else {
+        if (JSONUtils.getBoolean(allowsSpawn, "boolean") == false) {
+          properties.setAllowsSpawn(BlockDeserializer::allowNoSpawns);
+        }
+      }
+    }
     return properties;
+  }
+
+  private static Boolean allowsSpawn(BlockState state, IBlockReader reader, BlockPos pos, EntityType<?> entity) {
+    return allowedSpawnableEntitiesList.contains(entity);
+  }
+
+  private static Boolean allowNoSpawns(BlockState state, IBlockReader reader, BlockPos pos, EntityType<?> entity) {
+    return false;
   }
 
   private static Material deserializeMaterial(JsonObject object) throws JsonSyntaxException {

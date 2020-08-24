@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -63,6 +64,16 @@ public class JSONHelper {
             throw new JsonSyntaxException("Unknown sound event '" + argument + "'");
         } else {
             return sound;
+        }
+    }
+
+    public static EntityType<?> getEntity(String string) throws JsonSyntaxException {
+        ResourceLocation resourcelocation = new ResourceLocation(string);
+        EntityType<?> entity = ForgeRegistries.ENTITIES.getValue(resourcelocation);
+        if (entity == null) {
+            throw new JsonSyntaxException("Unknown entity type '" + string + "'");
+        } else {
+            return entity;
         }
     }
 
