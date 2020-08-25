@@ -835,9 +835,52 @@ public class BlockDeserializer {
         });
         properties.setAllowsSpawn(BlockDeserializer::allowsSpawn);
       } else {
-        if (JSONUtils.getBoolean(allowsSpawn, "boolean") == false) {
+        boolean allowsSpawnBool = JSONUtils.getBoolean(allowsSpawn, "boolean");
+        if (allowsSpawnBool == false) {
           properties.setAllowsSpawn(BlockDeserializer::allowNoSpawns);
+        } else {
+          properties.setAllowsSpawn(BlockDeserializer::allowAllSpawns);
         }
+      }
+    }
+    if (propertiesObj.has("opaque")) {
+      boolean isOpaque = JSONUtils.getBoolean(propertiesObj, "opaque");
+      if (isOpaque == true) {
+        properties.setOpaque(BlockDeserializer::truePositionPredicate);
+      } else {
+        properties.setOpaque(BlockDeserializer::falsePositionPredicate);
+      }
+    }
+    if (propertiesObj.has("suffocates")) {
+      boolean suffocates = JSONUtils.getBoolean(propertiesObj, "suffocates");
+      if (suffocates == true) {
+        properties.setSuffocates(BlockDeserializer::truePositionPredicate);
+      } else {
+        properties.setSuffocates(BlockDeserializer::falsePositionPredicate);
+      }
+    }
+    if (propertiesObj.has("blocks_vision")) {
+      boolean blocksVision = JSONUtils.getBoolean(propertiesObj, "blocks_vision");
+      if (blocksVision == true) {
+        properties.setBlocksVision(BlockDeserializer::truePositionPredicate);
+      } else {
+        properties.setBlocksVision(BlockDeserializer::falsePositionPredicate);
+      }
+    }
+    if (propertiesObj.has("needs_post_processing")) {
+      boolean needsPostProcessing = JSONUtils.getBoolean(propertiesObj, "needs_post_processing");
+      if (needsPostProcessing == true) {
+        properties.setNeedsPostProcessing(BlockDeserializer::truePositionPredicate);
+      } else {
+        properties.setNeedsPostProcessing(BlockDeserializer::falsePositionPredicate);
+      }
+    }
+    if (propertiesObj.has("emmisive_rendering")) {
+      boolean emmisiveRendering = JSONUtils.getBoolean(propertiesObj, "emmisive_rendering");
+      if (emmisiveRendering == true) {
+        properties.setEmmisiveRendering(BlockDeserializer::truePositionPredicate);
+      } else {
+        properties.setEmmisiveRendering(BlockDeserializer::falsePositionPredicate);
       }
     }
     return properties;
@@ -848,6 +891,18 @@ public class BlockDeserializer {
   }
 
   private static Boolean allowNoSpawns(BlockState state, IBlockReader reader, BlockPos pos, EntityType<?> entity) {
+    return false;
+  }
+
+  private static Boolean allowAllSpawns(BlockState state, IBlockReader reader, BlockPos pos, EntityType<?> entity) {
+    return true;
+  }
+
+  private static boolean truePositionPredicate(BlockState state, IBlockReader reader, BlockPos pos) {
+    return true;
+  }
+
+  private static boolean falsePositionPredicate(BlockState state, IBlockReader reader, BlockPos pos) {
     return false;
   }
 
