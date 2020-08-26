@@ -8,6 +8,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
+import chromakey.devsdream.custom.CustomWoodType;
 import chromakey.devsdream.util.JSONHelper;
 import net.minecraft.block.*;
 import net.minecraft.block.AbstractBlock.Properties;
@@ -284,7 +285,7 @@ public class BlockDeserializer {
         return new FrostedIceBlock(deserializeProperties(object));
       }
       case "fungus": {
-        throw new JsonSyntaxException("Fungus blocks are not yet supported (sorry!)");
+        throw new JsonSyntaxException("Fungi are not yet supported (sorry!)");
       }
       case "furnace": {
         return new FurnaceBlock(deserializeProperties(object));
@@ -467,7 +468,7 @@ public class BlockDeserializer {
         return new SandBlock(JSONUtils.getInt(object, "dust_color"), deserializeProperties(object));
       }
       case "sapling": {
-        throw new JsonSyntaxException("Saplings are not currently supported (sorry!)");
+        throw new JsonSyntaxException("Saplings are not yet supported (sorry!)");
       }
       case "scaffolding": {
         return new ScaffoldingBlock(deserializeProperties(object));
@@ -573,7 +574,7 @@ public class BlockDeserializer {
         }, deserializeProperties(object));
       }
       case "standing_sign": {
-        throw new JsonSyntaxException("Signs are not currently supported (sorry!)");
+        return new StandingSignBlock(deserializeProperties(object), new CustomWoodType(JSONUtils.getString(object, "wood_type")));
       }
       case "stem": {
         String blockString = JSONUtils.getString(object, "grown_fruit");
@@ -664,7 +665,7 @@ public class BlockDeserializer {
         return new WallBlock(deserializeProperties(object));
       }
       case "wall_sign": {
-        throw new JsonSyntaxException("Signs are not currently supported (sorry!)");
+        return new StandingSignBlock(deserializeProperties(object), new CustomWoodType(JSONUtils.getString(object, "wood_type")));
       }
       case "wall_skull": {
         String skullTypeString = JSONUtils.getString(object, "skull_type");
