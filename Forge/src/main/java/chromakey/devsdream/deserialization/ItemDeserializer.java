@@ -50,6 +50,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.Rarity;
+import net.minecraft.item.SignItem;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.tileentity.BannerPattern;
@@ -192,6 +193,9 @@ public class ItemDeserializer {
             }
             case "experience_bottle": {
                 return new ExperienceBottleItem(deserializeProperties(object));
+            }
+            case "sign": {
+                return new SignItem(deserializeProperties(object), JSONHelper.setRequiredBlockElement(object, "floor_block"), JSONHelper.setRequiredBlockElement(object, "wall_block"));
             }
             default: {
                 throw new JsonSyntaxException("Unknown item type '" + type + "'");

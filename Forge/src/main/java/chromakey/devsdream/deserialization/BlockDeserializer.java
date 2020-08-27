@@ -8,7 +8,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
-import chromakey.devsdream.custom.CustomWoodType;
 import chromakey.devsdream.util.JSONHelper;
 import net.minecraft.block.*;
 import net.minecraft.block.AbstractBlock.Properties;
@@ -573,9 +572,6 @@ public class BlockDeserializer {
           return JSONHelper.setRequiredBlockElement(object, "source_block").getDefaultState();
         }, deserializeProperties(object));
       }
-      case "standing_sign": {
-        return new StandingSignBlock(deserializeProperties(object), new CustomWoodType(JSONUtils.getString(object, "wood_type")));
-      }
       case "stem": {
         String blockString = JSONUtils.getString(object, "grown_fruit");
         Block block = JSONHelper.setRequiredBlockElement(object, "grown_fruit");
@@ -663,9 +659,6 @@ public class BlockDeserializer {
       }
       case "wall": {
         return new WallBlock(deserializeProperties(object));
-      }
-      case "wall_sign": {
-        return new StandingSignBlock(deserializeProperties(object), new CustomWoodType(JSONUtils.getString(object, "wood_type")));
       }
       case "wall_skull": {
         String skullTypeString = JSONUtils.getString(object, "skull_type");
