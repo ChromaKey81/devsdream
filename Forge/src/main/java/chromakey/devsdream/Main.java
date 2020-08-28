@@ -5,6 +5,7 @@ import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.Item;
+import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.potion.Effect;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -21,6 +22,7 @@ import chromakey.devsdream.command.impl.FeedCommand;
 import chromakey.devsdream.command.impl.HealthCommand;
 import chromakey.devsdream.command.impl.IgniteCommand;
 import chromakey.devsdream.command.impl.RandomNumberCommand;
+import chromakey.devsdream.crafting.Serializers;
 import chromakey.devsdream.util.JSONHelper;
 import chromakey.devsdream.command.impl.DamageItemCommand;
 import chromakey.devsdream.deserialization.BlockDeserializer;
@@ -67,6 +69,14 @@ public class Main {
 
   @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
   public static class RegistryEvents {
+
+    @SubscribeEvent
+    public static void registerRecipeSerializers(final RegistryEvent.Register<IRecipeSerializer<?>> event) {
+      event.getRegistry().registerAll(
+        Serializers.CRAFTING_SHAPELESS_NBT.setRegistryName(new ResourceLocation("devsdream:crafting_shapeless_nbt")),
+        Serializers.CRAFTING_SHAPED_NBT.setRegistryName(new ResourceLocation("devsdream:crafting_shaped_nbt"))
+      );
+    }
 
     @SubscribeEvent
     public static void registerBlocks(final RegistryEvent.Register<Block> event) {
