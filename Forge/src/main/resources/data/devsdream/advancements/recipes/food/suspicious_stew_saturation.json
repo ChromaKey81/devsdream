@@ -1,0 +1,43 @@
+{
+    "parent": "minecraft:recipes/root",
+    "rewards": {
+      "recipes": [
+        "devsdream:suspicious_stew_regeneration"
+      ]
+    },
+    "criteria": {
+      "has_blue_orchid": {
+        "trigger": "minecraft:inventory_changed",
+        "conditions": {
+          "items": [
+            {
+              "item": "minecraft:blue_orchid"
+            }
+          ]
+        }
+      },
+      "has_dandelion": {
+        "trigger": "minecraft:inventory_changed",
+        "conditions": {
+          "items": [
+            {
+              "item": "minecraft:dandelion"
+            }
+          ]
+        }
+      },
+      "has_the_recipe": {
+        "trigger": "minecraft:recipe_unlocked",
+        "conditions": {
+          "recipe": "devsdream:suspicious_stew_saturation"
+        }
+      }
+    },
+    "requirements": [
+      [
+        "has_blue_orchid",
+        "has_dandelion",
+        "has_the_recipe"
+      ]
+    ]
+  }

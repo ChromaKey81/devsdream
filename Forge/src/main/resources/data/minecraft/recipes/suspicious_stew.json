@@ -1,0 +1,12 @@
+{
+    "type": "minecraft:smithing",
+    "base": {
+        "item": "minecraft:air"
+    },
+    "addition": {
+        "item": "minecraft:air"
+    },
+    "result": {
+        "item": "minecraft:air"
+    }
+}

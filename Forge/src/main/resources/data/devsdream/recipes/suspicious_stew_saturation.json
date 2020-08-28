@@ -1,0 +1,27 @@
+{
+    "type": "devsdream:crafting_shapeless_nbt",
+    "ingredients": [
+        {
+            "item": "minecraft:red_mushroom"
+        },
+        {
+            "item": "minecraft:brown_mushroom"
+        },
+        [
+            {
+                "item": "minecraft:blue_orchid"
+            },
+            {
+                "item": "minecraft:dandelion"
+            }
+        ],
+        {
+            "item": "minecraft:bowl"
+        }
+    ],
+    "group": "suspicious_stew",
+    "result": {
+        "item": "minecraft:suspicious_stew",
+        "nbt": "{Effects:[{EffectId:23b,EffectDuration:7}]}"
+    }
+}

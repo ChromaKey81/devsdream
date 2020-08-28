@@ -1,0 +1,33 @@
+{
+    "type": "devsdream:crafting_shapeless_nbt",
+    "ingredients": [
+        {
+            "item": "minecraft:red_mushroom"
+        },
+        {
+            "item": "minecraft:brown_mushroom"
+        },
+        [
+            {
+                "item": "minecraft:red_tulip"
+            },
+            {
+                "item": "minecraft:orange_tulip"
+            },
+            {
+                "item": "minecraft:white_tulip"
+            },
+            {
+                "item": "minecraft:pink_tulip"
+            }
+        ],
+        {
+            "item": "minecraft:bowl"
+        }
+    ],
+    "group": "suspicious_stew",
+    "result": {
+        "item": "minecraft:suspicious_stew",
+        "nbt": "{Effects:[{EffectId:18b,EffectDuration:180}]}"
+    }
+}

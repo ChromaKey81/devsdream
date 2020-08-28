@@ -1,0 +1,65 @@
+{
+    "parent": "minecraft:recipes/root",
+    "rewards": {
+      "recipes": [
+        "devsdream:suspicious_stew_weakness"
+      ]
+    },
+    "criteria": {
+      "has_red_tulip": {
+        "trigger": "minecraft:inventory_changed",
+        "conditions": {
+          "items": [
+            {
+              "item": "minecraft:red_tulip"
+            }
+          ]
+        }
+      },
+      "has_orange_tulip": {
+        "trigger": "minecraft:inventory_changed",
+        "conditions": {
+          "items": [
+            {
+              "item": "minecraft:orange_tulip"
+            }
+          ]
+        }
+      },
+      "has_white_tulip": {
+        "trigger": "minecraft:inventory_changed",
+        "conditions": {
+          "items": [
+            {
+              "item": "minecraft:white_tulip"
+            }
+          ]
+        }
+      },
+      "has_pink_tulip": {
+        "trigger": "minecraft:inventory_changed",
+        "conditions": {
+          "items": [
+            {
+              "item": "minecraft:pink_tulip"
+            }
+          ]
+        }
+      },
+      "has_the_recipe": {
+        "trigger": "minecraft:recipe_unlocked",
+        "conditions": {
+          "recipe": "devsdream:suspicious_stew_weakness"
+        }
+      }
+    },
+    "requirements": [
+      [
+        "has_red_tulip",
+        "has_orange_tulip",
+        "has_white_tulip",
+        "has_pink_tulip",
+        "has_the_recipe"
+      ]
+    ]
+  }
