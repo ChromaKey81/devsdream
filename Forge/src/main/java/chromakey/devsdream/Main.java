@@ -74,7 +74,8 @@ public class Main {
     public static void registerRecipeSerializers(final RegistryEvent.Register<IRecipeSerializer<?>> event) {
       event.getRegistry().registerAll(
         Serializers.CRAFTING_SHAPELESS_NBT.setRegistryName(new ResourceLocation("devsdream:crafting_shapeless_nbt")),
-        Serializers.CRAFTING_SHAPED_NBT.setRegistryName(new ResourceLocation("devsdream:crafting_shaped_nbt"))
+        Serializers.CRAFTING_SHAPED_NBT.setRegistryName(new ResourceLocation("devsdream:crafting_shaped_nbt")),
+        Serializers.SMITHING_NBT.setRegistryName(new ResourceLocation("devsdream:smithing_nbt"))
       );
     }
 
