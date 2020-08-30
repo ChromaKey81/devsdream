@@ -77,6 +77,16 @@ public class JSONHelper {
         }
     }
 
+    public static Fluid getFluid(String string) throws JsonSyntaxException {
+        ResourceLocation resourcelocation = new ResourceLocation(string);
+        Fluid fluid = ForgeRegistries.FLUIDS.getValue(resourcelocation);
+        if (fluid == null) {
+            throw new JsonSyntaxException("Unknown fluid '" + string + "'");
+        } else {
+            return fluid;
+        }
+    }
+
     public static JsonObject getObjectFromFile(File file) throws JsonSyntaxException {
         try (FileReader reader = new FileReader(file)) {
             return JSONUtils.fromJson(reader, false);

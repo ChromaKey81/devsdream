@@ -8,7 +8,7 @@ import net.minecraft.world.gen.feature.ConfiguredFeature;
 
 public class CustomTree extends Tree {
 
-    private ConfiguredFeature<BaseTreeFeatureConfig, ?> configuredTreeFeature;
+    private final ConfiguredFeature<BaseTreeFeatureConfig, ?> configuredTreeFeature;
 
     public CustomTree(ConfiguredFeature<BaseTreeFeatureConfig, ?> configuredTreeFeature) {
         this.configuredTreeFeature = configuredTreeFeature;

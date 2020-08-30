@@ -7,7 +7,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.mojang.serialization.JsonOps;
 
+import chromakey.devsdream.custom.CustomTree;
+import chromakey.devsdream.custom.CustomWoodType;
 import chromakey.devsdream.util.JSONHelper;
 import net.minecraft.block.*;
 import net.minecraft.block.AbstractBlock.Properties;
@@ -23,6 +26,8 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.gen.feature.BaseTreeFeatureConfig;
+import net.minecraft.world.gen.feature.Feature;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -467,7 +472,10 @@ public class BlockDeserializer {
         return new SandBlock(JSONUtils.getInt(object, "dust_color"), deserializeProperties(object));
       }
       case "sapling": {
-        throw new JsonSyntaxException("Saplings are not yet supported (sorry!)");
+        return new SaplingBlock(new CustomTree(Feature.field_236291_c_.withConfiguration(BaseTreeFeatureConfig.CODEC
+            .parse(JsonOps.INSTANCE, JSONUtils.getJsonObject(object, "tree")).getOrThrow(false, (error) -> {
+              error = new String("Could not parse tree");
+            }))), deserializeProperties(object));
       }
       case "scaffolding": {
         return new ScaffoldingBlock(deserializeProperties(object));
@@ -572,6 +580,11 @@ public class BlockDeserializer {
           return JSONHelper.setRequiredBlockElement(object, "source_block").getDefaultState();
         }, deserializeProperties(object));
       }
+      case "standing_sign": {
+        WoodType woodType = new CustomWoodType(JSONUtils.getString(object, "wood_type"));
+        CustomWoodType.register(woodType);
+        return new StandingSignBlock(deserializeProperties(object), woodType);
+      }
       case "stem": {
         String blockString = JSONUtils.getString(object, "grown_fruit");
         Block block = JSONHelper.setRequiredBlockElement(object, "grown_fruit");
@@ -659,6 +672,11 @@ public class BlockDeserializer {
       }
       case "wall": {
         return new WallBlock(deserializeProperties(object));
+      }
+      case "wall_sign": {
+        WoodType woodType = new CustomWoodType(JSONUtils.getString(object, "wood_type"));
+        CustomWoodType.register(woodType);
+        return new WallSignBlock(deserializeProperties(object), woodType);
       }
       case "wall_skull": {
         String skullTypeString = JSONUtils.getString(object, "skull_type");
