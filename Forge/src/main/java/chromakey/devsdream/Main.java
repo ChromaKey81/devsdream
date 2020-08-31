@@ -73,10 +73,9 @@ public class Main {
     @SubscribeEvent
     public static void registerRecipeSerializers(final RegistryEvent.Register<IRecipeSerializer<?>> event) {
       event.getRegistry().registerAll(
-        Serializers.CRAFTING_SHAPELESS_NBT.setRegistryName(new ResourceLocation("devsdream:crafting_shapeless_nbt")),
-        Serializers.CRAFTING_SHAPED_NBT.setRegistryName(new ResourceLocation("devsdream:crafting_shaped_nbt")),
-        Serializers.SMITHING_NBT.setRegistryName(new ResourceLocation("devsdream:smithing_nbt"))
-      );
+          Serializers.CRAFTING_SHAPELESS_NBT.setRegistryName(new ResourceLocation("devsdream:crafting_shapeless_nbt")),
+          Serializers.CRAFTING_SHAPED_NBT.setRegistryName(new ResourceLocation("devsdream:crafting_shaped_nbt")),
+          Serializers.SMITHING_NBT.setRegistryName(new ResourceLocation("devsdream:smithing_nbt")));
     }
 
     @SubscribeEvent
@@ -99,7 +98,7 @@ public class Main {
       } catch (NullPointerException e) {
       }
       blockList.iterator().forEachRemaining((block) -> {
-          event.getRegistry().register(block);
+        event.getRegistry().register(block);
       });
       logger.info("Registered " + blockList.size() + " blocks");
     }
@@ -124,7 +123,7 @@ public class Main {
       } catch (NullPointerException e) {
       }
       effectList.iterator().forEachRemaining((effect) -> {
-          event.getRegistry().register(effect);
+        event.getRegistry().register(effect);
       });
       logger.info("Registered " + effectList.size() + " effects");
     }
@@ -146,20 +145,25 @@ public class Main {
       try {
         File[] objectpacks = new File(System.getProperty("user.dir") + "/objectpacks").listFiles();
         for (final File namespace : objectpacks) {
-          for (final File armorMaterial : new File(namespace.getPath() + "/items/armor_materials").listFiles()) {
-            String name = FilenameUtils.getBaseName(armorMaterial.getName());
-            ResourceLocation id = new ResourceLocation(namespace.getName() + ":" + name);
-            try {
-              IArmorMaterial newMaterial = ItemDeserializer.deserializeArmorMaterial(name, JSONHelper.getObjectFromFile(armorMaterial));
-              armorMaterialMap.put(id, newMaterial);
-            } catch (JsonSyntaxException e) {
-              logger.error("Couldn't load armor material '" + id.getPath() + "': " + e.getMessage());
+          try {
+            for (final File armorMaterial : new File(namespace.getPath() + "/items/armor_materials").listFiles()) {
+              String name = FilenameUtils.getBaseName(armorMaterial.getName());
+              ResourceLocation id = new ResourceLocation(namespace.getName() + ":" + name);
+              try {
+                IArmorMaterial newMaterial = ItemDeserializer.deserializeArmorMaterial(name,
+                    JSONHelper.getObjectFromFile(armorMaterial));
+                armorMaterialMap.put(id, newMaterial);
+              } catch (JsonSyntaxException e) {
+                logger.error("Couldn't load armor material '" + id.getPath() + "': " + e.getMessage());
+              }
             }
+          } catch (NullPointerException e) {
           }
           for (final File item : new File(namespace.getPath() + "/items").listFiles()) {
             String id = namespace.getName() + ":" + FilenameUtils.getBaseName(item.getName());
             try {
-              Item newItem = ItemDeserializer.deserializeItem(JSONHelper.getObjectFromFile(item), armorMaterialMap, itemTierMap)
+              Item newItem = ItemDeserializer
+                  .deserializeItem(JSONHelper.getObjectFromFile(item), armorMaterialMap, itemTierMap)
                   .setRegistryName(id);
               itemList.add(newItem);
             } catch (JsonSyntaxException e) {
@@ -170,10 +174,9 @@ public class Main {
       } catch (NullPointerException e) {
       }
       itemList.iterator().forEachRemaining((item) -> {
-          event.getRegistry().register(item);
+        event.getRegistry().register(item);
       });
       logger.info("Registered " + itemList.size() + " items");
     }
-
   }
 }
