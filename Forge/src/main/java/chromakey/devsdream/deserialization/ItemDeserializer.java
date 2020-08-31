@@ -9,7 +9,9 @@ import com.google.gson.JsonSyntaxException;
 import chromakey.devsdream.custom.CustomArmorMaterial;
 import chromakey.devsdream.custom.CustomItemTier;
 import chromakey.devsdream.util.JSONHelper;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.BoatEntity;
+import net.minecraft.entity.item.HangingEntity;
 import net.minecraft.entity.item.BoatEntity.Type;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.AirItem;
@@ -35,6 +37,7 @@ import net.minecraft.item.DyeColor;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.DyeableArmorItem;
 import net.minecraft.item.DyeableHorseArmorItem;
+import net.minecraft.entity.item.HangingEntity;
 import net.minecraft.item.EggItem;
 import net.minecraft.item.ElytraItem;
 import net.minecraft.item.EnchantedBookItem;
@@ -43,7 +46,16 @@ import net.minecraft.item.EnderCrystalItem;
 import net.minecraft.item.EnderEyeItem;
 import net.minecraft.item.EnderPearlItem;
 import net.minecraft.item.ExperienceBottleItem;
+import net.minecraft.item.FilledMapItem;
+import net.minecraft.item.FireChargeItem;
+import net.minecraft.item.FireworkRocketItem;
+import net.minecraft.item.FireworkStarItem;
+import net.minecraft.item.FishBucketItem;
+import net.minecraft.item.FishingRodItem;
+import net.minecraft.item.FlintAndSteelItem;
 import net.minecraft.item.Food;
+import net.minecraft.item.GlassBottleItem;
+import net.minecraft.item.HangingEntityItem;
 import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.Item;
@@ -59,7 +71,8 @@ import net.minecraft.util.ResourceLocation;
 
 public class ItemDeserializer {
 
-    public static Item deserializeItem(JsonObject object, Map<ResourceLocation, IArmorMaterial> armorMaterialMap, Map<ResourceLocation, IItemTier> itemTierMap) throws JsonSyntaxException {
+    public static Item deserializeItem(JsonObject object, Map<ResourceLocation, IArmorMaterial> armorMaterialMap,
+            Map<ResourceLocation, IItemTier> itemTierMap) throws JsonSyntaxException {
 
         String type = JSONUtils.getString(object, "type");
         switch (type) {
@@ -78,7 +91,10 @@ public class ItemDeserializer {
                                 deserializeArmorMaterial(JSONUtils.getString(armorMaterial, "name"), armorMaterial),
                                 slot, deserializeProperties(object));
                     } else {
-                        return new ArmorItem(armorMaterialMap.get(new ResourceLocation(JSONUtils.getString(object, "armor_material"))), slot, deserializeProperties(object));
+                        return new ArmorItem(
+                                armorMaterialMap
+                                        .get(new ResourceLocation(JSONUtils.getString(object, "armor_material"))),
+                                slot, deserializeProperties(object));
                     }
                 } else {
                     throw new JsonSyntaxException("Missing armor material, expected to find a JsonObject or a String");
@@ -96,19 +112,23 @@ public class ItemDeserializer {
                 if (object.has("tier")) {
                     if (object.get("tier").isJsonObject()) {
                         JsonObject itemTier = JSONUtils.getJsonObject(object, "tier");
-                        return new AxeItem(deserializeItemTier(itemTier), attackDamage, attackSpeed, deserializeProperties(object));
+                        return new AxeItem(deserializeItemTier(itemTier), attackDamage, attackSpeed,
+                                deserializeProperties(object));
                     } else {
-                        return new AxeItem(itemTierMap.get(new ResourceLocation(JSONUtils.getString(object, "tier"))), attackDamage, attackSpeed, deserializeProperties(object));
+                        return new AxeItem(itemTierMap.get(new ResourceLocation(JSONUtils.getString(object, "tier"))),
+                                attackDamage, attackSpeed, deserializeProperties(object));
                     }
                 } else {
                     throw new JsonSyntaxException("Missing armor material, expected to find a JsonObject or a String");
                 }
             }
             case "banner": {
-                return new BannerItem(JSONHelper.setRequiredBlockElement(object, "floor_banner"), JSONHelper.setRequiredBlockElement(object, "wall_banner"), deserializeProperties(object));
+                return new BannerItem(JSONHelper.setRequiredBlockElement(object, "floor_banner"),
+                        JSONHelper.setRequiredBlockElement(object, "wall_banner"), deserializeProperties(object));
             }
             case "banner_pattern": {
-                return new BannerPatternItem(BannerPattern.byHash(JSONUtils.getString(object, "pattern_hash")), deserializeProperties(object));
+                return new BannerPatternItem(BannerPattern.byHash(JSONUtils.getString(object, "pattern_hash")),
+                        deserializeProperties(object));
             }
             case "bed": {
                 return new BedItem(JSONHelper.setRequiredBlockElement(object, "block"), deserializeProperties(object));
@@ -118,10 +138,12 @@ public class ItemDeserializer {
                         deserializeProperties(object));
             }
             case "block_named": {
-                return new BlockNamedItem(JSONHelper.setRequiredBlockElement(object, "block"), deserializeProperties(object));
+                return new BlockNamedItem(JSONHelper.setRequiredBlockElement(object, "block"),
+                        deserializeProperties(object));
             }
             case "boat": {
-                return new BoatItem(deserializeBoatType(JSONUtils.getString(object, "boat_type")), deserializeProperties(object));
+                return new BoatItem(deserializeBoatType(JSONUtils.getString(object, "boat_type")),
+                        deserializeProperties(object));
             }
             case "bone_meal": {
                 return new BoneMealItem(deserializeProperties(object));
@@ -150,7 +172,8 @@ public class ItemDeserializer {
                 return new DebugStickItem(deserializeProperties(object));
             }
             case "dye": {
-                return new DyeItem(DyeColor.byTranslationKey(JSONUtils.getString(object, "color"), DyeColor.WHITE), deserializeProperties(object));
+                return new DyeItem(DyeColor.byTranslationKey(JSONUtils.getString(object, "color"), DyeColor.WHITE),
+                        deserializeProperties(object));
             }
             case "dyeable_armor": {
                 EquipmentSlotType slot = JSONHelper.setRequiredSlotElement(object, "slot");
@@ -161,14 +184,18 @@ public class ItemDeserializer {
                                 deserializeArmorMaterial(JSONUtils.getString(armorMaterial, "name"), armorMaterial),
                                 slot, deserializeProperties(object));
                     } else {
-                        return new DyeableArmorItem(armorMaterialMap.get(new ResourceLocation(JSONUtils.getString(object, "armor_material"))), slot, deserializeProperties(object));
+                        return new DyeableArmorItem(
+                                armorMaterialMap
+                                        .get(new ResourceLocation(JSONUtils.getString(object, "armor_material"))),
+                                slot, deserializeProperties(object));
                     }
                 } else {
                     throw new JsonSyntaxException("Missing armor material, expected to find a JsonObject or a String");
                 }
             }
             case "dyeable_horse_armor": {
-                return new DyeableHorseArmorItem(JSONUtils.getInt(object, "armor"), JSONUtils.getString(object, "material_name"), deserializeProperties(object));
+                return new DyeableHorseArmorItem(JSONUtils.getInt(object, "armor"),
+                        JSONUtils.getString(object, "material_name"), deserializeProperties(object));
             }
             case "egg": {
                 return new EggItem(deserializeProperties(object));
@@ -194,8 +221,47 @@ public class ItemDeserializer {
             case "experience_bottle": {
                 return new ExperienceBottleItem(deserializeProperties(object));
             }
+            case "filled_map": {
+                return new FilledMapItem(deserializeProperties(object));
+            }
+            case "fire_charge": {
+                return new FireChargeItem(deserializeProperties(object));
+            }
+            case "firework_rocket": {
+                return new FireworkRocketItem(deserializeProperties(object));
+            }
+            case "firework_star": {
+                return new FireworkStarItem(deserializeProperties(object));
+            }
+            case "fish_bucket": {
+                return new FishBucketItem(() -> {
+                    return JSONHelper.getEntity(JSONUtils.getString(object, "entity"));
+                }, () -> {
+                    return JSONHelper.getFluid(JSONUtils.getString(object, "fluid"));
+                }, deserializeProperties(object));
+            }
+            case "fishing_rod": {
+                return new FishingRodItem(deserializeProperties(object));
+            }
+            case "flint_and_steel": {
+                return new FlintAndSteelItem(deserializeProperties(object));
+            }
+            case "glass_bottle": {
+                return new GlassBottleItem(deserializeProperties(object));
+            }
+            case "hanging_entity": {
+                String argument = JSONUtils.getString(object, "hanging_entity");
+                EntityType<?> entity = JSONHelper.getEntity(argument);
+                try {
+                    return new HangingEntityItem((EntityType<? extends HangingEntity>) entity, deserializeProperties(object));
+                } catch (ClassCastException e) {
+                    throw new JsonSyntaxException("The entity " + argument + " is not a hanging entity");
+                }
+            }
             case "sign": {
-                return new SignItem(deserializeProperties(object), JSONHelper.setRequiredBlockElement(object, "floor_block"), JSONHelper.setRequiredBlockElement(object, "wall_block"));
+                return new SignItem(deserializeProperties(object),
+                        JSONHelper.setRequiredBlockElement(object, "floor_block"),
+                        JSONHelper.setRequiredBlockElement(object, "wall_block"));
             }
             default: {
                 throw new JsonSyntaxException("Unknown item type '" + type + "'");
@@ -265,8 +331,9 @@ public class ItemDeserializer {
         }
         if (propertiesObj.has("food")) {
             JsonObject newFood = JSONUtils.getJsonObject(propertiesObj, "food");
-            Food.Builder food = new Food.Builder().hunger(JSONUtils.getInt(newFood, "restores")).saturation(JSONUtils.getFloat(newFood, "saturation"));
-            if(newFood.has("meat")) {
+            Food.Builder food = new Food.Builder().hunger(JSONUtils.getInt(newFood, "restores"))
+                    .saturation(JSONUtils.getFloat(newFood, "saturation"));
+            if (newFood.has("meat")) {
                 boolean isMeat = JSONUtils.getBoolean(newFood, "meat");
                 if (isMeat == true) {
                     food.meat();
@@ -289,7 +356,8 @@ public class ItemDeserializer {
                 effects.forEach((effect) -> {
                     JsonObject effectObj = JSONUtils.getJsonObject(effect, "effect");
                     food.effect(() -> {
-                        return new EffectInstance(JSONHelper.setRequiredEffectElement(effectObj, "effect"), JSONUtils.getInt(effectObj, "duration"), JSONUtils.getInt(effectObj, "amplifier"));
+                        return new EffectInstance(JSONHelper.setRequiredEffectElement(effectObj, "effect"),
+                                JSONUtils.getInt(effectObj, "duration"), JSONUtils.getInt(effectObj, "amplifier"));
                     }, JSONUtils.getFloat(effectObj, "probability"));
                 });
             }
@@ -390,7 +458,7 @@ public class ItemDeserializer {
             }
 
         }
-        if(propertiesObj.has("reparable")) {
+        if (propertiesObj.has("reparable")) {
             if (JSONUtils.getBoolean(propertiesObj, "reparable") == false) {
                 properties.setNoRepair();
             }
