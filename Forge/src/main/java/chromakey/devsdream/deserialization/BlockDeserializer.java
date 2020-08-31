@@ -10,7 +10,6 @@ import com.google.gson.JsonSyntaxException;
 import com.mojang.serialization.JsonOps;
 
 import chromakey.devsdream.custom.CustomTree;
-import chromakey.devsdream.custom.CustomWoodType;
 import chromakey.devsdream.util.JSONHelper;
 import net.minecraft.block.*;
 import net.minecraft.block.AbstractBlock.Properties;
@@ -581,9 +580,7 @@ public class BlockDeserializer {
         }, deserializeProperties(object));
       }
       case "standing_sign": {
-        WoodType woodType = new CustomWoodType(JSONUtils.getString(object, "wood_type"));
-        CustomWoodType.register(woodType);
-        return new StandingSignBlock(deserializeProperties(object), woodType);
+        throw new JsonSyntaxException("Custom signs are not supported yet (sorry!)");
       }
       case "stem": {
         String blockString = JSONUtils.getString(object, "grown_fruit");
@@ -674,9 +671,7 @@ public class BlockDeserializer {
         return new WallBlock(deserializeProperties(object));
       }
       case "wall_sign": {
-        WoodType woodType = new CustomWoodType(JSONUtils.getString(object, "wood_type"));
-        CustomWoodType.register(woodType);
-        return new WallSignBlock(deserializeProperties(object), woodType);
+        throw new JsonSyntaxException("Custom signs are not supported yet (sorry!)");
       }
       case "wall_skull": {
         String skullTypeString = JSONUtils.getString(object, "skull_type");
