@@ -1,0 +1,12 @@
+{
+    "type": "simple",
+    "properties": {
+        "material": "rock",
+        "hardness_and_resistance": {
+            "hardness": -1.0,
+            "resistance": 3600000.0
+        },
+        "drops": false,
+        "allows_spawn": false
+    }
+}
