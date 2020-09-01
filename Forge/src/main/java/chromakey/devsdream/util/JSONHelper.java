@@ -23,8 +23,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class JSONHelper {
 
-    public static Block setRequiredBlockElement(JsonObject object, String element) throws JsonSyntaxException {
-        String argument = JSONUtils.getString(object, element);
+    public static Block getBlock(String argument) throws JsonSyntaxException {
         ResourceLocation resourcelocation = new ResourceLocation(argument);
         Block block = ForgeRegistries.BLOCKS.getValue(resourcelocation);
         if (block == null) {
@@ -97,7 +96,8 @@ public class JSONHelper {
         }
     }
 
-    public static EquipmentSlotType setRequiredSlotElement(JsonObject object, String element) throws JsonSyntaxException {
+    public static EquipmentSlotType setRequiredSlotElement(JsonObject object, String element)
+            throws JsonSyntaxException {
         String argument = JSONUtils.getString(object, element);
         switch (argument) {
             case "feet": {

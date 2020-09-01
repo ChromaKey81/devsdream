@@ -27,6 +27,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.gen.feature.BaseTreeFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -46,7 +47,7 @@ public class BlockDeserializer {
       }
       case "attached_stem": {
         String blockString = JSONUtils.getString(object, "grown_fruit");
-        Block block = JSONHelper.setRequiredBlockElement(object, "grown_fruit");
+        Block block = JSONHelper.getBlock(JSONUtils.getString(object, "grown_fruit"));
         if (block instanceof StemGrownBlock) {
           return new AttachedStemBlock((StemGrownBlock) block, deserializeProperties(object));
         } else {
@@ -143,7 +144,7 @@ public class BlockDeserializer {
       }
       case "chorus_flower": {
         String blockString = JSONUtils.getString(object, "chorus_plant");
-        Block block = JSONHelper.setRequiredBlockElement(object, "chorus_plant");
+        Block block = JSONHelper.getBlock(JSONUtils.getString(object, "chorus_plant"));
         if (block instanceof ChorusPlantBlock) {
           return new ChorusFlowerBlock((ChorusPlantBlock) block, deserializeProperties(object));
         } else {
@@ -166,28 +167,29 @@ public class BlockDeserializer {
         return new ComposterBlock(deserializeProperties(object));
       }
       case "concrete_powder": {
-        return new ConcretePowderBlock(JSONHelper.setRequiredBlockElement(object, "solidified_block"),
+        return new ConcretePowderBlock(JSONHelper.getBlock(JSONUtils.getString(object, "solidified_block")),
             deserializeProperties(object));
       }
       case "conduit": {
         return new ConduitBlock(deserializeProperties(object));
       }
       case "coral": {
-        return new CoralBlock(JSONHelper.setRequiredBlockElement(object, "dead_block"), deserializeProperties(object));
+        return new CoralBlock(JSONHelper.getBlock(JSONUtils.getString(object, "dead_block")),
+            deserializeProperties(object));
       }
       case "coral_fan": {
         return new CoralFanBlock(deserializeProperties(object));
       }
       case "coral_fin": {
-        return new CoralFinBlock(JSONHelper.setRequiredBlockElement(object, "dead_block"),
+        return new CoralFinBlock(JSONHelper.getBlock(JSONUtils.getString(object, "dead_block")),
             deserializeProperties(object));
       }
       case "coral_plant": {
-        return new CoralPlantBlock(JSONHelper.setRequiredBlockElement(object, "dead_block"),
+        return new CoralPlantBlock(JSONHelper.getBlock(JSONUtils.getString(object, "dead_block")),
             deserializeProperties(object));
       }
       case "coral_wall_fan": {
-        return new CoralWallFanBlock(JSONHelper.setRequiredBlockElement(object, "dead_block"),
+        return new CoralWallFanBlock(JSONHelper.getBlock(JSONUtils.getString(object, "dead_block")),
             deserializeProperties(object));
       }
       case "crafting_table": {
@@ -271,7 +273,7 @@ public class BlockDeserializer {
       }
       case "flower_pot": {
         return new FlowerPotBlock(null, () -> {
-          return JSONHelper.setRequiredBlockElement(object, "potted_block");
+          return JSONHelper.getBlock(JSONUtils.getString(object, "potted_block"));
         }, deserializeProperties(object));
       }
       case "flowing_fluid": {
@@ -493,7 +495,8 @@ public class BlockDeserializer {
         return new ShulkerBoxBlock(color, deserializeProperties(object));
       }
       case "silverfish": {
-        return new SilverfishBlock(JSONHelper.setRequiredBlockElement(object, "mimics"), deserializeProperties(object));
+        return new SilverfishBlock(JSONHelper.getBlock(JSONUtils.getString(object, "mimics")),
+            deserializeProperties(object));
       }
       case "six_way": {
         return new SixWayBlock(JSONUtils.getFloat(object, "apothem"), deserializeProperties(object));
@@ -576,7 +579,7 @@ public class BlockDeserializer {
       }
       case "stairs": {
         return new StairsBlock(() -> {
-          return JSONHelper.setRequiredBlockElement(object, "source_block").getDefaultState();
+          return JSONHelper.getBlock(JSONUtils.getString(object, "source_block")).getDefaultState();
         }, deserializeProperties(object));
       }
       case "standing_sign": {
@@ -584,7 +587,7 @@ public class BlockDeserializer {
       }
       case "stem": {
         String blockString = JSONUtils.getString(object, "grown_fruit");
-        Block block = JSONHelper.setRequiredBlockElement(object, "grown_fruit");
+        Block block = JSONHelper.getBlock(JSONUtils.getString(object, "grown_fruit"));
         if (block instanceof StemGrownBlock) {
           return new StemBlock((StemGrownBlock) block, deserializeProperties(object));
         } else {
@@ -641,7 +644,7 @@ public class BlockDeserializer {
       }
       case "trip_wire": {
         String blockString = JSONUtils.getString(object, "hook");
-        Block block = JSONHelper.setRequiredBlockElement(object, "hook");
+        Block block = JSONHelper.getBlock(JSONUtils.getString(object, "hook"));
         if (block instanceof TripWireHookBlock) {
           return new TripWireBlock((TripWireHookBlock) block, deserializeProperties(object));
         } else {
@@ -805,7 +808,7 @@ public class BlockDeserializer {
       properties.jumpFactor(JSONUtils.getFloat(propertiesObj, "jump_factor"));
     }
     if (propertiesObj.has("loot_from")) {
-      properties.lootFrom(JSONHelper.setRequiredBlockElement(propertiesObj, "loot_from"));
+      properties.lootFrom(JSONHelper.getBlock(JSONUtils.getString(propertiesObj, "loot_from")));
     }
     if (propertiesObj.has("solid")) {
       if (JSONUtils.getBoolean(propertiesObj, "solid") == false) {
@@ -821,7 +824,7 @@ public class BlockDeserializer {
       properties.harvestLevel(JSONUtils.getInt(propertiesObj, "harvest_level"));
     }
     if (propertiesObj.has("harvest_tool")) {
-      properties.harvestTool(JSONHelper.setRequiredToolType(propertiesObj, "harvest_tool"));
+      properties.harvestTool(ToolType.get(JSONUtils.getString(propertiesObj, "harvest_tool")));
     }
     if (propertiesObj.has("variable_opacity")) {
       if (JSONUtils.getBoolean(propertiesObj, "transparent") == true) {
