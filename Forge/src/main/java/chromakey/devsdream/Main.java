@@ -84,15 +84,19 @@ public class Main {
       try {
         File[] objectpacks = new File(System.getProperty("user.dir") + "/objectpacks").listFiles();
         for (final File namespace : objectpacks) {
-          for (final File block : new File(namespace.getPath() + "/blocks").listFiles()) {
-            String id = namespace.getName() + ":" + FilenameUtils.getBaseName(block.getName());
-            try {
-              Block newBlock = BlockDeserializer.deserializeBlock(JSONHelper.getObjectFromFile(block))
-                  .setRegistryName(id);
-              blockList.add(newBlock);
-            } catch (JsonSyntaxException e) {
-              logger.error("Couldn't load block '" + id + "': " + e.getMessage());
+          try {
+            for (final File block : new File(namespace.getPath() + "/blocks").listFiles()) {
+              String id = namespace.getName() + ":" + FilenameUtils.getBaseName(block.getName());
+              try {
+                Block newBlock = BlockDeserializer.deserializeBlock(JSONHelper.getObjectFromFile(block))
+                    .setRegistryName(id);
+                blockList.add(newBlock);
+              } catch (JsonSyntaxException e) {
+                logger.error("Couldn't load block '" + id + "': " + e.getMessage());
+              }
             }
+          } catch (NullPointerException e) {
+
           }
         }
       } catch (NullPointerException e) {
@@ -109,15 +113,18 @@ public class Main {
       try {
         File[] objectpacks = new File(System.getProperty("user.dir") + "/objectpacks").listFiles();
         for (final File namespace : objectpacks) {
-          for (final File effect : new File(namespace.getPath() + "/effects").listFiles()) {
-            String id = namespace.getName() + ":" + FilenameUtils.getBaseName(effect.getName());
-            try {
-              Effect newEffect = EffectDeserializer.deserializeEffect(JSONHelper.getObjectFromFile(effect))
-                  .setRegistryName(id);
-              effectList.add(newEffect);
-            } catch (JsonSyntaxException e) {
-              logger.error("Couldn't load effect '" + id + "': " + e.getMessage());
+          try {
+            for (final File effect : new File(namespace.getPath() + "/effects").listFiles()) {
+              String id = namespace.getName() + ":" + FilenameUtils.getBaseName(effect.getName());
+              try {
+                Effect newEffect = EffectDeserializer.deserializeEffect(JSONHelper.getObjectFromFile(effect))
+                    .setRegistryName(id);
+                effectList.add(newEffect);
+              } catch (JsonSyntaxException e) {
+                logger.error("Couldn't load effect'" + id + "': " + e.getMessage());
+              }
             }
+          } catch (NullPointerException e) {
           }
         }
       } catch (NullPointerException e) {
@@ -146,6 +153,20 @@ public class Main {
         File[] objectpacks = new File(System.getProperty("user.dir") + "/objectpacks").listFiles();
         for (final File namespace : objectpacks) {
           try {
+            for (final File itemTier : new File(namespace.getPath() + "/items/item_tiers").listFiles()) {
+              ResourceLocation id = new ResourceLocation(
+                  namespace.getName() + ":" + FilenameUtils.getBaseName(itemTier.getName()));
+              try {
+                IItemTier newTier = ItemDeserializer.deserializeItemTier(JSONHelper.getObjectFromFile(itemTier));
+                itemTierMap.put(id, newTier);
+              } catch (JsonSyntaxException e) {
+                logger.error("Couldn't load item tier '" + id.getPath() + "': " + e.getMessage());
+              }
+            }
+          } catch (NullPointerException e) {
+
+          }
+          try {
             for (final File armorMaterial : new File(namespace.getPath() + "/items/armor_materials").listFiles()) {
               String name = FilenameUtils.getBaseName(armorMaterial.getName());
               ResourceLocation id = new ResourceLocation(namespace.getName() + ":" + name);
@@ -158,17 +179,22 @@ public class Main {
               }
             }
           } catch (NullPointerException e) {
+
           }
-          for (final File item : new File(namespace.getPath() + "/items").listFiles()) {
-            String id = namespace.getName() + ":" + FilenameUtils.getBaseName(item.getName());
-            try {
-              Item newItem = ItemDeserializer
-                  .deserializeItem(JSONHelper.getObjectFromFile(item), armorMaterialMap, itemTierMap)
-                  .setRegistryName(id);
-              itemList.add(newItem);
-            } catch (JsonSyntaxException e) {
-              logger.error("Couldn't load item '" + id + "': " + e.getMessage());
+          try {
+            for (final File item : new File(namespace.getPath() + "/items").listFiles()) {
+              String id = namespace.getName() + ":" + FilenameUtils.getBaseName(item.getName());
+              try {
+                Item newItem = ItemDeserializer
+                    .deserializeItem(JSONHelper.getObjectFromFile(item), armorMaterialMap, itemTierMap)
+                    .setRegistryName(id);
+                itemList.add(newItem);
+              } catch (JsonSyntaxException e) {
+                logger.error("Couldn't load item '" + id + "': " + e.getMessage());
+              }
             }
+          } catch (NullPointerException e) {
+
           }
         }
       } catch (NullPointerException e) {
