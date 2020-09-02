@@ -1,13 +1,16 @@
 package chromakey.devsdream.deserialization;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
+import chromakey.devsdream.complex.ComplexItem;
 import chromakey.devsdream.custom.CustomArmorMaterial;
 import chromakey.devsdream.custom.CustomItemTier;
 import chromakey.devsdream.util.JSONHelper;
@@ -111,6 +114,7 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.tileentity.BannerPattern;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.ToolType;
 
 public class ItemDeserializer {
@@ -122,6 +126,9 @@ public class ItemDeserializer {
         switch (type) {
             case "simple": {
                 return new Item(deserializeProperties(object));
+            }
+            case "complex": {
+                return deserializeComplexItem(object);
             }
             case "air": {
                 return new AirItem(JSONHelper.getBlock(JSONUtils.getString(object, "block")),
@@ -751,10 +758,20 @@ public class ItemDeserializer {
 
         }
         if (propertiesObj.has("repairable")) {
-            if (JSONUtils.getBoolean(propertiesObj, "reparable") == false) {
+            if (JSONUtils.getBoolean(propertiesObj, "repairable") == false) {
                 properties.setNoRepair();
             }
         }
         return properties;
+    }
+
+    private static ComplexItem deserializeComplexItem(JsonObject object) throws JsonSyntaxException {
+        List<ITextComponent> tooltips = Lists.newArrayList();
+        if (object.has("information")) {
+            JSONUtils.getJsonArray(object, "information").iterator().forEachRemaining((tooltip) -> {
+                tooltips.add(ITextComponent.Serializer.func_240641_a_(tooltip));
+            });
+        }
+        return new ComplexItem(deserializeProperties(object), tooltips);
     }
 }
