@@ -7,6 +7,7 @@ import java.util.Set;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
@@ -767,11 +768,51 @@ public class ItemDeserializer {
 
     private static ComplexItem deserializeComplexItem(JsonObject object) throws JsonSyntaxException {
         List<ITextComponent> tooltips = Lists.newArrayList();
+        boolean hasEffect = false;
+        int enchantability = 0;
+        boolean canBreakBlocks = true;
+        ResourceLocation onUseFunction = null;
+        ResourceLocation rightClickFunctionMainhand = null;
+        ResourceLocation rightClickFunctionOffhand = null;
+        ResourceLocation rightClickPredicate = null;
         if (object.has("information")) {
             JSONUtils.getJsonArray(object, "information").iterator().forEachRemaining((tooltip) -> {
                 tooltips.add(ITextComponent.Serializer.func_240641_a_(tooltip));
             });
         }
-        return new ComplexItem(deserializeProperties(object), tooltips);
+        if (object.has("has_effect")) {
+            hasEffect = JSONUtils.getBoolean(object, "has_effect");
+        }
+        if (object.has("enchantability")) {
+            enchantability = JSONUtils.getInt(object, "enchantability");
+        }
+        if (object.has("can_break_blocks")) {
+            canBreakBlocks = JSONUtils.getBoolean(object, "can_break_blocks");
+        }
+        if (object.has("right_click")) {
+            JsonObject rightClick = JSONUtils.getJsonObject(object, "right_click");
+            JsonElement function = rightClick.get("function");
+            if (function == null) {
+                throw new JsonSyntaxException("Missing function, expected to find a JsonObject or a String");
+            } else {
+                if (function.isJsonObject()) {
+                    JsonObject functionObj = JSONUtils.getJsonObject(rightClick, "function");
+                    if (functionObj.has("mainhand")) {
+                        rightClickFunctionMainhand = new ResourceLocation(JSONUtils.getString(functionObj, "mainhand"));
+                    }
+                    if (functionObj.has("offhand")) {
+                        rightClickFunctionOffhand = new ResourceLocation(JSONUtils.getString(functionObj, "offhand"));
+                    }
+                } else {
+                    ResourceLocation rightClickFunction = new ResourceLocation(JSONUtils.getString(function, "function"));
+                    rightClickFunctionMainhand = rightClickFunction;
+                    rightClickFunctionOffhand = rightClickFunction;
+                }
+            }
+            if (rightClick.has("predicate")) {
+                rightClickPredicate = new ResourceLocation(JSONUtils.getString(rightClick, "predicate"));
+            }
+        }
+        return new ComplexItem(deserializeProperties(object), tooltips, hasEffect, enchantability, canBreakBlocks, onUseFunction, rightClickFunctionMainhand, rightClickFunctionOffhand, rightClickPredicate);
     }
 }
