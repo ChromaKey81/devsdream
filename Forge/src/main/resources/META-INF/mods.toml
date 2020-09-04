@@ -14,7 +14,7 @@ license="MIT License"
 # The modid of the mod
 modId="devsdream" #mandatory
 # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
-version="0.1" #mandatory
+version="0.2" #mandatory
  # A display name for the mod
 displayName="Developer's Dream" #mandatory
 

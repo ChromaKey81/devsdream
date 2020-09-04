@@ -107,6 +107,7 @@ import net.minecraft.item.TieredItem;
 import net.minecraft.item.TippedArrowItem;
 import net.minecraft.item.ToolItem;
 import net.minecraft.item.TridentItem;
+import net.minecraft.item.UseAction;
 import net.minecraft.item.WallOrFloorItem;
 import net.minecraft.item.WritableBookItem;
 import net.minecraft.item.WrittenBookItem;
@@ -766,7 +767,7 @@ public class ItemDeserializer {
         return properties;
     }
 
-    private static ComplexItem deserializeComplexItem(JsonObject object) throws JsonSyntaxException {
+    public static ComplexItem deserializeComplexItem(JsonObject object) throws JsonSyntaxException {
         List<ITextComponent> tooltips = Lists.newArrayList();
         boolean hasEffect = false;
         int enchantability = 0;
@@ -775,6 +776,10 @@ public class ItemDeserializer {
         ResourceLocation rightClickFunctionMainhand = null;
         ResourceLocation rightClickFunctionOffhand = null;
         ResourceLocation rightClickPredicate = null;
+        String appendToKeyTag = null;
+        int useDuration = 0;
+        UseAction useAction = UseAction.NONE;
+        ResourceLocation onItemUseFinishFunction = null;
         if (object.has("information")) {
             JSONUtils.getJsonArray(object, "information").iterator().forEachRemaining((tooltip) -> {
                 tooltips.add(ITextComponent.Serializer.func_240641_a_(tooltip));
@@ -813,6 +818,51 @@ public class ItemDeserializer {
                 rightClickPredicate = new ResourceLocation(JSONUtils.getString(rightClick, "predicate"));
             }
         }
-        return new ComplexItem(deserializeProperties(object), tooltips, hasEffect, enchantability, canBreakBlocks, onUseFunction, rightClickFunctionMainhand, rightClickFunctionOffhand, rightClickPredicate);
+        if (object.has("append_to_key_tag")) {
+            appendToKeyTag = JSONUtils.getString(object, "append_to_key_tag");
+        }
+        if (object.has("use_duration")) {
+            useDuration = JSONUtils.getInt(object, "use_duration");
+        }
+        if (object.has("use_action")) {
+            String action = JSONUtils.getString(object, "use_action");
+            switch (action) {
+                case "none": {
+                    useAction = UseAction.NONE;
+                    break;
+                }
+                case "eat": {
+                    useAction = UseAction.EAT;
+                    break;
+                }
+                case "drink": {
+                    useAction = UseAction.DRINK;
+                    break;
+                }
+                case "block": {
+                    useAction = UseAction.BLOCK;
+                    break;
+                }
+                case "bow": {
+                    useAction = UseAction.BOW;
+                    break;
+                }
+                case "spear": {
+                    useAction = UseAction.SPEAR;
+                    break;
+                }
+                case "crossbow": {
+                    useAction = UseAction.CROSSBOW;
+                    break;
+                }
+                default: {
+                    throw new JsonSyntaxException("Unknown use action '" + action + "'");
+                }
+            }
+        }
+        if (object.has("on_item_use_finish")) {
+            onItemUseFinishFunction = new ResourceLocation(JSONUtils.getString(object, "on_item_use_finish"));
+        }
+        return new ComplexItem(deserializeProperties(object), tooltips, hasEffect, enchantability, canBreakBlocks, onUseFunction, rightClickFunctionMainhand, rightClickFunctionOffhand, rightClickPredicate, appendToKeyTag, useDuration, useAction, onItemUseFinishFunction);
     }
 }

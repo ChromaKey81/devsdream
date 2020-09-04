@@ -9,11 +9,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.advancements.FunctionManager;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.UseAction;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootParameterSets;
 import net.minecraft.loot.LootParameters;
@@ -21,6 +23,7 @@ import net.minecraft.stats.Stats;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -38,8 +41,16 @@ public class ComplexItem extends Item {
     private final ResourceLocation rightClickFunctionMainhand;
     private final ResourceLocation rightClickFunctionOffhand;
     private final ResourceLocation rightClickPredicate;
+    private final String appendToKeyTag;
+    private final int useDuration;
+    private final UseAction useAction;
+    private final ResourceLocation onItemUseFinishFunction;
 
-    public ComplexItem(Properties properties, List<ITextComponent> tooltip, boolean hasEffect, int enchantability, boolean canBreakBlocks, @Nullable ResourceLocation onUseFunction, @Nullable ResourceLocation rightClickFunctionMainhand, @Nullable ResourceLocation rightClickFunctionOffhand, @Nullable ResourceLocation rightClickPredicate) {
+    public ComplexItem(Properties properties, List<ITextComponent> tooltip, boolean hasEffect, int enchantability,
+            boolean canBreakBlocks, @Nullable ResourceLocation onUseFunction,
+            @Nullable ResourceLocation rightClickFunctionMainhand, @Nullable ResourceLocation rightClickFunctionOffhand,
+            @Nullable ResourceLocation rightClickPredicate, String appendToKeyTag, int useDuration, UseAction useAction,
+            ResourceLocation onItemUseFinishFunction) {
         super(properties);
         this.tooltip = tooltip;
         this.hasEffect = hasEffect;
@@ -49,11 +60,16 @@ public class ComplexItem extends Item {
         this.rightClickFunctionMainhand = rightClickFunctionMainhand;
         this.rightClickFunctionOffhand = rightClickFunctionOffhand;
         this.rightClickPredicate = rightClickPredicate;
+        this.appendToKeyTag = appendToKeyTag;
+        this.useDuration = useDuration;
+        this.useAction = useAction;
+        this.onItemUseFinishFunction = onItemUseFinishFunction;
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip,
+            ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
         this.tooltip.iterator().forEachRemaining((line) -> {
             tooltip.add(line);
@@ -68,11 +84,11 @@ public class ComplexItem extends Item {
         }
     }
 
-    public int getEnchantability() {
+    public int getItemEnchantability() {
         return this.enchantability;
     }
 
-    public boolean canPlayerBreakBlockWhileHolding() {
+    public boolean canPlayerBreakBlockWhileHolding(BlockState state, World worldIn, BlockPos pos, PlayerEntity player) {
         return this.canBreakBlocks;
     }
 
@@ -80,7 +96,7 @@ public class ComplexItem extends Item {
         if (this.onUseFunction != null && worldIn.isRemote()) {
             FunctionManager manager = worldIn.getServer().getFunctionManager();
             try {
-                manager.execute(manager.get(this.onUseFunction).orElseThrow(), livingEntityIn.getCommandSource());
+                manager.execute(manager.get(this.onUseFunction).get(), livingEntityIn.getCommandSource());
             } catch (NoSuchElementException e) {
                 logger.error("Unknown function '" + this.onUseFunction.getPath() + "'");
             }
@@ -88,50 +104,83 @@ public class ComplexItem extends Item {
     }
 
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-        if ((this.isFood() && playerIn.canEat(this.getFood().canEatWhenFull())) || (this.rightClickFunctionMainhand == null && handIn == Hand.MAIN_HAND) || (this.rightClickFunctionOffhand == null && handIn == Hand.OFF_HAND)) {
-            logger.debug("Food");
+        if ((this.isFood() && playerIn.canEat(this.getFood().canEatWhenFull()))
+                || (this.rightClickFunctionMainhand == null && handIn == Hand.MAIN_HAND)
+                || (this.rightClickFunctionOffhand == null && handIn == Hand.OFF_HAND)) {
             return super.onItemRightClick(worldIn, playerIn, handIn);
-         } else {
+        } else {
             ItemStack itemstack = playerIn.getHeldItem(handIn);
             boolean flag;
             if (!worldIn.isRemote) {
                 if (this.rightClickPredicate == null) {
                     flag = true;
-                    logger.debug("Predicate is null, setting to true");
                 } else {
-                    flag = worldIn.getServer().func_229736_aP_().func_227517_a_(this.rightClickPredicate).test(new LootContext.Builder(worldIn.getServer().getWorld(playerIn.getEntityWorld().getDimensionKey())).withParameter(LootParameters.THIS_ENTITY, playerIn).withParameter(LootParameters.field_237457_g_, playerIn.getPositionVec()).build(LootParameterSets.COMMAND));
-                    logger.debug("Predicate tested, setting to " + flag);
+                    try {
+                        flag = worldIn.getServer().func_229736_aP_().func_227517_a_(this.rightClickPredicate)
+                                .test(new LootContext.Builder(
+                                        worldIn.getServer().getWorld(playerIn.getEntityWorld().getDimensionKey()))
+                                                .withParameter(LootParameters.THIS_ENTITY, playerIn)
+                                                .withParameter(LootParameters.field_237457_g_, playerIn.getPositionVec())
+                                                .build(LootParameterSets.COMMAND));
+                    } catch (NullPointerException e) {
+                        flag = true;
+                    }
                 }
                 if (flag == true) {
                     playerIn.addStat(Stats.ITEM_USED.get(this));
-                    logger.debug("Player stat added");
                     FunctionManager manager = worldIn.getServer().getFunctionManager();
-                    logger.debug("Got function manager");
                     if (handIn == Hand.MAIN_HAND) {
                         try {
-                            worldIn.getServer().getFunctionManager().execute(manager.get(this.rightClickFunctionMainhand).orElseThrow(), playerIn.getCommandSource());
-                            logger.debug("Executing mainhand function");
+                            manager.execute(manager.get(this.rightClickFunctionMainhand).get(),
+                                    playerIn.getCommandSource());
                         } catch (NoSuchElementException e) {
-                            logger.error("Unknown function '" + this.onUseFunction.getPath() + "'");
                         }
                     }
                     if (handIn == Hand.OFF_HAND) {
                         try {
-                            worldIn.getServer().getFunctionManager().execute(manager.get(this.rightClickFunctionOffhand).orElseThrow(), playerIn.getCommandSource());
-                            logger.debug("Executing offhand function");
+                            manager.execute(manager.get(this.rightClickFunctionOffhand).get(),
+                                    playerIn.getCommandSource());
                         } catch (NoSuchElementException e) {
-                            logger.error("Unknown function '" + this.onUseFunction.getPath() + "'");
                         }
                     }
-                    logger.debug("Success");
                     return ActionResult.resultSuccess(itemstack);
                 } else {
-                    logger.debug("Pass");
                     return ActionResult.resultPass(itemstack);
                 }
             } else {
                 return ActionResult.resultPass(itemstack);
             }
-         }
+        }
+    }
+
+    public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving) {
+        if(this.isFood() || this.onItemUseFinishFunction == null) {
+            return entityLiving.onFoodEaten(worldIn, stack);
+        } else {
+            if (!worldIn.isRemote()) {
+                FunctionManager manager = worldIn.getServer().getFunctionManager();
+                try {
+                    manager.execute(manager.get(this.onItemUseFinishFunction).get(), entityLiving.getCommandSource());
+                } catch (NoSuchElementException e) {
+                }
+            }
+            return stack;
+        }
+     }
+
+    public int getUseDuration(ItemStack stack) {
+        return this.useDuration;
+    }
+
+    public UseAction getUseAction(ItemStack stack) {
+        return this.useAction;
+    }
+
+    public String getTranslationKey(ItemStack stack) {
+        if (this.appendToKeyTag == null) {
+            return super.getTranslationKey(stack);
+        } else {
+            return this.getTranslationKey() + this.appendToKeyTag + stack.getTag().getString(this.appendToKeyTag);
+        }
     }
 }
