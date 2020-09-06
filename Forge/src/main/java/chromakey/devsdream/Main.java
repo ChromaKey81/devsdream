@@ -16,6 +16,7 @@ import net.minecraftforge.fml.common.Mod;
 
 import chromakey.devsdream.command.impl.AdvancedEffectCommand;
 import chromakey.devsdream.command.impl.AirCommand;
+import chromakey.devsdream.command.impl.CalculateCommand;
 import chromakey.devsdream.command.impl.DamageCommand;
 import chromakey.devsdream.command.impl.ExhaustCommand;
 import chromakey.devsdream.command.impl.FeedCommand;
@@ -65,6 +66,7 @@ public class Main {
     IgniteCommand.register(event.getDispatcher());
     DamageItemCommand.register(event.getDispatcher());
     RandomNumberCommand.register(event.getDispatcher());
+    CalculateCommand.register(event.getDispatcher());
   }
 
   @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
