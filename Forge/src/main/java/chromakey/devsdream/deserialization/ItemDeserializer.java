@@ -628,23 +628,14 @@ public class ItemDeserializer {
             JsonObject newFood = JSONUtils.getJsonObject(propertiesObj, "food");
             Food.Builder food = new Food.Builder().hunger(JSONUtils.getInt(newFood, "restores"))
                     .saturation(JSONUtils.getFloat(newFood, "saturation"));
-            if (newFood.has("meat")) {
-                boolean isMeat = JSONUtils.getBoolean(newFood, "meat");
-                if (isMeat == true) {
-                    food.meat();
-                }
+            if (newFood.has("meat") && JSONUtils.getBoolean(newFood, "meat")) {
+                food.meat();
             }
-            if (newFood.has("always_edible")) {
-                boolean alwaysEdible = JSONUtils.getBoolean(newFood, "always_edible");
-                if (alwaysEdible == true) {
-                    food.setAlwaysEdible();
-                }
+            if (newFood.has("always_edible") && JSONUtils.getBoolean(newFood, "always_edible")) {
+                food.setAlwaysEdible();
             }
-            if (newFood.has("fast_to_eat")) {
-                boolean fastToEat = JSONUtils.getBoolean(newFood, "fast_to_eat");
-                if (fastToEat == true) {
-                    food.fastToEat();
-                }
+            if (newFood.has("fast_to_eat") && JSONUtils.getBoolean(newFood, "fast_to_eat")) {
+               food.fastToEat();
             }
             if (newFood.has("effects")) {
                 JsonArray effects = JSONUtils.getJsonArray(newFood, "effects");

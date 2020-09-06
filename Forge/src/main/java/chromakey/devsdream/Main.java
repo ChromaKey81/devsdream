@@ -14,7 +14,8 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import chromakey.devsdream.command.impl.AdvancedEffectCommand;
+import chromakey.devsdream.command.impl.EffectCommand;
+import chromakey.devsdream.command.impl.ExecuteCommand;
 import chromakey.devsdream.command.impl.AirCommand;
 import chromakey.devsdream.command.impl.CalculateCommand;
 import chromakey.devsdream.command.impl.DamageCommand;
@@ -57,7 +58,7 @@ public class Main {
   @SubscribeEvent
   public void onCommandsRegister(RegisterCommandsEvent event) {
     logger.info("Successfully registered commands");
-    AdvancedEffectCommand.register(event.getDispatcher());
+    EffectCommand.register(event.getDispatcher());
     HealthCommand.register(event.getDispatcher());
     DamageCommand.register(event.getDispatcher());
     FeedCommand.register(event.getDispatcher());
@@ -67,6 +68,7 @@ public class Main {
     DamageItemCommand.register(event.getDispatcher());
     RandomNumberCommand.register(event.getDispatcher());
     CalculateCommand.register(event.getDispatcher());
+    ExecuteCommand.register(event.getDispatcher());
   }
 
   @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)

@@ -7,7 +7,6 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import com.mojang.brigadier.tree.LiteralCommandNode;
 
 import java.util.Collection;
 import java.util.List;
@@ -23,7 +22,7 @@ import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.text.TranslationTextComponent;
 
-public class AdvancedEffectCommand {
+public class EffectCommand {
    private static final SimpleCommandExceptionType GIVE_FAILED_EXCEPTION = new SimpleCommandExceptionType(
          new TranslationTextComponent("commands.effect.give.failed"));
    private static final SimpleCommandExceptionType CLEAR_EVERYTHING_FAILED_EXCEPTION = new SimpleCommandExceptionType(
@@ -32,8 +31,8 @@ public class AdvancedEffectCommand {
          new TranslationTextComponent("commands.effect.clear.specific.failed"));
 
    public static void register(CommandDispatcher<CommandSource> dispatcher) {
-      LiteralCommandNode<CommandSource> literalCommandNode = dispatcher
-            .register(Commands.literal("advancedeffect").requires((user) -> {
+      dispatcher
+            .register(Commands.literal("dreameffect").requires((user) -> {
                return user.hasPermissionLevel(2);
             }).then(Commands.literal("clear").executes((clearAllUser) -> {
                return clearAllEffects(clearAllUser.getSource(),
@@ -88,9 +87,6 @@ public class AdvancedEffectCommand {
                                                          !BoolArgumentType.getBool(p_229759_0_, "hideIcon"),
                                                          BoolArgumentType.getBool(p_229759_0_, "isAmbient"));
                                                 }))))))))));
-      dispatcher.register(Commands.literal("adveffect").requires((user) -> {
-         return user.hasPermissionLevel(2);
-      }).redirect(literalCommandNode));
    }
 
    private static int addEffect(CommandSource source, Collection<? extends Entity> targets, Effect effect,
