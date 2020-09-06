@@ -5,9 +5,6 @@ import java.util.NoSuchElementException;
 
 import javax.annotation.Nullable;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.minecraft.advancements.FunctionManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
@@ -31,8 +28,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ComplexItem extends Item {
 
-    private static final Logger logger = LogManager.getLogger("devsdream");
-
     private final List<ITextComponent> tooltip;
     private final boolean hasEffect;
     private final int enchantability;
@@ -50,7 +45,7 @@ public class ComplexItem extends Item {
             boolean canBreakBlocks, @Nullable ResourceLocation onUseFunction,
             @Nullable ResourceLocation rightClickFunctionMainhand, @Nullable ResourceLocation rightClickFunctionOffhand,
             @Nullable ResourceLocation rightClickPredicate, String appendToKeyTag, int useDuration, UseAction useAction,
-            ResourceLocation onItemUseFinishFunction) {
+            @Nullable ResourceLocation onItemUseFinishFunction) {
         super(properties);
         this.tooltip = tooltip;
         this.hasEffect = hasEffect;
@@ -96,9 +91,8 @@ public class ComplexItem extends Item {
         if (this.onUseFunction != null && worldIn.isRemote()) {
             FunctionManager manager = worldIn.getServer().getFunctionManager();
             try {
-                manager.execute(manager.get(this.onUseFunction).get(), livingEntityIn.getCommandSource());
+                manager.execute(manager.get(this.onUseFunction).get(), livingEntityIn.getCommandSource().withFeedbackDisabled());
             } catch (NoSuchElementException e) {
-                logger.error("Unknown function '" + this.onUseFunction.getPath() + "'");
             }
         }
     }
@@ -132,14 +126,14 @@ public class ComplexItem extends Item {
                     if (handIn == Hand.MAIN_HAND) {
                         try {
                             manager.execute(manager.get(this.rightClickFunctionMainhand).get(),
-                                    playerIn.getCommandSource());
+                                    playerIn.getCommandSource().withFeedbackDisabled());
                         } catch (NoSuchElementException e) {
                         }
                     }
                     if (handIn == Hand.OFF_HAND) {
                         try {
                             manager.execute(manager.get(this.rightClickFunctionOffhand).get(),
-                                    playerIn.getCommandSource());
+                                    playerIn.getCommandSource().withFeedbackDisabled());
                         } catch (NoSuchElementException e) {
                         }
                     }
@@ -160,7 +154,7 @@ public class ComplexItem extends Item {
             if (!worldIn.isRemote()) {
                 FunctionManager manager = worldIn.getServer().getFunctionManager();
                 try {
-                    manager.execute(manager.get(this.onItemUseFinishFunction).get(), entityLiving.getCommandSource());
+                    manager.execute(manager.get(this.onItemUseFinishFunction).get(), entityLiving.getCommandSource().withFeedbackDisabled());
                 } catch (NoSuchElementException e) {
                 }
             }
@@ -180,7 +174,7 @@ public class ComplexItem extends Item {
         if (this.appendToKeyTag == null) {
             return super.getTranslationKey(stack);
         } else {
-            return this.getTranslationKey() + this.appendToKeyTag + stack.getTag().getString(this.appendToKeyTag);
+            return this.getTranslationKey() + "." + this.appendToKeyTag + "." + stack.getTag().getString(this.appendToKeyTag);
         }
     }
 }
