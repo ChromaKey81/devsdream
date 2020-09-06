@@ -6,7 +6,7 @@ import java.util.Iterator;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.builder.ArgumentBuilder;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -39,22 +39,29 @@ public class CalculateCommand {
         dispatcher.register(Commands.literal("calculate").requires((user) -> {
             return user.hasPermissionLevel(2);
         }).then(Commands.literal("data")
-                .then(Commands.literal("entity")
-                        .then(Commands.argument("source", EntityArgument.entity())
-                                .then(Commands.argument("path", NBTPathArgument.nbtPath())
-                                        .then(Commands.argument("scale", DoubleArgumentType.doubleArg())
-                                                .then(calculation("entityData"))))))
-                .then(Commands.literal("block")
-                        .then(Commands.argument("sourcePos", BlockPosArgument.blockPos())
-                                .then(Commands.argument("path", NBTPathArgument.nbtPath())
-                                        .then(Commands.argument("scale", DoubleArgumentType.doubleArg())
-                                                .then(calculation("blockData")))))))
-                .then(Commands.literal("score")
-                        .then(Commands.argument("name", ScoreHolderArgument.scoreHolder())
-                                .then(Commands.argument("objective", ObjectiveArgument.objective())
-                                        .then(calculation("score")))))
+                .then(Commands.literal("entity").then(Commands.argument("source", EntityArgument.entity())
+                        .then(Commands.argument("path", NBTPathArgument.nbtPath())
+                                .then(Commands.argument("scale", DoubleArgumentType.doubleArg()).then(add("entityData"))
+                                        .then(subtract("entityData")).then(multiply("entityData"))
+                                        .then(divide("entityData")).then(modulo("entityData"))))))
+                        .then(Commands.literal("block")
+                                .then(Commands.argument("sourcePos", BlockPosArgument.blockPos())
+                                        .then(Commands.argument("path", NBTPathArgument.nbtPath())
+                                                .then(Commands.argument("scale", DoubleArgumentType.doubleArg())
+                                                        .then(add("blockData")).then(subtract("blockData"))
+                                                        .then(multiply("blockData")).then(divide("blockData"))
+                                                        .then(modulo("blockData")))))))
+                .then(Commands
+                        .literal("score").then(
+                                Commands.argument("name", ScoreHolderArgument.scoreHolder())
+                                        .then(Commands.argument("objective", ObjectiveArgument.objective())
+                                                .then(add("score")).then(subtract("score")).then(
+                                                        multiply("score"))
+                                                .then(divide("score")).then(modulo("score")))))
                 .then(Commands.literal("value")
-                        .then(Commands.argument("value", IntegerArgumentType.integer()).then(calculation("value")))));
+                        .then(Commands.argument("value", IntegerArgumentType.integer()).then(add("value"))
+                                .then(subtract("value")).then(multiply("value")).then(divide("value"))
+                                .then(modulo("value")))).then(Commands.literal("command").then(Commands.argument("command", StringArgumentType.string()).then(add("command")).then(subtract("command")).then(multiply("command")).then(divide("command")).then(modulo("command")))));
     }
 
     private static INBT getINBT(NBTPathArgument.NBTPath p_218928_0_, IDataAccessor p_218928_1_)
@@ -93,46 +100,189 @@ public class CalculateCommand {
         return i;
     }
 
-    private static LiteralArgumentBuilder<CommandSource> calculation(String firstArgumentType) {
-        return (Commands.literal("+").then(secondArgument(firstArgumentType, "add")))
-                .then(Commands.literal("-").then(secondArgument(firstArgumentType, "subtract")))
-                .then(Commands.literal("*").then(secondArgument(firstArgumentType, "multiply")))
-                .then(Commands.literal("/").then(secondArgument(firstArgumentType, "divide")))
-                .then(Commands.literal("%").then(secondArgument(firstArgumentType, "modulo")));
+    private static LiteralArgumentBuilder<CommandSource> add(String firstArgumentType) {
+        return Commands
+                .literal(
+                        "+")
+                .then(Commands.literal("data").then(Commands.literal("entity").then(Commands
+                        .argument("source2", EntityArgument.entity())
+                        .then(Commands.argument("path2", NBTPathArgument.nbtPath()).then(
+                                Commands.argument("scale2", DoubleArgumentType.doubleArg()).executes((context) -> {
+                                    return performOperation(context.getSource(),
+                                            findFirstArgument(context, firstArgumentType),
+                                            getValueFromEntityData(context, "source2", "path2", "scale2"), "add");
+                                })))))
+                        .then(Commands.literal("block")
+                                .then(Commands.argument("sourcePos2", BlockPosArgument.blockPos())
+                                        .then(Commands.argument("path2", NBTPathArgument.nbtPath())
+                                                .then(Commands.argument("scale2", DoubleArgumentType.doubleArg())
+                                                        .executes((context) -> {
+                                                            return performOperation(context.getSource(),
+                                                                    findFirstArgument(context, firstArgumentType),
+                                                                    getValueFromBlockData(context, "sourcePos2",
+                                                                            "path2", "scale2"),
+                                                                    "add");
+                                                        }))))))
+                .then(Commands.literal("score").then(Commands.argument("name2", ScoreHolderArgument.scoreHolder())
+                        .then(Commands.argument("objective2", ObjectiveArgument.objective()).executes((context) -> {
+                            return performOperation(context.getSource(), findFirstArgument(context, firstArgumentType),
+                                    getValueFromScore(context, "objective2", "name2"), "add");
+                        }))))
+                .then(Commands.literal("value")
+                        .then(Commands.argument("value2", IntegerArgumentType.integer()).executes((context) -> {
+                            return performOperation(context.getSource(), findFirstArgument(context, firstArgumentType),
+                                    IntegerArgumentType.getInteger(context, "value2"), "add");
+                        }))).then(Commands.literal("command").then(Commands.argument("command2", StringArgumentType.string()).executes((context) -> {
+                            return performOperation(context.getSource(), findFirstArgument(context, firstArgumentType), getValueFromCommand(context, "command2"), "add");
+                        })));
     }
 
-    private static LiteralArgumentBuilder<CommandSource> secondArgument(String firstArgumentType, String operation) {
-        return (Commands.literal("data")
-                .then(Commands.literal("entity").then(Commands.argument("source2", EntityArgument.entity())
+    private static LiteralArgumentBuilder<CommandSource> subtract(String firstArgumentType) {
+        return Commands
+                .literal(
+                        "-")
+                .then(Commands.literal("data").then(Commands.literal("entity").then(Commands
+                        .argument("source2", EntityArgument.entity())
                         .then(Commands.argument("path2", NBTPathArgument.nbtPath()).then(
                                 Commands.argument("scale2", DoubleArgumentType.doubleArg()).executes((context) -> {
                                     return performOperation(context.getSource(),
                                             findFirstArgument(context, firstArgumentType),
-                                            getValueFromEntityData(context, "source2", "path2", "scale2"), operation);
+                                            getValueFromEntityData(context, "source2", "path2", "scale2"), "subtract");
                                 })))))
-                .then(Commands.literal("block").then(Commands.argument("sourcePos2", BlockPosArgument.blockPos())
+                        .then(Commands.literal("block")
+                                .then(Commands.argument("sourcePos2", BlockPosArgument.blockPos())
+                                        .then(Commands.argument("path2", NBTPathArgument.nbtPath())
+                                                .then(Commands.argument("scale2", DoubleArgumentType.doubleArg())
+                                                        .executes((context) -> {
+                                                            return performOperation(context.getSource(),
+                                                                    findFirstArgument(context, firstArgumentType),
+                                                                    getValueFromBlockData(context, "sourcePos2",
+                                                                            "path2", "scale2"),
+                                                                    "subtract");
+                                                        }))))))
+                .then(Commands.literal("score").then(Commands.argument("name2", ScoreHolderArgument.scoreHolder())
+                        .then(Commands.argument("objective2", ObjectiveArgument.objective()).executes((context) -> {
+                            return performOperation(context.getSource(), findFirstArgument(context, firstArgumentType),
+                                    getValueFromScore(context, "objective2", "name2"), "subtract");
+                        }))))
+                .then(Commands.literal("value")
+                        .then(Commands.argument("value2", IntegerArgumentType.integer()).executes((context) -> {
+                            return performOperation(context.getSource(), findFirstArgument(context, firstArgumentType),
+                                    IntegerArgumentType.getInteger(context, "value2"), "subtract");
+                        }))).then(Commands.literal("command").then(Commands.argument("command2", StringArgumentType.string()).executes((context) -> {
+                            return performOperation(context.getSource(), findFirstArgument(context, firstArgumentType), getValueFromCommand(context, "command2"), "subtract");
+                        })));
+    }
+
+    private static LiteralArgumentBuilder<CommandSource> multiply(String firstArgumentType) {
+        return Commands
+                .literal(
+                        "*")
+                .then(Commands.literal("data").then(Commands.literal("entity").then(Commands
+                        .argument("source2", EntityArgument.entity())
                         .then(Commands.argument("path2", NBTPathArgument.nbtPath()).then(
                                 Commands.argument("scale2", DoubleArgumentType.doubleArg()).executes((context) -> {
                                     return performOperation(context.getSource(),
                                             findFirstArgument(context, firstArgumentType),
-                                            getValueFromBlockData(context, "sourcePos2", "path2", "scale2"), operation);
-                                })))))).then(Commands.literal("score")
-                                        .then(Commands.argument("name2", ScoreHolderArgument.scoreHolder())
-                                                .then(Commands.argument("objective2", ObjectiveArgument.objective())
+                                            getValueFromEntityData(context, "source2", "path2", "scale2"), "multiply");
+                                })))))
+                        .then(Commands.literal("block")
+                                .then(Commands.argument("sourcePos2", BlockPosArgument.blockPos())
+                                        .then(Commands.argument("path2", NBTPathArgument.nbtPath())
+                                                .then(Commands.argument("scale2", DoubleArgumentType.doubleArg())
                                                         .executes((context) -> {
                                                             return performOperation(context.getSource(),
                                                                     findFirstArgument(context, firstArgumentType),
-                                                                    getValueFromScore(context, "objective2", "name2"),
-                                                                    operation);
-                                                        }))))
-                                        .then(Commands.literal("value")
-                                                .then(Commands.argument("value2", IntegerArgumentType.integer())
+                                                                    getValueFromBlockData(context, "sourcePos2",
+                                                                            "path2", "scale2"),
+                                                                    "multiply");
+                                                        }))))))
+                .then(Commands.literal("score").then(Commands.argument("name2", ScoreHolderArgument.scoreHolder())
+                        .then(Commands.argument("objective2", ObjectiveArgument.objective()).executes((context) -> {
+                            return performOperation(context.getSource(), findFirstArgument(context, firstArgumentType),
+                                    getValueFromScore(context, "objective2", "name2"), "multiply");
+                        }))))
+                .then(Commands.literal("value")
+                        .then(Commands.argument("value2", IntegerArgumentType.integer()).executes((context) -> {
+                            return performOperation(context.getSource(), findFirstArgument(context, firstArgumentType),
+                                    IntegerArgumentType.getInteger(context, "value2"), "multiply");
+                        }))).then(Commands.literal("command").then(Commands.argument("command2", StringArgumentType.string()).executes((context) -> {
+                            return performOperation(context.getSource(), findFirstArgument(context, firstArgumentType), getValueFromCommand(context, "command2"), "multiply");
+                        })));
+    }
+
+    private static LiteralArgumentBuilder<CommandSource> divide(String firstArgumentType) {
+        return Commands
+                .literal(
+                        "/")
+                .then(Commands.literal("data").then(Commands.literal("entity").then(Commands
+                        .argument("source2", EntityArgument.entity())
+                        .then(Commands.argument("path2", NBTPathArgument.nbtPath()).then(
+                                Commands.argument("scale2", DoubleArgumentType.doubleArg()).executes((context) -> {
+                                    return performOperation(context.getSource(),
+                                            findFirstArgument(context, firstArgumentType),
+                                            getValueFromEntityData(context, "source2", "path2", "scale2"), "divide");
+                                })))))
+                        .then(Commands.literal("block")
+                                .then(Commands.argument("sourcePos2", BlockPosArgument.blockPos())
+                                        .then(Commands.argument("path2", NBTPathArgument.nbtPath())
+                                                .then(Commands.argument("scale2", DoubleArgumentType.doubleArg())
                                                         .executes((context) -> {
                                                             return performOperation(context.getSource(),
                                                                     findFirstArgument(context, firstArgumentType),
-                                                                    IntegerArgumentType.getInteger(context, "value2"),
-                                                                    operation);
-                                                        })));
+                                                                    getValueFromBlockData(context, "sourcePos2",
+                                                                            "path2", "scale2"),
+                                                                    "divide");
+                                                        }))))))
+                .then(Commands.literal("score").then(Commands.argument("name2", ScoreHolderArgument.scoreHolder())
+                        .then(Commands.argument("objective2", ObjectiveArgument.objective()).executes((context) -> {
+                            return performOperation(context.getSource(), findFirstArgument(context, firstArgumentType),
+                                    getValueFromScore(context, "objective2", "name2"), "divide");
+                        }))))
+                .then(Commands.literal("value")
+                        .then(Commands.argument("value2", IntegerArgumentType.integer()).executes((context) -> {
+                            return performOperation(context.getSource(), findFirstArgument(context, firstArgumentType),
+                                    IntegerArgumentType.getInteger(context, "value2"), "divide");
+                        }))).then(Commands.literal("command").then(Commands.argument("command2", StringArgumentType.string()).executes((context) -> {
+                            return performOperation(context.getSource(), findFirstArgument(context, firstArgumentType), getValueFromCommand(context, "command2"), "divide");
+                        })));
+    }
+
+    private static LiteralArgumentBuilder<CommandSource> modulo(String firstArgumentType) {
+        return Commands
+                .literal(
+                        "%")
+                .then(Commands.literal("data").then(Commands.literal("entity").then(Commands
+                        .argument("source2", EntityArgument.entity())
+                        .then(Commands.argument("path2", NBTPathArgument.nbtPath()).then(
+                                Commands.argument("scale2", DoubleArgumentType.doubleArg()).executes((context) -> {
+                                    return performOperation(context.getSource(),
+                                            findFirstArgument(context, firstArgumentType),
+                                            getValueFromEntityData(context, "source2", "path2", "scale2"), "modulo");
+                                })))))
+                        .then(Commands.literal("block")
+                                .then(Commands.argument("sourcePos2", BlockPosArgument.blockPos())
+                                        .then(Commands.argument("path2", NBTPathArgument.nbtPath())
+                                                .then(Commands.argument("scale2", DoubleArgumentType.doubleArg())
+                                                        .executes((context) -> {
+                                                            return performOperation(context.getSource(),
+                                                                    findFirstArgument(context, firstArgumentType),
+                                                                    getValueFromBlockData(context, "sourcePos2",
+                                                                            "path2", "scale2"),
+                                                                    "modulo");
+                                                        }))))))
+                .then(Commands.literal("score").then(Commands.argument("name2", ScoreHolderArgument.scoreHolder())
+                        .then(Commands.argument("objective2", ObjectiveArgument.objective()).executes((context) -> {
+                            return performOperation(context.getSource(), findFirstArgument(context, firstArgumentType),
+                                    getValueFromScore(context, "objective2", "name2"), "modulo");
+                        }))))
+                .then(Commands.literal("value")
+                        .then(Commands.argument("value2", IntegerArgumentType.integer()).executes((context) -> {
+                            return performOperation(context.getSource(), findFirstArgument(context, firstArgumentType),
+                                    IntegerArgumentType.getInteger(context, "value2"), "modulo");
+                        }))).then(Commands.literal("command").then(Commands.argument("command2", StringArgumentType.string()).executes((context) -> {
+                            return performOperation(context.getSource(), findFirstArgument(context, firstArgumentType), getValueFromCommand(context, "command2"), "modulo");
+                        })));
     }
 
     private static int findFirstArgument(CommandContext<CommandSource> context, String firstArgumentType)
@@ -150,10 +300,17 @@ public class CalculateCommand {
             case "value": {
                 return IntegerArgumentType.getInteger(context, "value");
             }
+            case "command": {
+                return getValueFromCommand(context, "command");
+            }
             default: {
                 return 69;
             }
         }
+    }
+
+    private static int getValueFromCommand(CommandContext<CommandSource> context, String argument) throws CommandSyntaxException {
+        return context.getSource().getServer().getCommandManager().getDispatcher().execute(StringArgumentType.getString(context, argument), context.getSource());
     }
 
     private static int performOperation(CommandSource source, int valueSoFar, int input, String type) {
