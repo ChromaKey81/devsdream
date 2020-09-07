@@ -210,54 +210,170 @@ public class ExecuteCommand {
                             ScoreHolderArgument.getScoreHolder(p_201468_1_, "targets"),
                             ObjectiveArgument.getObjective(p_201468_1_, "objective"), storingResult);
                 }))));
-        literal.then(Commands.literal("player").then(Commands.argument("player", EntityArgument.player())
-                .then(Commands.literal("item").then(Commands.argument("slot", SlotArgument.slot()).then(Commands.argument("path", NBTPathArgument.nbtPath()).then(Commands.literal("int").then(Commands
-                .argument("scale", DoubleArgumentType.doubleArg()).redirect(parent, (context) -> {
-                    return storeIntoItem(context.getSource(), EntityArgument.getPlayer(context, "player"), SlotArgument.getSlot(context, "slot"), (value) -> {
-                        return IntNBT.valueOf((int) ((double) value
-                                * DoubleArgumentType.getDouble(context, "scale")));
-                    }, NBTPathArgument.getNBTPath(context, "path"), storingResult);
-                })))
-                .then(Commands.literal("float")
-                        .then(Commands.argument("scale", DoubleArgumentType.doubleArg())
-                        .redirect(parent, (context) -> {
-                            return storeIntoItem(context.getSource(), EntityArgument.getPlayer(context, "player"), SlotArgument.getSlot(context, "slot"), (value) -> {
-                                return FloatNBT.valueOf((float) ((double) value
-                                        * DoubleArgumentType.getDouble(context, "scale")));
-                            }, NBTPathArgument.getNBTPath(context, "path"), storingResult);
-                        })))
-                .then(Commands.literal("short")
-                        .then(Commands.argument("scale", DoubleArgumentType.doubleArg())
-                        .redirect(parent, (context) -> {
-                            return storeIntoItem(context.getSource(), EntityArgument.getPlayer(context, "player"), SlotArgument.getSlot(context, "slot"), (value) -> {
-                                return ShortNBT.valueOf((short) ((int) ((double) value
-                                        * DoubleArgumentType.getDouble(context, "scale"))));
-                            }, NBTPathArgument.getNBTPath(context, "path"), storingResult);
-                        })))
-                .then(Commands.literal("long")
-                        .then(Commands.argument("scale", DoubleArgumentType.doubleArg())
-                        .redirect(parent, (context) -> {
-                            return storeIntoItem(context.getSource(), EntityArgument.getPlayer(context, "player"), SlotArgument.getSlot(context, "slot"), (value) -> {
-                                return LongNBT.valueOf((long) ((double) value
-                                        * DoubleArgumentType.getDouble(context, "scale")));
-                            }, NBTPathArgument.getNBTPath(context, "path"), storingResult);
-                        })))
-                .then(Commands.literal("double")
-                        .then(Commands.argument("scale", DoubleArgumentType.doubleArg())
-                        .redirect(parent, (context) -> {
-                            return storeIntoItem(context.getSource(), EntityArgument.getPlayer(context, "player"), SlotArgument.getSlot(context, "slot"), (value) -> {
-                                return DoubleNBT.valueOf((double) value
-                                        * DoubleArgumentType.getDouble(context, "scale"));
-                            }, NBTPathArgument.getNBTPath(context, "path"), storingResult);
-                        })))
-                .then(Commands.literal("byte")
-                        .then(Commands.argument("scale", DoubleArgumentType.doubleArg())
-                        .redirect(parent, (context) -> {
-                            return storeIntoItem(context.getSource(), EntityArgument.getPlayer(context, "player"), SlotArgument.getSlot(context, "slot"), (value) -> {
-                                return ByteNBT.valueOf((byte) ((int) ((double) value
-                                        * DoubleArgumentType.getDouble(context, "scale"))));
-                            }, NBTPathArgument.getNBTPath(context, "path"), storingResult);
-                        }))))))));
+        literal.then(
+                Commands.literal("player")
+                        .then(Commands
+                                .argument("player",
+                                        EntityArgument.player())
+                                .then(Commands
+                                        .literal(
+                                                "item")
+                                        .then(Commands
+                                                .argument("slot",
+                                                        SlotArgument.slot())
+                                                .then(Commands
+                                                        .argument("path",
+                                                                NBTPathArgument.nbtPath())
+                                                        .then(Commands.literal("int")
+                                                                .then(Commands
+                                                                        .argument("scale",
+                                                                                DoubleArgumentType.doubleArg())
+                                                                        .redirect(parent, (context) -> {
+                                                                            return storeIntoItem(context.getSource(),
+                                                                                    EntityArgument.getPlayer(context,
+                                                                                            "player"),
+                                                                                    SlotArgument.getSlot(context,
+                                                                                            "slot"),
+                                                                                    (value) -> {
+                                                                                        return IntNBT.valueOf(
+                                                                                                (int) ((double) value
+                                                                                                        * DoubleArgumentType
+                                                                                                                .getDouble(
+                                                                                                                        context,
+                                                                                                                        "scale")));
+                                                                                    },
+                                                                                    NBTPathArgument.getNBTPath(context,
+                                                                                            "path"),
+                                                                                    storingResult);
+                                                                        })))
+                                                        .then(Commands.literal("float")
+                                                                .then(Commands
+                                                                        .argument("scale",
+                                                                                DoubleArgumentType.doubleArg())
+                                                                        .redirect(parent, (context) -> {
+                                                                            return storeIntoItem(context.getSource(),
+                                                                                    EntityArgument.getPlayer(context,
+                                                                                            "player"),
+                                                                                    SlotArgument.getSlot(context,
+                                                                                            "slot"),
+                                                                                    (value) -> {
+                                                                                        return FloatNBT.valueOf(
+                                                                                                (float) ((double) value
+                                                                                                        * DoubleArgumentType
+                                                                                                                .getDouble(
+                                                                                                                        context,
+                                                                                                                        "scale")));
+                                                                                    },
+                                                                                    NBTPathArgument.getNBTPath(context,
+                                                                                            "path"),
+                                                                                    storingResult);
+                                                                        })))
+                                                        .then(Commands.literal("short")
+                                                                .then(Commands
+                                                                        .argument("scale",
+                                                                                DoubleArgumentType.doubleArg())
+                                                                        .redirect(parent, (context) -> {
+                                                                            return storeIntoItem(context.getSource(),
+                                                                                    EntityArgument.getPlayer(context,
+                                                                                            "player"),
+                                                                                    SlotArgument.getSlot(context,
+                                                                                            "slot"),
+                                                                                    (value) -> {
+                                                                                        return ShortNBT.valueOf(
+                                                                                                (short) ((int) ((double) value
+                                                                                                        * DoubleArgumentType
+                                                                                                                .getDouble(
+                                                                                                                        context,
+                                                                                                                        "scale"))));
+                                                                                    },
+                                                                                    NBTPathArgument.getNBTPath(context,
+                                                                                            "path"),
+                                                                                    storingResult);
+                                                                        })))
+                                                        .then(Commands.literal("long")
+                                                                .then(Commands
+                                                                        .argument("scale",
+                                                                                DoubleArgumentType.doubleArg())
+                                                                        .redirect(parent, (context) -> {
+                                                                            return storeIntoItem(context.getSource(),
+                                                                                    EntityArgument.getPlayer(context,
+                                                                                            "player"),
+                                                                                    SlotArgument.getSlot(context,
+                                                                                            "slot"),
+                                                                                    (value) -> {
+                                                                                        return LongNBT.valueOf(
+                                                                                                (long) ((double) value
+                                                                                                        * DoubleArgumentType
+                                                                                                                .getDouble(
+                                                                                                                        context,
+                                                                                                                        "scale")));
+                                                                                    },
+                                                                                    NBTPathArgument.getNBTPath(context,
+                                                                                            "path"),
+                                                                                    storingResult);
+                                                                        })))
+                                                        .then(Commands.literal("double")
+                                                                .then(Commands
+                                                                        .argument("scale",
+                                                                                DoubleArgumentType.doubleArg())
+                                                                        .redirect(parent, (context) -> {
+                                                                            return storeIntoItem(context.getSource(),
+                                                                                    EntityArgument.getPlayer(context,
+                                                                                            "player"),
+                                                                                    SlotArgument.getSlot(context,
+                                                                                            "slot"),
+                                                                                    (value) -> {
+                                                                                        return DoubleNBT
+                                                                                                .valueOf((double) value
+                                                                                                        * DoubleArgumentType
+                                                                                                                .getDouble(
+                                                                                                                        context,
+                                                                                                                        "scale"));
+                                                                                    },
+                                                                                    NBTPathArgument.getNBTPath(context,
+                                                                                            "path"),
+                                                                                    storingResult);
+                                                                        })))
+                                                        .then(Commands.literal("byte")
+                                                                .then(Commands
+                                                                        .argument("scale",
+                                                                                DoubleArgumentType.doubleArg())
+                                                                        .redirect(parent, (context) -> {
+                                                                            return storeIntoItem(context.getSource(),
+                                                                                    EntityArgument.getPlayer(context,
+                                                                                            "player"),
+                                                                                    SlotArgument.getSlot(context,
+                                                                                            "slot"),
+                                                                                    (value) -> {
+                                                                                        return ByteNBT.valueOf(
+                                                                                                (byte) ((int) ((double) value
+                                                                                                        * DoubleArgumentType
+                                                                                                                .getDouble(
+                                                                                                                        context,
+                                                                                                                        "scale"))));
+                                                                                    },
+                                                                                    NBTPathArgument.getNBTPath(context,
+                                                                                            "path"),
+                                                                                    storingResult);
+                                                                        })))))).then(Commands.literal("motion").then(Commands.literal("x").redirect(parent, (context) -> {
+                                                                            return storeIntoXMotion(context.getSource(), EntityArgument.getPlayer(context, "player"), storingResult);
+                                                                        })).then(Commands.literal("y").redirect(parent, (context) -> {
+                                                                            return storeIntoYMotion(context.getSource(), EntityArgument.getPlayer(context, "player"), storingResult);
+                                                                        })).then(Commands.literal("z").redirect(parent, (context) -> {
+                                                                            return storeIntoZMotion(context.getSource(), EntityArgument.getPlayer(context, "player"), storingResult);
+                                                                        }))).then(Commands.literal("health").redirect(parent, (context) -> {
+                                                                            return storeIntoHealth(context.getSource(), EntityArgument.getPlayer(context, "player"), storingResult);
+                                                                        })).then(Commands.literal("food").redirect(parent, (context) -> {
+                                                                            return storeIntoFood(context.getSource(), EntityArgument.getPlayer(context, "player"), storingResult);
+                                                                        })).then(Commands.literal("saturation").redirect(parent, (context) -> {
+                                                                            return storeIntoSaturation(context.getSource(), EntityArgument.getPlayer(context, "player"), storingResult);
+                                                                        })).then(Commands.literal("exhaustion").redirect(parent, (context) -> {
+                                                                            return storeIntoExhaustion(context.getSource(), EntityArgument.getPlayer(context, "player"), storingResult);
+                                                                        })).then(Commands.literal("air").redirect(parent, (context) -> {
+                                                                            return storeIntoAir(context.getSource(), EntityArgument.getPlayer(context, "player"), storingResult);
+                                                                        })).then(Commands.literal("fire").redirect(parent, (context) -> {
+                                                                            return storeIntoBurnTime(context.getSource(), EntityArgument.getPlayer(context, "player"), storingResult);
+                                                                        }))));
         literal.then(Commands.literal("bossbar")
                 .then(Commands.argument("id", ResourceLocationArgument.resourceLocation())
                         .suggests(BossBarCommand.SUGGESTIONS_PROVIDER)
@@ -355,7 +471,9 @@ public class ExecuteCommand {
             try {
                 ItemStack stack = getItemInInventory(target, slot);
                 if (stack == null) {
-                    throw new SimpleCommandExceptionType(new TranslationTextComponent("commands.devsdream.execute.store.player.item.failed.no_item")).create();
+                    throw new SimpleCommandExceptionType(
+                            new TranslationTextComponent("commands.devsdream.execute.store.player.item.failed.no_item"))
+                                    .create();
                 } else {
                     CompoundNBT tag = stack.getTag();
                     int i = storingResult ? result : (successful ? 1 : 0);
@@ -373,35 +491,105 @@ public class ExecuteCommand {
     private static ItemStack getItemInInventory(PlayerEntity player, int inventorySlot) {
         if (inventorySlot >= 0 && inventorySlot < player.inventory.mainInventory.size()) {
             return player.inventory.getStackInSlot(inventorySlot);
-         } else {
+        } else {
             EquipmentSlotType equipmentslottype;
             if (inventorySlot == 100 + EquipmentSlotType.HEAD.getIndex()) {
-               equipmentslottype = EquipmentSlotType.HEAD;
+                equipmentslottype = EquipmentSlotType.HEAD;
             } else if (inventorySlot == 100 + EquipmentSlotType.CHEST.getIndex()) {
-               equipmentslottype = EquipmentSlotType.CHEST;
+                equipmentslottype = EquipmentSlotType.CHEST;
             } else if (inventorySlot == 100 + EquipmentSlotType.LEGS.getIndex()) {
-               equipmentslottype = EquipmentSlotType.LEGS;
+                equipmentslottype = EquipmentSlotType.LEGS;
             } else if (inventorySlot == 100 + EquipmentSlotType.FEET.getIndex()) {
-               equipmentslottype = EquipmentSlotType.FEET;
+                equipmentslottype = EquipmentSlotType.FEET;
             } else {
-               equipmentslottype = null;
+                equipmentslottype = null;
             }
-   
+
             if (inventorySlot == 98) {
-               return player.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
+                return player.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
             } else if (inventorySlot == 99) {
                 return player.getItemStackFromSlot(EquipmentSlotType.OFFHAND);
             } else if (equipmentslottype == null) {
-               int i = inventorySlot - 200;
-               if (i >= 0 && i < player.getInventoryEnderChest().getSizeInventory()) {
-                  return player.getInventoryEnderChest().getStackInSlot(i);
-               } else {
-                  return null;
-               }
+                int i = inventorySlot - 200;
+                if (i >= 0 && i < player.getInventoryEnderChest().getSizeInventory()) {
+                    return player.getInventoryEnderChest().getStackInSlot(i);
+                } else {
+                    return null;
+                }
             } else {
-               return player.inventory.getStackInSlot(equipmentslottype.getIndex() + player.inventory.mainInventory.size());
+                return player.inventory
+                        .getStackInSlot(equipmentslottype.getIndex() + player.inventory.mainInventory.size());
             }
-         }
+        }
+    }
+
+    private static CommandSource storeIntoHealth(CommandSource source, ServerPlayerEntity target, boolean storingResult) {
+        return source.withResultConsumer((context, successful, result) -> {
+            int i = storingResult ? result : (successful ? 1 : 0);
+            target.setHealth((float) i);
+        });
+    }
+
+    private static CommandSource storeIntoFood(CommandSource source, ServerPlayerEntity target, boolean storingResult) {
+        return source.withResultConsumer((context, successful, result) -> {
+            int i = storingResult ? result : (successful ? 1 : 0);
+            target.getFoodStats().setFoodLevel(i);
+        });
+    }
+
+    private static CommandSource storeIntoSaturation(CommandSource source, ServerPlayerEntity target, boolean storingResult) {
+        return source.withResultConsumer((context, successful, result) -> {
+            int i = storingResult ? result : (successful ? 1 : 0);
+            target.getFoodStats().setFoodSaturationLevel((float) i);
+        });
+    }
+
+    private static CommandSource storeIntoExhaustion(CommandSource source, ServerPlayerEntity target, boolean storingResult) {
+        return source.withResultConsumer((context, successful, result) -> {
+            int i = storingResult ? result : (successful ? 1 : 0);
+            target.getFoodStats().addExhaustion((float) i);
+        });
+    }
+
+    private static CommandSource storeIntoAir(CommandSource source, ServerPlayerEntity target, boolean storingResult) {
+        return source.withResultConsumer((context, successful, result) -> {
+            int i = storingResult ? result : (successful ? 1 : 0);
+            target.setAir(i);
+        });
+    }
+
+    private static CommandSource storeIntoBurnTime(CommandSource source, ServerPlayerEntity target, boolean storingResult) {
+        return source.withResultConsumer((context, successful, result) -> {
+            int i = storingResult ? result : (successful ? 1 : 0);
+            target.setFire(i);
+        });
+    }
+
+    private static CommandSource storeIntoXMotion(CommandSource source, ServerPlayerEntity target, boolean storingResult) {
+        return source.withResultConsumer((context, successful, result) -> {
+            int i = storingResult ? result : (successful ? 1 : 0);
+            double motionY = target.getMotion().y;
+            double motionZ = target.getMotion().z;
+            target.setMotion((double) i, motionY, motionZ);
+        });
+    }
+
+    private static CommandSource storeIntoYMotion(CommandSource source, ServerPlayerEntity target, boolean storingResult) {
+        return source.withResultConsumer((context, successful, result) -> {
+            int i = storingResult ? result : (successful ? 1 : 0);
+            double motionX = target.getMotion().x;
+            double motionZ = target.getMotion().z;
+            target.setMotion(motionX, (double) i, motionZ);
+        });
+    }
+
+    private static CommandSource storeIntoZMotion(CommandSource source, ServerPlayerEntity target, boolean storingResult) {
+        return source.withResultConsumer((context, successful, result) -> {
+            int i = storingResult ? result : (successful ? 1 : 0);
+            double motionX = target.getMotion().x;
+            double motionY = target.getMotion().y;
+            target.setMotion(motionX, motionY, (double) i);
+        });
     }
 
     private static CommandSource storeIntoScore(CommandSource source, Collection<String> targets,
@@ -550,8 +738,7 @@ public class ExecuteCommand {
         return literal;
     }
 
-    private static Command<CommandSource> func_218834_a(boolean p_218834_0_,
-            ExecuteCommand.INumericTest p_218834_1_) {
+    private static Command<CommandSource> func_218834_a(boolean p_218834_0_, ExecuteCommand.INumericTest p_218834_1_) {
         return p_218834_0_ ? (p_229783_1_) -> {
             int i = p_218834_1_.test(p_229783_1_);
             if (i > 0) {
