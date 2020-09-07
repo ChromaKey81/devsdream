@@ -47,7 +47,9 @@ import net.minecraft.command.impl.BossBarCommand;
 import net.minecraft.command.impl.data.DataCommand;
 import net.minecraft.command.impl.data.IDataAccessor;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootParameterSets;
@@ -351,17 +353,55 @@ public class ExecuteCommand {
             IntFunction<INBT> tagConverter, NBTPath path, boolean storingResult) {
         return source.withResultConsumer((context, successful, result) -> {
             try {
-                ItemStack stack = target.container.getSlot(slot).getStack();
-                CompoundNBT tag = stack.getTag();
-                int i = storingResult ? result : (successful ? 1 : 0);
-                path.func_218076_b(tag, () -> {
-                    return tagConverter.apply(i);
-                });
-                stack.setTag(tag);
-                target.container.detectAndSendChanges();
+                ItemStack stack = getItemInInventory(target, slot);
+                if (stack == null) {
+                    throw new SimpleCommandExceptionType(new TranslationTextComponent("commands.devsdream.execute.store.player.item.failed.no_item")).create();
+                } else {
+                    CompoundNBT tag = stack.getTag();
+                    int i = storingResult ? result : (successful ? 1 : 0);
+                    path.func_218076_b(tag, () -> {
+                        return tagConverter.apply(i);
+                    });
+                    stack.setTag(stack.getTag().merge(tag));
+                    target.container.detectAndSendChanges();
+                }
             } catch (CommandSyntaxException e) {
             }
         });
+    }
+
+    private static ItemStack getItemInInventory(PlayerEntity player, int inventorySlot) {
+        if (inventorySlot >= 0 && inventorySlot < player.inventory.mainInventory.size()) {
+            return player.inventory.getStackInSlot(inventorySlot);
+         } else {
+            EquipmentSlotType equipmentslottype;
+            if (inventorySlot == 100 + EquipmentSlotType.HEAD.getIndex()) {
+               equipmentslottype = EquipmentSlotType.HEAD;
+            } else if (inventorySlot == 100 + EquipmentSlotType.CHEST.getIndex()) {
+               equipmentslottype = EquipmentSlotType.CHEST;
+            } else if (inventorySlot == 100 + EquipmentSlotType.LEGS.getIndex()) {
+               equipmentslottype = EquipmentSlotType.LEGS;
+            } else if (inventorySlot == 100 + EquipmentSlotType.FEET.getIndex()) {
+               equipmentslottype = EquipmentSlotType.FEET;
+            } else {
+               equipmentslottype = null;
+            }
+   
+            if (inventorySlot == 98) {
+               return player.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
+            } else if (inventorySlot == 99) {
+                return player.getItemStackFromSlot(EquipmentSlotType.OFFHAND);
+            } else if (equipmentslottype == null) {
+               int i = inventorySlot - 200;
+               if (i >= 0 && i < player.getInventoryEnderChest().getSizeInventory()) {
+                  return player.getInventoryEnderChest().getStackInSlot(i);
+               } else {
+                  return null;
+               }
+            } else {
+               return player.inventory.getStackInSlot(equipmentslottype.getIndex() + player.inventory.mainInventory.size());
+            }
+         }
     }
 
     private static CommandSource storeIntoScore(CommandSource source, Collection<String> targets,

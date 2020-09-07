@@ -34,5 +34,5 @@
 
     "commands.devsdream.calculate.success": "Result: %s",
 
-    "block.devsdream.blank_slate_stone": "Blank Slate Stone"
+    "commands.devsdream.execute.store.player.item.failed.no_item": "Couldn't find an item in the target slot"
 }
