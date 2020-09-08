@@ -10,6 +10,7 @@ import com.google.gson.JsonSyntaxException;
 import chromakey.devsdream.complex.ComplexItem;
 import chromakey.devsdream.deserialization.ComplexItemDeserializer;
 import chromakey.devsdream.util.JSONHelper;
+import net.minecraft.item.Item;
 import net.minecraft.item.UseAction;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
@@ -75,7 +76,7 @@ public class ComplexItemDeserializer {
                 rightClickPredicate = new ResourceLocation(JSONUtils.getString(rightClick, "predicate"));
             }
             if (rightClick.has("increment_statistic")) {
-                incrementRightClickStatistic = JSONHelper.setRequiredItemElement(rightClick, "increment_statistic")
+                incrementRightClickStatistic = JSONHelper.setRequiredItemElement(rightClick, "increment_statistic");
             }
         }
         if (object.has("append_to_key_tag")) {
