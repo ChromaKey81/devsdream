@@ -30,6 +30,7 @@ public class ComplexItemDeserializer {
         UseAction useAction = UseAction.NONE;
         ResourceLocation onItemUseFinishFunction = null;
         List<JsonObject> tagTooltips = Lists.newArrayList();
+        boolean incrementRightClickStatistic = true;
         if (object.has("information")) {
             JSONUtils.getJsonArray(object, "information").iterator().forEachRemaining((tooltip) -> {
                 tooltips.add(ITextComponent.Serializer.func_240641_a_(tooltip));
@@ -71,6 +72,9 @@ public class ComplexItemDeserializer {
             }
             if (rightClick.has("predicate")) {
                 rightClickPredicate = new ResourceLocation(JSONUtils.getString(rightClick, "predicate"));
+            }
+            if (rightClick.has("increment_statistic")) {
+                incrementRightClickStatistic = JSONUtils.getBoolean(rightClick, "increment_statistic");
             }
         }
         if (object.has("append_to_key_tag")) {
@@ -118,6 +122,6 @@ public class ComplexItemDeserializer {
         if (object.has("on_item_use_finish")) {
             onItemUseFinishFunction = new ResourceLocation(JSONUtils.getString(object, "on_item_use_finish"));
         }
-        return new ComplexItem(ItemDeserializer.deserializeProperties(object), tooltips, hasEffect, enchantability, canBreakBlocks, onUseFunction, rightClickFunctionMainhand, rightClickFunctionOffhand, rightClickPredicate, appendToKeyTag, useDuration, useAction, onItemUseFinishFunction);
+        return new ComplexItem(ItemDeserializer.deserializeProperties(object), tooltips, hasEffect, enchantability, canBreakBlocks, onUseFunction, rightClickFunctionMainhand, rightClickFunctionOffhand, rightClickPredicate, appendToKeyTag, useDuration, useAction, onItemUseFinishFunction, incrementRightClickStatistic);
     }
 }

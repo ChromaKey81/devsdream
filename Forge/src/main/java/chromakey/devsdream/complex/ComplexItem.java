@@ -40,12 +40,13 @@ public class ComplexItem extends Item {
     private final int useDuration;
     private final UseAction useAction;
     private final ResourceLocation onItemUseFinishFunction;
+    private final boolean incrementRightClickStatistic;
 
     public ComplexItem(Properties properties, List<ITextComponent> tooltip, boolean hasEffect, int enchantability,
             boolean canBreakBlocks, @Nullable ResourceLocation onUseFunction,
             @Nullable ResourceLocation rightClickFunctionMainhand, @Nullable ResourceLocation rightClickFunctionOffhand,
             @Nullable ResourceLocation rightClickPredicate, String appendToKeyTag, int useDuration, UseAction useAction,
-            @Nullable ResourceLocation onItemUseFinishFunction) {
+            @Nullable ResourceLocation onItemUseFinishFunction, boolean incrementRightClickStatistic) {
         super(properties);
         this.tooltip = tooltip;
         this.hasEffect = hasEffect;
@@ -59,6 +60,7 @@ public class ComplexItem extends Item {
         this.useDuration = useDuration;
         this.useAction = useAction;
         this.onItemUseFinishFunction = onItemUseFinishFunction;
+        this.incrementRightClickStatistic = incrementRightClickStatistic;
     }
 
     @Override
@@ -91,7 +93,8 @@ public class ComplexItem extends Item {
         if (this.onUseFunction != null && worldIn.isRemote()) {
             FunctionManager manager = worldIn.getServer().getFunctionManager();
             try {
-                manager.execute(manager.get(this.onUseFunction).get(), livingEntityIn.getCommandSource().withFeedbackDisabled());
+                manager.execute(manager.get(this.onUseFunction).get(),
+                        livingEntityIn.getCommandSource().withFeedbackDisabled());
             } catch (NoSuchElementException e) {
             }
         }
@@ -114,14 +117,17 @@ public class ComplexItem extends Item {
                                 .test(new LootContext.Builder(
                                         worldIn.getServer().getWorld(playerIn.getEntityWorld().getDimensionKey()))
                                                 .withParameter(LootParameters.THIS_ENTITY, playerIn)
-                                                .withParameter(LootParameters.field_237457_g_, playerIn.getPositionVec())
+                                                .withParameter(LootParameters.field_237457_g_,
+                                                        playerIn.getPositionVec())
                                                 .build(LootParameterSets.COMMAND));
                     } catch (NullPointerException e) {
                         flag = true;
                     }
                 }
                 if (flag == true) {
-                    playerIn.addStat(Stats.ITEM_USED.get(this));
+                    if (this.incrementRightClickStatistic) {
+                        playerIn.addStat(Stats.ITEM_USED.get(this));
+                    }
                     FunctionManager manager = worldIn.getServer().getFunctionManager();
                     if (handIn == Hand.MAIN_HAND) {
                         try {
@@ -148,19 +154,20 @@ public class ComplexItem extends Item {
     }
 
     public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving) {
-        if(this.isFood() || this.onItemUseFinishFunction == null) {
+        if (this.isFood() || this.onItemUseFinishFunction == null) {
             return entityLiving.onFoodEaten(worldIn, stack);
         } else {
             if (!worldIn.isRemote()) {
                 FunctionManager manager = worldIn.getServer().getFunctionManager();
                 try {
-                    manager.execute(manager.get(this.onItemUseFinishFunction).get(), entityLiving.getCommandSource().withFeedbackDisabled());
+                    manager.execute(manager.get(this.onItemUseFinishFunction).get(),
+                            entityLiving.getCommandSource().withFeedbackDisabled());
                 } catch (NoSuchElementException e) {
                 }
             }
             return stack;
         }
-     }
+    }
 
     public int getUseDuration(ItemStack stack) {
         return this.useDuration;
@@ -174,7 +181,12 @@ public class ComplexItem extends Item {
         if (this.appendToKeyTag == null) {
             return super.getTranslationKey(stack);
         } else {
-            return this.getTranslationKey() + "." + this.appendToKeyTag + "." + stack.getTag().getString(this.appendToKeyTag);
+            try {
+                return this.getTranslationKey() + "." + this.appendToKeyTag + "."
+                        + stack.getTag().getString(this.appendToKeyTag);
+            } catch (NullPointerException e) {
+                return super.getTranslationKey(stack);
+            }
         }
     }
 }
