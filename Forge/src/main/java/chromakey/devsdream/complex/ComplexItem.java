@@ -40,13 +40,13 @@ public class ComplexItem extends Item {
     private final int useDuration;
     private final UseAction useAction;
     private final ResourceLocation onItemUseFinishFunction;
-    private final boolean incrementRightClickStatistic;
+    private final Item incrementRightClickStatistic;
 
     public ComplexItem(Properties properties, List<ITextComponent> tooltip, boolean hasEffect, int enchantability,
             boolean canBreakBlocks, @Nullable ResourceLocation onUseFunction,
             @Nullable ResourceLocation rightClickFunctionMainhand, @Nullable ResourceLocation rightClickFunctionOffhand,
             @Nullable ResourceLocation rightClickPredicate, String appendToKeyTag, int useDuration, UseAction useAction,
-            @Nullable ResourceLocation onItemUseFinishFunction, boolean incrementRightClickStatistic) {
+            @Nullable ResourceLocation onItemUseFinishFunction, @Nullable Item incrementRightClickStatistic) {
         super(properties);
         this.tooltip = tooltip;
         this.hasEffect = hasEffect;
@@ -125,8 +125,10 @@ public class ComplexItem extends Item {
                     }
                 }
                 if (flag == true) {
-                    if (this.incrementRightClickStatistic) {
+                    if (this.incrementRightClickStatistic == null) {
                         playerIn.addStat(Stats.ITEM_USED.get(this));
+                    } else {
+                        playerIn.addStat(Stats.ITEM_USED.get(this.incrementRightClickStatistic));
                     }
                     FunctionManager manager = worldIn.getServer().getFunctionManager();
                     if (handIn == Hand.MAIN_HAND) {

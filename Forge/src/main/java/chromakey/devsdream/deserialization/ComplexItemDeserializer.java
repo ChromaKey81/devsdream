@@ -9,6 +9,7 @@ import com.google.gson.JsonSyntaxException;
 
 import chromakey.devsdream.complex.ComplexItem;
 import chromakey.devsdream.deserialization.ComplexItemDeserializer;
+import chromakey.devsdream.util.JSONHelper;
 import net.minecraft.item.UseAction;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
@@ -30,7 +31,7 @@ public class ComplexItemDeserializer {
         UseAction useAction = UseAction.NONE;
         ResourceLocation onItemUseFinishFunction = null;
         List<JsonObject> tagTooltips = Lists.newArrayList();
-        boolean incrementRightClickStatistic = true;
+        Item incrementRightClickStatistic = null;
         if (object.has("information")) {
             JSONUtils.getJsonArray(object, "information").iterator().forEachRemaining((tooltip) -> {
                 tooltips.add(ITextComponent.Serializer.func_240641_a_(tooltip));
@@ -74,7 +75,7 @@ public class ComplexItemDeserializer {
                 rightClickPredicate = new ResourceLocation(JSONUtils.getString(rightClick, "predicate"));
             }
             if (rightClick.has("increment_statistic")) {
-                incrementRightClickStatistic = JSONUtils.getBoolean(rightClick, "increment_statistic");
+                incrementRightClickStatistic = JSONHelper.setRequiredItemElement(rightClick, "increment_statistic")
             }
         }
         if (object.has("append_to_key_tag")) {
