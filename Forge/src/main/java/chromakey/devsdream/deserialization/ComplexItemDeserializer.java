@@ -26,7 +26,8 @@ public class ComplexItemDeserializer {
         ResourceLocation onUseFunction = null;
         ResourceLocation rightClickFunctionMainhand = null;
         ResourceLocation rightClickFunctionOffhand = null;
-        ResourceLocation rightClickPredicate = null;
+        ResourceLocation rightClickPredicateMainhand = null;
+        ResourceLocation rightClickPredicateOffhand = null;
         String appendToKeyTag = null;
         int useDuration = 0;
         UseAction useAction = UseAction.NONE;
@@ -73,7 +74,20 @@ public class ComplexItemDeserializer {
                 }
             }
             if (rightClick.has("predicate")) {
-                rightClickPredicate = new ResourceLocation(JSONUtils.getString(rightClick, "predicate"));
+                JsonElement predicate = rightClick.get("function");
+                    if (predicate.isJsonObject()) {
+                        JsonObject predicateObj = JSONUtils.getJsonObject(rightClick, "predicate");
+                        if (predicateObj.has("mainhand")) {
+                            rightClickPredicateMainhand = new ResourceLocation(JSONUtils.getString(predicateObj, "mainhand"));
+                        }
+                        if (predicateObj.has("offhand")) {
+                            rightClickPredicateOffhand = new ResourceLocation(JSONUtils.getString(predicateObj, "offhand"));
+                        }
+                    } else {
+                        ResourceLocation rightClickPredicate = new ResourceLocation(JSONUtils.getString(predicate, "predicate"));
+                        rightClickPredicateMainhand = rightClickPredicate;
+                        rightClickPredicateOffhand = rightClickPredicate;
+                    }
             }
             if (rightClick.has("increment_statistic")) {
                 incrementRightClickStatistic = JSONHelper.setRequiredItemElement(rightClick, "increment_statistic");
@@ -124,6 +138,6 @@ public class ComplexItemDeserializer {
         if (object.has("on_item_use_finish")) {
             onItemUseFinishFunction = new ResourceLocation(JSONUtils.getString(object, "on_item_use_finish"));
         }
-        return new ComplexItem(ItemDeserializer.deserializeProperties(object), tooltips, hasEffect, enchantability, canBreakBlocks, onUseFunction, rightClickFunctionMainhand, rightClickFunctionOffhand, rightClickPredicate, appendToKeyTag, useDuration, useAction, onItemUseFinishFunction, incrementRightClickStatistic);
+        return new ComplexItem(ItemDeserializer.deserializeProperties(object), tooltips, hasEffect, enchantability, canBreakBlocks, onUseFunction, rightClickFunctionMainhand, rightClickFunctionOffhand, rightClickPredicateMainhand, rightClickPredicateOffhand, appendToKeyTag, useDuration, useAction, onItemUseFinishFunction, incrementRightClickStatistic);
     }
 }

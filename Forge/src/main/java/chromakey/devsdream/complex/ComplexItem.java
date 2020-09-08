@@ -35,7 +35,8 @@ public class ComplexItem extends Item {
     private final ResourceLocation onUseFunction;
     private final ResourceLocation rightClickFunctionMainhand;
     private final ResourceLocation rightClickFunctionOffhand;
-    private final ResourceLocation rightClickPredicate;
+    private final ResourceLocation rightClickPredicateMainhand;
+    private final ResourceLocation rightClickPredicateOffhand;
     private final String appendToKeyTag;
     private final int useDuration;
     private final UseAction useAction;
@@ -45,7 +46,7 @@ public class ComplexItem extends Item {
     public ComplexItem(Properties properties, List<ITextComponent> tooltip, boolean hasEffect, int enchantability,
             boolean canBreakBlocks, @Nullable ResourceLocation onUseFunction,
             @Nullable ResourceLocation rightClickFunctionMainhand, @Nullable ResourceLocation rightClickFunctionOffhand,
-            @Nullable ResourceLocation rightClickPredicate, String appendToKeyTag, int useDuration, UseAction useAction,
+            @Nullable ResourceLocation rightClickPredicateMainhand, @Nullable ResourceLocation rightClickPredicateOffhand, String appendToKeyTag, int useDuration, UseAction useAction,
             @Nullable ResourceLocation onItemUseFinishFunction, @Nullable Item incrementRightClickStatistic) {
         super(properties);
         this.tooltip = tooltip;
@@ -55,7 +56,8 @@ public class ComplexItem extends Item {
         this.onUseFunction = onUseFunction;
         this.rightClickFunctionMainhand = rightClickFunctionMainhand;
         this.rightClickFunctionOffhand = rightClickFunctionOffhand;
-        this.rightClickPredicate = rightClickPredicate;
+        this.rightClickPredicateMainhand = rightClickPredicateMainhand;
+        this.rightClickPredicateOffhand = rightClickPredicateOffhand;
         this.appendToKeyTag = appendToKeyTag;
         this.useDuration = useDuration;
         this.useAction = useAction;
@@ -109,19 +111,13 @@ public class ComplexItem extends Item {
             ItemStack itemstack = playerIn.getHeldItem(handIn);
             boolean flag;
             if (!worldIn.isRemote) {
-                if (this.rightClickPredicate == null) {
+                if ((this.rightClickPredicateMainhand == null && handIn == Hand.MAIN_HAND) || (this.rightClickPredicateOffhand == null && handIn == Hand.OFF_HAND)) {
                     flag = true;
                 } else {
-                    try {
-                        flag = worldIn.getServer().func_229736_aP_().func_227517_a_(this.rightClickPredicate)
-                                .test(new LootContext.Builder(
-                                        worldIn.getServer().getWorld(playerIn.getEntityWorld().getDimensionKey()))
-                                                .withParameter(LootParameters.THIS_ENTITY, playerIn)
-                                                .withParameter(LootParameters.field_237457_g_,
-                                                        playerIn.getPositionVec())
-                                                .build(LootParameterSets.COMMAND));
-                    } catch (NullPointerException e) {
-                        flag = true;
+                    if (this.rightClickPredicateMainhand == this.rightClickPredicateOffhand || handIn == Hand.MAIN_HAND) {
+                        flag = evaluatePredicate(worldIn, playerIn, this.rightClickPredicateMainhand);
+                    } else {
+                        flag = evaluatePredicate(worldIn, playerIn, this.rightClickPredicateOffhand);
                     }
                 }
                 if (flag == true) {
@@ -189,6 +185,20 @@ public class ComplexItem extends Item {
             } catch (NullPointerException e) {
                 return super.getTranslationKey(stack);
             }
+        }
+    }
+
+    private static boolean evaluatePredicate(World worldIn, PlayerEntity playerIn, ResourceLocation predicate) {
+        try {
+            return worldIn.getServer().func_229736_aP_().func_227517_a_(predicate)
+                    .test(new LootContext.Builder(
+                            worldIn.getServer().getWorld(playerIn.getEntityWorld().getDimensionKey()))
+                                    .withParameter(LootParameters.THIS_ENTITY, playerIn)
+                                    .withParameter(LootParameters.field_237457_g_,
+                                            playerIn.getPositionVec())
+                                    .build(LootParameterSets.COMMAND));
+        } catch (NullPointerException e) {
+            return true;
         }
     }
 }
