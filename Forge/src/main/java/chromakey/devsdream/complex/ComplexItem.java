@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import net.minecraft.advancements.FunctionManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -42,12 +43,16 @@ public class ComplexItem extends Item {
     private final UseAction useAction;
     private final ResourceLocation onItemUseFinishFunction;
     private final Item incrementRightClickStatistic;
+    private final ResourceLocation inventoryTickFunction;
+    private final int inventoryTickSlot;
+    private final boolean inventoryTickSelected;
+    private final boolean inventoryTickSlotRequired;
 
     public ComplexItem(Properties properties, List<ITextComponent> tooltip, boolean hasEffect, int enchantability,
             boolean canBreakBlocks, @Nullable ResourceLocation onUseFunction,
             @Nullable ResourceLocation rightClickFunctionMainhand, @Nullable ResourceLocation rightClickFunctionOffhand,
             @Nullable ResourceLocation rightClickPredicateMainhand, @Nullable ResourceLocation rightClickPredicateOffhand, String appendToKeyTag, int useDuration, UseAction useAction,
-            @Nullable ResourceLocation onItemUseFinishFunction, @Nullable Item incrementRightClickStatistic) {
+            @Nullable ResourceLocation onItemUseFinishFunction, @Nullable Item incrementRightClickStatistic, @Nullable ResourceLocation inventoryTickFunction, boolean inventoryTickSelected, int inventoryTickSlot, boolean inventoryTickSlotRequired) {
         super(properties);
         this.tooltip = tooltip;
         this.hasEffect = hasEffect;
@@ -63,6 +68,10 @@ public class ComplexItem extends Item {
         this.useAction = useAction;
         this.onItemUseFinishFunction = onItemUseFinishFunction;
         this.incrementRightClickStatistic = incrementRightClickStatistic;
+        this.inventoryTickFunction = inventoryTickFunction;
+        this.inventoryTickSlot = inventoryTickSlot;
+        this.inventoryTickSlotRequired = inventoryTickSlotRequired;
+        this.inventoryTickSelected = inventoryTickSelected;
     }
 
     @Override
@@ -93,12 +102,7 @@ public class ComplexItem extends Item {
 
     public void onUse(World worldIn, LivingEntity livingEntityIn, ItemStack stack, int count) {
         if (this.onUseFunction != null && worldIn.isRemote()) {
-            FunctionManager manager = worldIn.getServer().getFunctionManager();
-            try {
-                manager.execute(manager.get(this.onUseFunction).get(),
-                        livingEntityIn.getCommandSource().withFeedbackDisabled());
-            } catch (NoSuchElementException e) {
-            }
+            runFunction(worldIn, livingEntityIn, this.onUseFunction);
         }
     }
 
@@ -126,20 +130,11 @@ public class ComplexItem extends Item {
                     } else {
                         playerIn.addStat(Stats.ITEM_USED.get(this.incrementRightClickStatistic));
                     }
-                    FunctionManager manager = worldIn.getServer().getFunctionManager();
                     if (handIn == Hand.MAIN_HAND) {
-                        try {
-                            manager.execute(manager.get(this.rightClickFunctionMainhand).get(),
-                                    playerIn.getCommandSource().withFeedbackDisabled());
-                        } catch (NoSuchElementException e) {
-                        }
+                        runFunction(worldIn, playerIn, this.rightClickFunctionMainhand);
                     }
                     if (handIn == Hand.OFF_HAND) {
-                        try {
-                            manager.execute(manager.get(this.rightClickFunctionOffhand).get(),
-                                    playerIn.getCommandSource().withFeedbackDisabled());
-                        } catch (NoSuchElementException e) {
-                        }
+                        runFunction(worldIn, playerIn, this.rightClickFunctionOffhand);
                     }
                     return ActionResult.resultSuccess(itemstack);
                 } else {
@@ -148,6 +143,32 @@ public class ComplexItem extends Item {
             } else {
                 return ActionResult.resultPass(itemstack);
             }
+        }
+    }
+
+    public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
+        if(!worldIn.isRemote() && this.inventoryTickFunction != null) {
+            if (this.inventoryTickSelected) {
+                if (isSelected) {
+                    if (this.inventoryTickSlotRequired) {
+                        if (this.inventoryTickSlot == itemSlot) {
+                            runFunction(worldIn, entityIn, this.inventoryTickFunction);
+                        }
+                    } else {
+                        runFunction(worldIn, entityIn, this.inventoryTickFunction);
+                    }
+                }
+            } else {
+                if (this.inventoryTickSlotRequired) {
+                    if (this.inventoryTickSlot == itemSlot) {
+                        runFunction(worldIn, entityIn, this.inventoryTickFunction);
+                    }
+                } else {
+                    runFunction(worldIn, entityIn, this.inventoryTickFunction);
+                }
+            }
+        } else {
+            super.inventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
         }
     }
 
@@ -199,6 +220,15 @@ public class ComplexItem extends Item {
                                     .build(LootParameterSets.COMMAND));
         } catch (NullPointerException e) {
             return true;
+        }
+    }
+
+    private static void runFunction(World worldIn, Entity source, ResourceLocation function) {
+        try {
+            FunctionManager manager = worldIn.getServer().getFunctionManager();
+            manager.execute(manager.get(function).get(),
+                    source.getCommandSource().withFeedbackDisabled());
+        } catch (NoSuchElementException e) {
         }
     }
 }

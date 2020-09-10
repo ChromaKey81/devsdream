@@ -34,6 +34,11 @@ public class ComplexItemDeserializer {
         ResourceLocation onItemUseFinishFunction = null;
         List<JsonObject> tagTooltips = Lists.newArrayList();
         Item incrementRightClickStatistic = null;
+        ResourceLocation inventoryTickFunction = null;
+        int inventoryTickSlot = 0;
+        boolean inventoryTickSlotRequired = false;
+        boolean inventoryTickSelected = false;
+
         if (object.has("information")) {
             JSONUtils.getJsonArray(object, "information").iterator().forEachRemaining((tooltip) -> {
                 tooltips.add(ITextComponent.Serializer.func_240641_a_(tooltip));
@@ -138,6 +143,17 @@ public class ComplexItemDeserializer {
         if (object.has("on_item_use_finish")) {
             onItemUseFinishFunction = new ResourceLocation(JSONUtils.getString(object, "on_item_use_finish"));
         }
-        return new ComplexItem(ItemDeserializer.deserializeProperties(object), tooltips, hasEffect, enchantability, canBreakBlocks, onUseFunction, rightClickFunctionMainhand, rightClickFunctionOffhand, rightClickPredicateMainhand, rightClickPredicateOffhand, appendToKeyTag, useDuration, useAction, onItemUseFinishFunction, incrementRightClickStatistic);
+        if (object.has("inventory_tick")) {
+            JsonObject inventoryTick = JSONUtils.getJsonObject(object, "inventory_tick");
+            inventoryTickFunction = new ResourceLocation(JSONUtils.getString(inventoryTick, "function"));
+            if (inventoryTick.has("slot")) {
+                inventoryTickSlot = JSONUtils.getInt(inventoryTick, "slot");
+                inventoryTickSlotRequired = true;
+            }
+            if (inventoryTick.has("selected_only")) {
+                inventoryTickSelected = JSONUtils.getBoolean(inventoryTick, "selected_only");
+            }
+        }
+        return new ComplexItem(ItemDeserializer.deserializeProperties(object), tooltips, hasEffect, enchantability, canBreakBlocks, onUseFunction, rightClickFunctionMainhand, rightClickFunctionOffhand, rightClickPredicateMainhand, rightClickPredicateOffhand, appendToKeyTag, useDuration, useAction, onItemUseFinishFunction, incrementRightClickStatistic, inventoryTickFunction, inventoryTickSelected, inventoryTickSlot, inventoryTickSlotRequired);
     }
 }
