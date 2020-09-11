@@ -11,6 +11,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.UseAction;
@@ -147,11 +148,14 @@ public class ComplexItem extends Item {
     }
 
     public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
+        EquipmentSlotType inventoryTickEquipmentSlot = getEquipmentSlotType(this.inventoryTickSlot);
         if(!worldIn.isRemote() && this.inventoryTickFunction != null) {
             if (this.inventoryTickSelected) {
                 if (isSelected) {
                     if (this.inventoryTickSlotRequired) {
                         if (this.inventoryTickSlot == itemSlot) {
+                            runFunction(worldIn, entityIn, this.inventoryTickFunction);
+                        } else if (inventoryTickEquipmentSlot != null && entityIn instanceof LivingEntity && ((LivingEntity)entityIn).getItemStackFromSlot(inventoryTickEquipmentSlot) == stack) {
                             runFunction(worldIn, entityIn, this.inventoryTickFunction);
                         }
                     } else {
@@ -161,6 +165,8 @@ public class ComplexItem extends Item {
             } else {
                 if (this.inventoryTickSlotRequired) {
                     if (this.inventoryTickSlot == itemSlot) {
+                        runFunction(worldIn, entityIn, this.inventoryTickFunction);
+                    } else if (inventoryTickEquipmentSlot != null && entityIn instanceof LivingEntity && ((LivingEntity)entityIn).getItemStackFromSlot(inventoryTickEquipmentSlot) == stack) {
                         runFunction(worldIn, entityIn, this.inventoryTickFunction);
                     }
                 } else {
@@ -229,6 +235,29 @@ public class ComplexItem extends Item {
             manager.execute(manager.get(function).get(),
                     source.getCommandSource().withFeedbackDisabled());
         } catch (NoSuchElementException e) {
+        }
+    }
+
+    private static EquipmentSlotType getEquipmentSlotType(int slotInt) {
+        switch (slotInt) {
+            case 100: {
+                return EquipmentSlotType.FEET;
+            }
+            case 101: {
+                return EquipmentSlotType.LEGS;
+            }
+            case 102: {
+                return EquipmentSlotType.CHEST;
+            }
+            case 103: {
+                return EquipmentSlotType.HEAD;
+            }
+            case -106: {
+                return EquipmentSlotType.OFFHAND;
+            }
+            default: {
+                return null;
+            }
         }
     }
 }

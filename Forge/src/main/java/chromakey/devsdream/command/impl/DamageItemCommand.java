@@ -1,9 +1,9 @@
 package chromakey.devsdream.command.impl;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -49,29 +49,30 @@ public class DamageItemCommand {
 
     private static int damageItem(CommandSource source, Collection<? extends ServerPlayerEntity> targets,
             EquipmentSlotType slot, int amount) throws CommandSyntaxException {
-        List<ServerPlayerEntity> list = Lists.newArrayListWithCapacity(targets.size());
+        Map<ServerPlayerEntity, ItemStack> map = Maps.newHashMapWithExpectedSize(targets.size());
 
         for (ServerPlayerEntity player : targets) {
             ItemStack targetItem = player.getItemStackFromSlot(slot);
             targetItem.damageItem(amount, player, (p) -> {
                 p.sendBreakAnimation(slot);
             });
-            list.add(player);
+            map.put(player, targetItem);
         }
 
-        if (list.isEmpty()) {
+        if (map.isEmpty()) {
             throw DAMAGEITEM_FAILED_EXCEPTION.create();
         } else {
-            if (list.size() == 1) {
-                source.sendFeedback(new TranslationTextComponent("commands.devsdream.damageitem.success.single",
-                        list.iterator().next().getDisplayName(),
-                        list.iterator().next().getItemStackFromSlot(slot).getDisplayName(), amount), true);
+            if (map.size() == 1) {
+                map.forEach((player, itemStack) -> {
+                    source.sendFeedback(new TranslationTextComponent("commands.devsdream.damageitem.success.single",
+                            player.getDisplayName(), itemStack.getDisplayName(), amount), true);
+                });
             } else {
                 source.sendFeedback(new TranslationTextComponent("commands.devsdream.damageitem.success.multiple",
-                        list.size(), amount), true);
+                        map.size(), amount), true);
             }
 
-            return list.size();
+            return map.size();
         }
     }
 }
