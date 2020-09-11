@@ -53,7 +53,9 @@ public class DamageItemCommand {
 
         for (ServerPlayerEntity player : targets) {
             ItemStack targetItem = player.getItemStackFromSlot(slot);
-            targetItem.setDamage(targetItem.getDamage() + amount);
+            targetItem.damageItem(amount, player, (p) -> {
+                p.sendBreakAnimation(slot);
+            });
             list.add(player);
         }
 
