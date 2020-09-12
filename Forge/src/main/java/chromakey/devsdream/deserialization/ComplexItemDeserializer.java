@@ -42,6 +42,7 @@ public class ComplexItemDeserializer {
         Item repairItem = null;
         Block useOnBlock = null;
         ResourceLocation useOnBlockFunction = null;
+        float compostChance = 0.0f;
 
         if (object.has("information")) {
             JSONUtils.getJsonArray(object, "information").iterator().forEachRemaining((tooltip) -> {
@@ -99,7 +100,7 @@ public class ComplexItemDeserializer {
                     }
             }
             if (rightClick.has("increment_statistic")) {
-                incrementRightClickStatistic = JSONHelper.setRequiredItemElement(rightClick, "increment_statistic");
+                incrementRightClickStatistic = JSONHelper.getItem(JSONUtils.getString(rightClick, "increment_statistic"));
             }
         }
         if (object.has("append_to_key_tag")) {
@@ -166,6 +167,9 @@ public class ComplexItemDeserializer {
             useOnBlock = JSONHelper.getBlock(JSONUtils.getString(useOnBlockObj, "block"));
             useOnBlockFunction = new ResourceLocation(JSONUtils.getString(useOnBlockObj, "function"));
         }
-        return new ComplexItem(ItemDeserializer.deserializeProperties(object), tooltips, hasEffect, enchantability, canBreakBlocks, onUseFunction, rightClickFunctionMainhand, rightClickFunctionOffhand, rightClickPredicateMainhand, rightClickPredicateOffhand, appendToKeyTag, useDuration, useAction, onItemUseFinishFunction, incrementRightClickStatistic, inventoryTickFunction, inventoryTickSelected, inventoryTickSlot, inventoryTickSlotRequired, repairItem, useOnBlock, useOnBlockFunction);
+        if (object.has("compost_chance")) {
+            compostChance = JSONUtils.getFloat(object, "compost_chance");
+        }
+        return new ComplexItem(ItemDeserializer.deserializeProperties(object), tooltips, hasEffect, enchantability, canBreakBlocks, onUseFunction, rightClickFunctionMainhand, rightClickFunctionOffhand, rightClickPredicateMainhand, rightClickPredicateOffhand, appendToKeyTag, useDuration, useAction, onItemUseFinishFunction, incrementRightClickStatistic, inventoryTickFunction, inventoryTickSelected, inventoryTickSlot, inventoryTickSlotRequired, repairItem, useOnBlock, useOnBlockFunction, compostChance);
     }
 }

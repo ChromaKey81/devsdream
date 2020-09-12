@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import net.minecraft.advancements.FunctionManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ComposterBlock;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -63,7 +64,7 @@ public class ComplexItem extends Item {
             @Nullable ResourceLocation rightClickPredicateOffhand, String appendToKeyTag, int useDuration,
             UseAction useAction, @Nullable ResourceLocation onItemUseFinishFunction,
             @Nullable Item incrementRightClickStatistic, @Nullable ResourceLocation inventoryTickFunction,
-            boolean inventoryTickSelected, int inventoryTickSlot, boolean inventoryTickSlotRequired, @Nullable Item repairItem, @Nullable Block useOnBlock, @Nullable ResourceLocation useOnBlockFunction) {
+            boolean inventoryTickSelected, int inventoryTickSlot, boolean inventoryTickSlotRequired, @Nullable Item repairItem, @Nullable Block useOnBlock, @Nullable ResourceLocation useOnBlockFunction, float compostChance) {
         super(properties);
         this.tooltip = tooltip;
         this.hasEffect = hasEffect;
@@ -86,6 +87,9 @@ public class ComplexItem extends Item {
         this.repairItem = repairItem;
         this.useOnBlock = useOnBlock;
         this.useOnBlockFunction = useOnBlockFunction;
+        if(compostChance > 0) {
+            ComposterBlock.CHANCES.put(this, compostChance);
+        }
     }
 
     @Override
