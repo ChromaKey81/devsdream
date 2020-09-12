@@ -598,7 +598,7 @@ public class ItemDeserializer {
                         JSONUtils.getInt(damageReduction, "chest"), JSONUtils.getInt(damageReduction, "head") },
                 JSONUtils.getInt(object, "enchantability"), JSONHelper.setRequiredSoundElement(object, "sound"),
                 JSONUtils.getFloat(object, "toughness"), JSONUtils.getFloat(object, "knockback_resistance"), () -> {
-                    return Ingredient.fromItems(JSONHelper.setRequiredItemElement(object, "repair_material"));
+                    return Ingredient.fromItems(JSONHelper.getItem(JSONUtils.getString(object, "repair_material")));
                 });
     }
 
@@ -606,7 +606,7 @@ public class ItemDeserializer {
         return new CustomItemTier(JSONUtils.getInt(object, "harvest_level"), JSONUtils.getInt(object, "max_uses"),
                 JSONUtils.getFloat(object, "efficiency"), JSONUtils.getFloat(object, "attack_damage"),
                 JSONUtils.getInt(object, "enchantability"), () -> {
-                    return Ingredient.fromItems(JSONHelper.setRequiredItemElement(object, "repair_material"));
+                    return Ingredient.fromItems(JSONHelper.getItem(JSONUtils.getString(object, "repair_material")));
                 });
     }
 
@@ -619,7 +619,7 @@ public class ItemDeserializer {
                     JSONUtils.getInt(harvesting, "level"));
         }
         if (propertiesObj.has("container_item")) {
-            properties.containerItem(JSONHelper.setRequiredItemElement(propertiesObj, "container_item"));
+            properties.containerItem(JSONHelper.getItem(JSONUtils.getString(object, "container_item")));
         }
         if (propertiesObj.has("default_max_damage")) {
             properties.defaultMaxDamage(JSONUtils.getInt(propertiesObj, "default_max_damage"));

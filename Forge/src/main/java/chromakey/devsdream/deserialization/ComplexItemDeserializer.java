@@ -18,7 +18,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class ComplexItemDeserializer {
-    
+
     public static ComplexItem deserializeComplexItem(JsonObject object) throws JsonSyntaxException {
         List<ITextComponent> tooltips = Lists.newArrayList();
         boolean hasEffect = false;
@@ -43,6 +43,7 @@ public class ComplexItemDeserializer {
         Block useOnBlock = null;
         ResourceLocation useOnBlockFunction = null;
         float compostChance = 0.0f;
+        ResourceLocation useOnBlockPredicate = null;
 
         if (object.has("information")) {
             JSONUtils.getJsonArray(object, "information").iterator().forEachRemaining((tooltip) -> {
@@ -78,29 +79,33 @@ public class ComplexItemDeserializer {
                         rightClickFunctionOffhand = new ResourceLocation(JSONUtils.getString(functionObj, "offhand"));
                     }
                 } else {
-                    ResourceLocation rightClickFunction = new ResourceLocation(JSONUtils.getString(function, "function"));
+                    ResourceLocation rightClickFunction = new ResourceLocation(
+                            JSONUtils.getString(function, "function"));
                     rightClickFunctionMainhand = rightClickFunction;
                     rightClickFunctionOffhand = rightClickFunction;
                 }
             }
             if (rightClick.has("predicate")) {
                 JsonElement predicate = rightClick.get("function");
-                    if (predicate.isJsonObject()) {
-                        JsonObject predicateObj = JSONUtils.getJsonObject(rightClick, "predicate");
-                        if (predicateObj.has("mainhand")) {
-                            rightClickPredicateMainhand = new ResourceLocation(JSONUtils.getString(predicateObj, "mainhand"));
-                        }
-                        if (predicateObj.has("offhand")) {
-                            rightClickPredicateOffhand = new ResourceLocation(JSONUtils.getString(predicateObj, "offhand"));
-                        }
-                    } else {
-                        ResourceLocation rightClickPredicate = new ResourceLocation(JSONUtils.getString(predicate, "predicate"));
-                        rightClickPredicateMainhand = rightClickPredicate;
-                        rightClickPredicateOffhand = rightClickPredicate;
+                if (predicate.isJsonObject()) {
+                    JsonObject predicateObj = JSONUtils.getJsonObject(rightClick, "predicate");
+                    if (predicateObj.has("mainhand")) {
+                        rightClickPredicateMainhand = new ResourceLocation(
+                                JSONUtils.getString(predicateObj, "mainhand"));
                     }
+                    if (predicateObj.has("offhand")) {
+                        rightClickPredicateOffhand = new ResourceLocation(JSONUtils.getString(predicateObj, "offhand"));
+                    }
+                } else {
+                    ResourceLocation rightClickPredicate = new ResourceLocation(
+                            JSONUtils.getString(predicate, "predicate"));
+                    rightClickPredicateMainhand = rightClickPredicate;
+                    rightClickPredicateOffhand = rightClickPredicate;
+                }
             }
             if (rightClick.has("increment_statistic")) {
-                incrementRightClickStatistic = JSONHelper.getItem(JSONUtils.getString(rightClick, "increment_statistic"));
+                incrementRightClickStatistic = JSONHelper
+                        .getItem(JSONUtils.getString(rightClick, "increment_statistic"));
             }
         }
         if (object.has("append_to_key_tag")) {
@@ -166,10 +171,18 @@ public class ComplexItemDeserializer {
             JsonObject useOnBlockObj = JSONUtils.getJsonObject(object, "use_on_block");
             useOnBlock = JSONHelper.getBlock(JSONUtils.getString(useOnBlockObj, "block"));
             useOnBlockFunction = new ResourceLocation(JSONUtils.getString(useOnBlockObj, "function"));
+            if (useOnBlockObj.has("predicate")) {
+                useOnBlockPredicate = new ResourceLocation(JSONUtils.getString(useOnBlockObj, "predicate"));
+            }
         }
         if (object.has("compost_chance")) {
             compostChance = JSONUtils.getFloat(object, "compost_chance");
         }
-        return new ComplexItem(ItemDeserializer.deserializeProperties(object), tooltips, hasEffect, enchantability, canBreakBlocks, onUseFunction, rightClickFunctionMainhand, rightClickFunctionOffhand, rightClickPredicateMainhand, rightClickPredicateOffhand, appendToKeyTag, useDuration, useAction, onItemUseFinishFunction, incrementRightClickStatistic, inventoryTickFunction, inventoryTickSelected, inventoryTickSlot, inventoryTickSlotRequired, repairItem, useOnBlock, useOnBlockFunction, compostChance);
+        return new ComplexItem(ItemDeserializer.deserializeProperties(object), tooltips, hasEffect, enchantability,
+                canBreakBlocks, onUseFunction, rightClickFunctionMainhand, rightClickFunctionOffhand,
+                rightClickPredicateMainhand, rightClickPredicateOffhand, appendToKeyTag, useDuration, useAction,
+                onItemUseFinishFunction, incrementRightClickStatistic, inventoryTickFunction, inventoryTickSelected,
+                inventoryTickSlot, inventoryTickSlotRequired, repairItem, useOnBlock, useOnBlockFunction, compostChance,
+                useOnBlockPredicate);
     }
 }

@@ -56,6 +56,7 @@ public class ComplexItem extends Item {
     private final Item repairItem;
     private final Block useOnBlock;
     private final ResourceLocation useOnBlockFunction;
+    private final ResourceLocation useOnBlockPredicate;
 
     public ComplexItem(Properties properties, List<ITextComponent> tooltip, boolean hasEffect, int enchantability,
             boolean canBreakBlocks, @Nullable ResourceLocation onUseFunction,
@@ -64,7 +65,7 @@ public class ComplexItem extends Item {
             @Nullable ResourceLocation rightClickPredicateOffhand, String appendToKeyTag, int useDuration,
             UseAction useAction, @Nullable ResourceLocation onItemUseFinishFunction,
             @Nullable Item incrementRightClickStatistic, @Nullable ResourceLocation inventoryTickFunction,
-            boolean inventoryTickSelected, int inventoryTickSlot, boolean inventoryTickSlotRequired, @Nullable Item repairItem, @Nullable Block useOnBlock, @Nullable ResourceLocation useOnBlockFunction, float compostChance) {
+            boolean inventoryTickSelected, int inventoryTickSlot, boolean inventoryTickSlotRequired, @Nullable Item repairItem, @Nullable Block useOnBlock, @Nullable ResourceLocation useOnBlockFunction, float compostChance, @Nullable ResourceLocation useOnBlockPredicate) {
         super(properties);
         this.tooltip = tooltip;
         this.hasEffect = hasEffect;
@@ -90,6 +91,7 @@ public class ComplexItem extends Item {
         if(compostChance > 0) {
             ComposterBlock.CHANCES.put(this, compostChance);
         }
+        this.useOnBlockPredicate = useOnBlockPredicate;
     }
 
     @Override
@@ -120,7 +122,7 @@ public class ComplexItem extends Item {
 
     public void onUse(World worldIn, LivingEntity livingEntityIn, ItemStack stack, int count) {
         if (this.onUseFunction != null && worldIn.isRemote()) {
-            runFunction(worldIn, livingEntityIn, this.onUseFunction);
+            runFunction(worldIn, livingEntityIn, this.onUseFunction, livingEntityIn.getPositionVec());
         }
     }
 
@@ -133,17 +135,20 @@ public class ComplexItem extends Item {
     }
 
     public ActionResultType onItemUse(ItemUseContext context) {
-        if (this.useOnBlock != null && this.useOnBlockFunction != null) {
-            World world = context.getWorld();
+        World world = context.getWorld();
+        if (this.useOnBlock != null && this.useOnBlockFunction != null && !world.isRemote()) {
             BlockPos blockpos = context.getPos();
             Entity entity = context.getPlayer();
             BlockState blockstate = world.getBlockState(blockpos);
+            Vector3d blockVec = new Vector3d(blockpos.getX(), blockpos.getY(), blockpos.getZ());
             if (blockstate.isIn(this.useOnBlock)) {
-                try {
-                    FunctionManager manager = world.getServer().getFunctionManager();
-                    manager.execute(manager.get(this.useOnBlockFunction).get(), entity.getCommandSource().withFeedbackDisabled().withPos(new Vector3d(blockpos.getX(), blockpos.getY(), blockpos.getZ())));
+                if (this.useOnBlockPredicate == null) {
+                    runFunction(world, entity, this.useOnBlockFunction, blockVec);
                     return ActionResultType.func_233537_a_(world.isRemote);
-                } catch (NoSuchElementException e) {
+                } else if (evaluatePredicate(world, entity, this.useOnBlockPredicate, blockVec)) {
+                    runFunction(world, entity, this.useOnBlockFunction, blockVec);
+                    return ActionResultType.func_233537_a_(world.isRemote);
+                } else {
                     return ActionResultType.PASS;
                 }
             } else {
@@ -168,9 +173,9 @@ public class ComplexItem extends Item {
                 } else {
                     if (this.rightClickPredicateMainhand == this.rightClickPredicateOffhand
                             || handIn == Hand.MAIN_HAND) {
-                        flag = evaluatePredicate(worldIn, playerIn, this.rightClickPredicateMainhand);
+                        flag = evaluatePredicate(worldIn, playerIn, this.rightClickPredicateMainhand, playerIn.getPositionVec());
                     } else {
-                        flag = evaluatePredicate(worldIn, playerIn, this.rightClickPredicateOffhand);
+                        flag = evaluatePredicate(worldIn, playerIn, this.rightClickPredicateOffhand, playerIn.getPositionVec());
                     }
                 }
                 if (flag == true) {
@@ -180,10 +185,10 @@ public class ComplexItem extends Item {
                         playerIn.addStat(Stats.ITEM_USED.get(this.incrementRightClickStatistic));
                     }
                     if (handIn == Hand.MAIN_HAND) {
-                        runFunction(worldIn, playerIn, this.rightClickFunctionMainhand);
+                        runFunction(worldIn, playerIn, this.rightClickFunctionMainhand, playerIn.getPositionVec());
                     }
                     if (handIn == Hand.OFF_HAND) {
-                        runFunction(worldIn, playerIn, this.rightClickFunctionOffhand);
+                        runFunction(worldIn, playerIn, this.rightClickFunctionOffhand, playerIn.getPositionVec());
                     }
                     return ActionResult.resultSuccess(itemstack);
                 } else {
@@ -202,26 +207,26 @@ public class ComplexItem extends Item {
                 if (isSelected) {
                     if (this.inventoryTickSlotRequired) {
                         if (this.inventoryTickSlot == itemSlot) {
-                            runFunction(worldIn, entityIn, this.inventoryTickFunction);
+                            runFunction(worldIn, entityIn, this.inventoryTickFunction, entityIn.getPositionVec());
                         } else if (inventoryTickEquipmentSlot != null && entityIn instanceof LivingEntity
                                 && ((LivingEntity) entityIn)
                                         .getItemStackFromSlot(inventoryTickEquipmentSlot) == stack) {
-                            runFunction(worldIn, entityIn, this.inventoryTickFunction);
+                            runFunction(worldIn, entityIn, this.inventoryTickFunction, entityIn.getPositionVec());
                         }
                     } else {
-                        runFunction(worldIn, entityIn, this.inventoryTickFunction);
+                        runFunction(worldIn, entityIn, this.inventoryTickFunction, entityIn.getPositionVec());
                     }
                 }
             } else {
                 if (this.inventoryTickSlotRequired) {
                     if (this.inventoryTickSlot == itemSlot) {
-                        runFunction(worldIn, entityIn, this.inventoryTickFunction);
+                        runFunction(worldIn, entityIn, this.inventoryTickFunction, entityIn.getPositionVec());
                     } else if (inventoryTickEquipmentSlot != null && entityIn instanceof LivingEntity
                             && ((LivingEntity) entityIn).getItemStackFromSlot(inventoryTickEquipmentSlot) == stack) {
-                        runFunction(worldIn, entityIn, this.inventoryTickFunction);
+                        runFunction(worldIn, entityIn, this.inventoryTickFunction, entityIn.getPositionVec());
                     }
                 } else {
-                    runFunction(worldIn, entityIn, this.inventoryTickFunction);
+                    runFunction(worldIn, entityIn, this.inventoryTickFunction, entityIn.getPositionVec());
                 }
             }
         } else {
@@ -234,12 +239,7 @@ public class ComplexItem extends Item {
             return entityLiving.onFoodEaten(worldIn, stack);
         } else {
             if (!worldIn.isRemote()) {
-                FunctionManager manager = worldIn.getServer().getFunctionManager();
-                try {
-                    manager.execute(manager.get(this.onItemUseFinishFunction).get(),
-                            entityLiving.getCommandSource().withFeedbackDisabled());
-                } catch (NoSuchElementException e) {
-                }
+                runFunction(worldIn, entityLiving, this.onItemUseFinishFunction, entityLiving.getPositionVec());
             }
             return stack;
         }
@@ -266,22 +266,22 @@ public class ComplexItem extends Item {
         }
     }
 
-    private static boolean evaluatePredicate(World worldIn, PlayerEntity playerIn, ResourceLocation predicate) {
+    private static boolean evaluatePredicate(World worldIn, Entity entityIn, ResourceLocation predicate, Vector3d position) {
         try {
             return worldIn.getServer().func_229736_aP_().func_227517_a_(predicate).test(
-                    new LootContext.Builder(worldIn.getServer().getWorld(playerIn.getEntityWorld().getDimensionKey()))
-                            .withParameter(LootParameters.THIS_ENTITY, playerIn)
-                            .withParameter(LootParameters.field_237457_g_, playerIn.getPositionVec())
+                    new LootContext.Builder(worldIn.getServer().getWorld(entityIn.getEntityWorld().getDimensionKey()))
+                            .withParameter(LootParameters.THIS_ENTITY, entityIn)
+                            .withParameter(LootParameters.field_237457_g_, position)
                             .build(LootParameterSets.COMMAND));
         } catch (NullPointerException e) {
             return true;
         }
     }
 
-    private static void runFunction(World worldIn, Entity source, ResourceLocation function) {
+    private static void runFunction(World worldIn, Entity source, ResourceLocation function, Vector3d position) {
         try {
             FunctionManager manager = worldIn.getServer().getFunctionManager();
-            manager.execute(manager.get(function).get(), source.getCommandSource().withFeedbackDisabled());
+            manager.execute(manager.get(function).get(), source.getCommandSource().withFeedbackDisabled().withPos(position));
         } catch (NoSuchElementException e) {
         }
     }
