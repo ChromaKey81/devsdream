@@ -86,7 +86,7 @@ public class ComplexItemDeserializer {
                 }
             }
             if (rightClick.has("predicate")) {
-                JsonElement predicate = rightClick.get("function");
+                JsonElement predicate = rightClick.get("predicate");
                 if (predicate.isJsonObject()) {
                     JsonObject predicateObj = JSONUtils.getJsonObject(rightClick, "predicate");
                     if (predicateObj.has("mainhand")) {
