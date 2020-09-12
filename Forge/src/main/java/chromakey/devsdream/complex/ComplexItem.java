@@ -52,8 +52,11 @@ public class ComplexItem extends Item {
     public ComplexItem(Properties properties, List<ITextComponent> tooltip, boolean hasEffect, int enchantability,
             boolean canBreakBlocks, @Nullable ResourceLocation onUseFunction,
             @Nullable ResourceLocation rightClickFunctionMainhand, @Nullable ResourceLocation rightClickFunctionOffhand,
-            @Nullable ResourceLocation rightClickPredicateMainhand, @Nullable ResourceLocation rightClickPredicateOffhand, String appendToKeyTag, int useDuration, UseAction useAction,
-            @Nullable ResourceLocation onItemUseFinishFunction, @Nullable Item incrementRightClickStatistic, @Nullable ResourceLocation inventoryTickFunction, boolean inventoryTickSelected, int inventoryTickSlot, boolean inventoryTickSlotRequired) {
+            @Nullable ResourceLocation rightClickPredicateMainhand,
+            @Nullable ResourceLocation rightClickPredicateOffhand, String appendToKeyTag, int useDuration,
+            UseAction useAction, @Nullable ResourceLocation onItemUseFinishFunction,
+            @Nullable Item incrementRightClickStatistic, @Nullable ResourceLocation inventoryTickFunction,
+            boolean inventoryTickSelected, int inventoryTickSlot, boolean inventoryTickSlotRequired) {
         super(properties);
         this.tooltip = tooltip;
         this.hasEffect = hasEffect;
@@ -108,18 +111,19 @@ public class ComplexItem extends Item {
     }
 
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-        if ((this.isFood() && playerIn.canEat(this.getFood().canEatWhenFull()))
-                || (this.rightClickFunctionMainhand == null && handIn == Hand.MAIN_HAND)
+        if ((this.rightClickFunctionMainhand == null && handIn == Hand.MAIN_HAND)
                 || (this.rightClickFunctionOffhand == null && handIn == Hand.OFF_HAND)) {
             return super.onItemRightClick(worldIn, playerIn, handIn);
         } else {
             ItemStack itemstack = playerIn.getHeldItem(handIn);
             boolean flag;
             if (!worldIn.isRemote) {
-                if ((this.rightClickPredicateMainhand == null && handIn == Hand.MAIN_HAND) || (this.rightClickPredicateOffhand == null && handIn == Hand.OFF_HAND)) {
+                if ((this.rightClickPredicateMainhand == null && handIn == Hand.MAIN_HAND)
+                        || (this.rightClickPredicateOffhand == null && handIn == Hand.OFF_HAND)) {
                     flag = true;
                 } else {
-                    if (this.rightClickPredicateMainhand == this.rightClickPredicateOffhand || handIn == Hand.MAIN_HAND) {
+                    if (this.rightClickPredicateMainhand == this.rightClickPredicateOffhand
+                            || handIn == Hand.MAIN_HAND) {
                         flag = evaluatePredicate(worldIn, playerIn, this.rightClickPredicateMainhand);
                     } else {
                         flag = evaluatePredicate(worldIn, playerIn, this.rightClickPredicateOffhand);
@@ -139,7 +143,7 @@ public class ComplexItem extends Item {
                     }
                     return ActionResult.resultSuccess(itemstack);
                 } else {
-                    return ActionResult.resultPass(itemstack);
+                    return super.onItemRightClick(worldIn, playerIn, handIn);
                 }
             } else {
                 return ActionResult.resultPass(itemstack);
@@ -149,13 +153,15 @@ public class ComplexItem extends Item {
 
     public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
         EquipmentSlotType inventoryTickEquipmentSlot = getEquipmentSlotType(this.inventoryTickSlot);
-        if(!worldIn.isRemote() && this.inventoryTickFunction != null) {
+        if (!worldIn.isRemote() && this.inventoryTickFunction != null) {
             if (this.inventoryTickSelected) {
                 if (isSelected) {
                     if (this.inventoryTickSlotRequired) {
                         if (this.inventoryTickSlot == itemSlot) {
                             runFunction(worldIn, entityIn, this.inventoryTickFunction);
-                        } else if (inventoryTickEquipmentSlot != null && entityIn instanceof LivingEntity && ((LivingEntity)entityIn).getItemStackFromSlot(inventoryTickEquipmentSlot) == stack) {
+                        } else if (inventoryTickEquipmentSlot != null && entityIn instanceof LivingEntity
+                                && ((LivingEntity) entityIn)
+                                        .getItemStackFromSlot(inventoryTickEquipmentSlot) == stack) {
                             runFunction(worldIn, entityIn, this.inventoryTickFunction);
                         }
                     } else {
@@ -166,7 +172,8 @@ public class ComplexItem extends Item {
                 if (this.inventoryTickSlotRequired) {
                     if (this.inventoryTickSlot == itemSlot) {
                         runFunction(worldIn, entityIn, this.inventoryTickFunction);
-                    } else if (inventoryTickEquipmentSlot != null && entityIn instanceof LivingEntity && ((LivingEntity)entityIn).getItemStackFromSlot(inventoryTickEquipmentSlot) == stack) {
+                    } else if (inventoryTickEquipmentSlot != null && entityIn instanceof LivingEntity
+                            && ((LivingEntity) entityIn).getItemStackFromSlot(inventoryTickEquipmentSlot) == stack) {
                         runFunction(worldIn, entityIn, this.inventoryTickFunction);
                     }
                 } else {
@@ -217,13 +224,11 @@ public class ComplexItem extends Item {
 
     private static boolean evaluatePredicate(World worldIn, PlayerEntity playerIn, ResourceLocation predicate) {
         try {
-            return worldIn.getServer().func_229736_aP_().func_227517_a_(predicate)
-                    .test(new LootContext.Builder(
-                            worldIn.getServer().getWorld(playerIn.getEntityWorld().getDimensionKey()))
-                                    .withParameter(LootParameters.THIS_ENTITY, playerIn)
-                                    .withParameter(LootParameters.field_237457_g_,
-                                            playerIn.getPositionVec())
-                                    .build(LootParameterSets.COMMAND));
+            return worldIn.getServer().func_229736_aP_().func_227517_a_(predicate).test(
+                    new LootContext.Builder(worldIn.getServer().getWorld(playerIn.getEntityWorld().getDimensionKey()))
+                            .withParameter(LootParameters.THIS_ENTITY, playerIn)
+                            .withParameter(LootParameters.field_237457_g_, playerIn.getPositionVec())
+                            .build(LootParameterSets.COMMAND));
         } catch (NullPointerException e) {
             return true;
         }
@@ -232,8 +237,7 @@ public class ComplexItem extends Item {
     private static void runFunction(World worldIn, Entity source, ResourceLocation function) {
         try {
             FunctionManager manager = worldIn.getServer().getFunctionManager();
-            manager.execute(manager.get(function).get(),
-                    source.getCommandSource().withFeedbackDisabled());
+            manager.execute(manager.get(function).get(), source.getCommandSource().withFeedbackDisabled());
         } catch (NoSuchElementException e) {
         }
     }
