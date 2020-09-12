@@ -44,8 +44,19 @@ public class JSONHelper {
         }
     }
 
+    @Deprecated
     public static Item setRequiredItemElement(JsonObject object, String element) throws JsonSyntaxException {
         String argument = JSONUtils.getString(object, element);
+        ResourceLocation resourcelocation = new ResourceLocation(argument);
+        Item item = ForgeRegistries.ITEMS.getValue(resourcelocation);
+        if (item == null) {
+            throw new JsonSyntaxException("Unknown item '" + argument + "'");
+        } else {
+            return item;
+        }
+    }
+
+    public static Item getItem(String argument) throws JsonSyntaxException {
         ResourceLocation resourcelocation = new ResourceLocation(argument);
         Item item = ForgeRegistries.ITEMS.getValue(resourcelocation);
         if (item == null) {

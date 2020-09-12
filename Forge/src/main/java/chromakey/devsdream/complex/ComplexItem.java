@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import javax.annotation.Nullable;
 
 import net.minecraft.advancements.FunctionManager;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -14,15 +15,18 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.UseAction;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootParameterSets;
 import net.minecraft.loot.LootParameters;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -48,6 +52,9 @@ public class ComplexItem extends Item {
     private final int inventoryTickSlot;
     private final boolean inventoryTickSelected;
     private final boolean inventoryTickSlotRequired;
+    private final Item repairItem;
+    private final Block useOnBlock;
+    private final ResourceLocation useOnBlockFunction;
 
     public ComplexItem(Properties properties, List<ITextComponent> tooltip, boolean hasEffect, int enchantability,
             boolean canBreakBlocks, @Nullable ResourceLocation onUseFunction,
@@ -56,7 +63,7 @@ public class ComplexItem extends Item {
             @Nullable ResourceLocation rightClickPredicateOffhand, String appendToKeyTag, int useDuration,
             UseAction useAction, @Nullable ResourceLocation onItemUseFinishFunction,
             @Nullable Item incrementRightClickStatistic, @Nullable ResourceLocation inventoryTickFunction,
-            boolean inventoryTickSelected, int inventoryTickSlot, boolean inventoryTickSlotRequired) {
+            boolean inventoryTickSelected, int inventoryTickSlot, boolean inventoryTickSlotRequired, @Nullable Item repairItem, @Nullable Block useOnBlock, @Nullable ResourceLocation useOnBlockFunction) {
         super(properties);
         this.tooltip = tooltip;
         this.hasEffect = hasEffect;
@@ -76,6 +83,9 @@ public class ComplexItem extends Item {
         this.inventoryTickSlot = inventoryTickSlot;
         this.inventoryTickSlotRequired = inventoryTickSlotRequired;
         this.inventoryTickSelected = inventoryTickSelected;
+        this.repairItem = repairItem;
+        this.useOnBlock = useOnBlock;
+        this.useOnBlockFunction = useOnBlockFunction;
     }
 
     @Override
@@ -109,6 +119,36 @@ public class ComplexItem extends Item {
             runFunction(worldIn, livingEntityIn, this.onUseFunction);
         }
     }
+
+    public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
+        if (this.repairItem != null) {
+            return repair.getItem() == this.repairItem;
+        } else {
+            return super.getIsRepairable(toRepair, repair);
+        }
+    }
+
+    public ActionResultType onItemUse(ItemUseContext context) {
+        if (this.useOnBlock != null && this.useOnBlockFunction != null) {
+            World world = context.getWorld();
+            BlockPos blockpos = context.getPos();
+            Entity entity = context.getPlayer();
+            BlockState blockstate = world.getBlockState(blockpos);
+            if (blockstate.isIn(this.useOnBlock)) {
+                try {
+                    FunctionManager manager = world.getServer().getFunctionManager();
+                    manager.execute(manager.get(this.useOnBlockFunction).get(), entity.getCommandSource().withFeedbackDisabled().withPos(new Vector3d(blockpos.getX(), blockpos.getY(), blockpos.getZ())));
+                    return ActionResultType.func_233537_a_(world.isRemote);
+                } catch (NoSuchElementException e) {
+                    return ActionResultType.PASS;
+                }
+            } else {
+                return ActionResultType.PASS;
+            }
+        } else {
+            return super.onItemUse(context);
+        }
+     }
 
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
         if ((this.rightClickFunctionMainhand == null && handIn == Hand.MAIN_HAND)

@@ -10,6 +10,7 @@ import com.google.gson.JsonSyntaxException;
 import chromakey.devsdream.complex.ComplexItem;
 import chromakey.devsdream.deserialization.ComplexItemDeserializer;
 import chromakey.devsdream.util.JSONHelper;
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.UseAction;
 import net.minecraft.util.JSONUtils;
@@ -38,6 +39,9 @@ public class ComplexItemDeserializer {
         int inventoryTickSlot = 0;
         boolean inventoryTickSlotRequired = false;
         boolean inventoryTickSelected = false;
+        Item repairItem = null;
+        Block useOnBlock = null;
+        ResourceLocation useOnBlockFunction = null;
 
         if (object.has("information")) {
             JSONUtils.getJsonArray(object, "information").iterator().forEachRemaining((tooltip) -> {
@@ -154,6 +158,14 @@ public class ComplexItemDeserializer {
                 inventoryTickSelected = JSONUtils.getBoolean(inventoryTick, "selected_only");
             }
         }
-        return new ComplexItem(ItemDeserializer.deserializeProperties(object), tooltips, hasEffect, enchantability, canBreakBlocks, onUseFunction, rightClickFunctionMainhand, rightClickFunctionOffhand, rightClickPredicateMainhand, rightClickPredicateOffhand, appendToKeyTag, useDuration, useAction, onItemUseFinishFunction, incrementRightClickStatistic, inventoryTickFunction, inventoryTickSelected, inventoryTickSlot, inventoryTickSlotRequired);
+        if (object.has("repair_item")) {
+            repairItem = JSONHelper.getItem(JSONUtils.getString(object, "repair_item"));
+        }
+        if (object.has("use_on_block")) {
+            JsonObject useOnBlockObj = JSONUtils.getJsonObject(object, "use_on_block");
+            useOnBlock = JSONHelper.getBlock(JSONUtils.getString(useOnBlockObj, "block"));
+            useOnBlockFunction = new ResourceLocation(JSONUtils.getString(useOnBlockObj, "function"));
+        }
+        return new ComplexItem(ItemDeserializer.deserializeProperties(object), tooltips, hasEffect, enchantability, canBreakBlocks, onUseFunction, rightClickFunctionMainhand, rightClickFunctionOffhand, rightClickPredicateMainhand, rightClickPredicateOffhand, appendToKeyTag, useDuration, useAction, onItemUseFinishFunction, incrementRightClickStatistic, inventoryTickFunction, inventoryTickSelected, inventoryTickSlot, inventoryTickSlotRequired, repairItem, useOnBlock, useOnBlockFunction);
     }
 }
