@@ -29,6 +29,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -57,6 +58,7 @@ public class ComplexItem extends Item {
     private final Block useOnBlock;
     private final ResourceLocation useOnBlockFunction;
     private final ResourceLocation useOnBlockPredicate;
+    private final List<String> tagTooltips;
 
     public ComplexItem(Properties properties, List<ITextComponent> tooltip, boolean hasEffect, int enchantability,
             boolean canBreakBlocks, @Nullable ResourceLocation onUseFunction,
@@ -65,7 +67,7 @@ public class ComplexItem extends Item {
             @Nullable ResourceLocation rightClickPredicateOffhand, String appendToKeyTag, int useDuration,
             UseAction useAction, @Nullable ResourceLocation onItemUseFinishFunction,
             @Nullable Item incrementRightClickStatistic, @Nullable ResourceLocation inventoryTickFunction,
-            boolean inventoryTickSelected, int inventoryTickSlot, boolean inventoryTickSlotRequired, @Nullable Item repairItem, @Nullable Block useOnBlock, @Nullable ResourceLocation useOnBlockFunction, float compostChance, @Nullable ResourceLocation useOnBlockPredicate) {
+            boolean inventoryTickSelected, int inventoryTickSlot, boolean inventoryTickSlotRequired, @Nullable Item repairItem, @Nullable Block useOnBlock, @Nullable ResourceLocation useOnBlockFunction, float compostChance, @Nullable ResourceLocation useOnBlockPredicate, List<String> tagTooltips) {
         super(properties);
         this.tooltip = tooltip;
         this.hasEffect = hasEffect;
@@ -92,6 +94,7 @@ public class ComplexItem extends Item {
             ComposterBlock.CHANCES.put(this, compostChance);
         }
         this.useOnBlockPredicate = useOnBlockPredicate;
+        this.tagTooltips = tagTooltips;
     }
 
     @Override
@@ -101,6 +104,16 @@ public class ComplexItem extends Item {
         super.addInformation(stack, worldIn, tooltip, flagIn);
         this.tooltip.iterator().forEachRemaining((line) -> {
             tooltip.add(line);
+        });
+        this.tagTooltips.iterator().forEachRemaining((line) -> {
+            try {
+                if (stack.getTag().getString(line).isEmpty()) {
+                    tooltip.add(new TranslationTextComponent(this.getDefaultTranslationKey() + ".tooltip." + line, stack.getTag().get(line).getString()));
+                } else {
+                    tooltip.add(new TranslationTextComponent(this.getDefaultTranslationKey() + ".tooltip." + line + "." + stack.getTag().getString(line)));
+                }
+            } catch (NullPointerException e) {
+            }
         });
     }
 

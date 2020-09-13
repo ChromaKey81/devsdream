@@ -33,7 +33,7 @@ public class ComplexItemDeserializer {
         int useDuration = 0;
         UseAction useAction = UseAction.NONE;
         ResourceLocation onItemUseFinishFunction = null;
-        List<JsonObject> tagTooltips = Lists.newArrayList();
+        List<String> tagTooltips = Lists.newArrayList();
         Item incrementRightClickStatistic = null;
         ResourceLocation inventoryTickFunction = null;
         int inventoryTickSlot = 0;
@@ -52,7 +52,7 @@ public class ComplexItemDeserializer {
         }
         if (object.has("information_from_tags")) {
             JSONUtils.getJsonArray(object, "information_from_tags").iterator().forEachRemaining((tooltip) -> {
-                tagTooltips.add(JSONUtils.getJsonObject(tooltip, "JsonObject"));
+                tagTooltips.add(JSONUtils.getString(tooltip, "String"));
             });
         }
         if (object.has("has_effect")) {
@@ -183,6 +183,6 @@ public class ComplexItemDeserializer {
                 rightClickPredicateMainhand, rightClickPredicateOffhand, appendToKeyTag, useDuration, useAction,
                 onItemUseFinishFunction, incrementRightClickStatistic, inventoryTickFunction, inventoryTickSelected,
                 inventoryTickSlot, inventoryTickSlotRequired, repairItem, useOnBlock, useOnBlockFunction, compostChance,
-                useOnBlockPredicate);
+                useOnBlockPredicate, tagTooltips);
     }
 }
