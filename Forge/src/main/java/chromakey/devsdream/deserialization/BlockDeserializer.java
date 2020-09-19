@@ -473,7 +473,7 @@ public class BlockDeserializer {
         return new SandBlock(JSONUtils.getInt(object, "dust_color"), deserializeProperties(object));
       }
       case "sapling": {
-        return new SaplingBlock(new CustomTree(Feature.field_236291_c_.withConfiguration(BaseTreeFeatureConfig.CODEC
+        return new SaplingBlock(new CustomTree(Feature.TREE.withConfiguration(BaseTreeFeatureConfig.CODEC
             .parse(JsonOps.INSTANCE, JSONUtils.getJsonObject(object, "tree")).getOrThrow(false, (error) -> {
               error = new String("Could not parse tree");
             }))), deserializeProperties(object));

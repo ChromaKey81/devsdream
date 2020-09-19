@@ -12,9 +12,9 @@
       "args": "",
       "env": {
         "MOD_CLASSES": "examplemod%%${workspaceFolder}\\bin\\main;examplemod%%${workspaceFolder}\\bin\\main",
-        "MCP_MAPPINGS": "snapshot_20200820-1.16.1",
-        "MCP_VERSION": "20200910.110331",
-        "FORGE_VERSION": "34.0.0",
+        "MCP_MAPPINGS": "snapshot_20200916-1.16.2",
+        "MCP_VERSION": "20200911.084530",
+        "FORGE_VERSION": "34.0.9",
         "assetIndex": "1.16",
         "assetDirectory": "C:\\Users\\willi\\.gradle\\caches\\forge_gradle\\assets",
         "nativesDirectory": "${workspaceFolder}\\build\\natives",
@@ -34,9 +34,9 @@
       "args": "--mod examplemod --all --output \"C:\\Users\\willi\\OneDrive\\Desktop\\Developer\u0027s Dream\\Forge\\src\\generated\\resources\"",
       "env": {
         "MOD_CLASSES": "examplemod%%${workspaceFolder}\\bin\\main;examplemod%%${workspaceFolder}\\bin\\main",
-        "MCP_MAPPINGS": "snapshot_20200820-1.16.1",
-        "MCP_VERSION": "20200910.110331",
-        "FORGE_VERSION": "34.0.0",
+        "MCP_MAPPINGS": "snapshot_20200916-1.16.2",
+        "MCP_VERSION": "20200911.084530",
+        "FORGE_VERSION": "34.0.9",
         "FORGE_GROUP": "net.minecraftforge",
         "target": "fmluserdevdata",
         "MC_VERSION": "1.16.3"
@@ -53,9 +53,9 @@
       "args": "",
       "env": {
         "MOD_CLASSES": "examplemod%%${workspaceFolder}\\bin\\main;examplemod%%${workspaceFolder}\\bin\\main",
-        "MCP_MAPPINGS": "snapshot_20200820-1.16.1",
-        "MCP_VERSION": "20200910.110331",
-        "FORGE_VERSION": "34.0.0",
+        "MCP_MAPPINGS": "snapshot_20200916-1.16.2",
+        "MCP_VERSION": "20200911.084530",
+        "FORGE_VERSION": "34.0.9",
         "FORGE_GROUP": "net.minecraftforge",
         "target": "fmluserdevserver",
         "MC_VERSION": "1.16.3"

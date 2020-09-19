@@ -59,6 +59,7 @@ public class ComplexItem extends Item {
     private final ResourceLocation useOnBlockFunction;
     private final ResourceLocation useOnBlockPredicate;
     private final List<String> tagTooltips;
+    private final String defaultTranslationKey;
 
     public ComplexItem(Properties properties, List<ITextComponent> tooltip, boolean hasEffect, int enchantability,
             boolean canBreakBlocks, @Nullable ResourceLocation onUseFunction,
@@ -67,7 +68,7 @@ public class ComplexItem extends Item {
             @Nullable ResourceLocation rightClickPredicateOffhand, String appendToKeyTag, int useDuration,
             UseAction useAction, @Nullable ResourceLocation onItemUseFinishFunction,
             @Nullable Item incrementRightClickStatistic, @Nullable ResourceLocation inventoryTickFunction,
-            boolean inventoryTickSelected, int inventoryTickSlot, boolean inventoryTickSlotRequired, @Nullable Item repairItem, @Nullable Block useOnBlock, @Nullable ResourceLocation useOnBlockFunction, float compostChance, @Nullable ResourceLocation useOnBlockPredicate, List<String> tagTooltips) {
+            boolean inventoryTickSelected, int inventoryTickSlot, boolean inventoryTickSlotRequired, @Nullable Item repairItem, @Nullable Block useOnBlock, @Nullable ResourceLocation useOnBlockFunction, float compostChance, @Nullable ResourceLocation useOnBlockPredicate, List<String> tagTooltips, @Nullable String defaultTranslationKey) {
         super(properties);
         this.tooltip = tooltip;
         this.hasEffect = hasEffect;
@@ -95,6 +96,7 @@ public class ComplexItem extends Item {
         }
         this.useOnBlockPredicate = useOnBlockPredicate;
         this.tagTooltips = tagTooltips;
+        this.defaultTranslationKey = defaultTranslationKey;
     }
 
     @Override
@@ -107,8 +109,15 @@ public class ComplexItem extends Item {
         });
         this.tagTooltips.iterator().forEachRemaining((line) -> {
             try {
-                if (stack.getTag().getString(line).isEmpty()) {
-                    tooltip.add(new TranslationTextComponent(this.getDefaultTranslationKey() + ".tooltip." + line, stack.getTag().get(line).getString()));
+                byte tagId = stack.getTag().getTagId(line);
+                if (0 < tagId && tagId < 7) {
+                    tooltip.add(new TranslationTextComponent(this.getTranslationKey() + ".tooltip." + line, stack.getTag().get(line).getString()));
+                } else if (tagId == 7) {
+                    tooltip.add(new TranslationTextComponent(this.getTranslationKey() + ".tooltip." + line, stack.getTag().getByteArray(line)));
+                } else if (tagId == 11) {
+                    tooltip.add(new TranslationTextComponent(this.getTranslationKey() + ".tooltip." + line, stack.getTag().getIntArray(line)));
+                } else if (tagId == 12) {
+                    tooltip.add(new TranslationTextComponent(this.getTranslationKey() + ".tooltip." + line, stack.getTag().getLongArray(line)));
                 } else {
                     tooltip.add(new TranslationTextComponent(this.getDefaultTranslationKey() + ".tooltip." + line + "." + stack.getTag().getString(line)));
                 }
@@ -144,6 +153,14 @@ public class ComplexItem extends Item {
             return repair.getItem() == this.repairItem;
         } else {
             return super.getIsRepairable(toRepair, repair);
+        }
+    }
+
+    protected String getDefaultTranslationKey() {
+        if (this.defaultTranslationKey == null) {
+            return super.getDefaultTranslationKey();
+        } else {
+            return this.defaultTranslationKey;
         }
     }
 

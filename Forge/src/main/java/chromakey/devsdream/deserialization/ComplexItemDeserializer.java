@@ -44,10 +44,11 @@ public class ComplexItemDeserializer {
         ResourceLocation useOnBlockFunction = null;
         float compostChance = 0.0f;
         ResourceLocation useOnBlockPredicate = null;
+        String defaultTranslationKey = null;
 
         if (object.has("information")) {
             JSONUtils.getJsonArray(object, "information").iterator().forEachRemaining((tooltip) -> {
-                tooltips.add(ITextComponent.Serializer.func_240641_a_(tooltip));
+                tooltips.add(ITextComponent.Serializer.getComponentFromJson(tooltip));
             });
         }
         if (object.has("information_from_tags")) {
@@ -178,11 +179,14 @@ public class ComplexItemDeserializer {
         if (object.has("compost_chance")) {
             compostChance = JSONUtils.getFloat(object, "compost_chance");
         }
+        if (object.has("default_translation_key")) {
+            defaultTranslationKey = JSONUtils.getString(object, "default_translation_key");
+        }
         return new ComplexItem(ItemDeserializer.deserializeProperties(object), tooltips, hasEffect, enchantability,
                 canBreakBlocks, onUseFunction, rightClickFunctionMainhand, rightClickFunctionOffhand,
                 rightClickPredicateMainhand, rightClickPredicateOffhand, appendToKeyTag, useDuration, useAction,
                 onItemUseFinishFunction, incrementRightClickStatistic, inventoryTickFunction, inventoryTickSelected,
                 inventoryTickSlot, inventoryTickSlotRequired, repairItem, useOnBlock, useOnBlockFunction, compostChance,
-                useOnBlockPredicate, tagTooltips);
+                useOnBlockPredicate, tagTooltips, defaultTranslationKey);
     }
 }

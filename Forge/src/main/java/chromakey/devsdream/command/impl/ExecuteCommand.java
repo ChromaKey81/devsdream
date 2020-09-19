@@ -36,6 +36,7 @@ import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.command.arguments.IRangeArgument;
 import net.minecraft.command.arguments.NBTPathArgument;
 import net.minecraft.command.arguments.ObjectiveArgument;
+import net.minecraft.command.arguments.PotionArgument;
 import net.minecraft.command.arguments.ResourceLocationArgument;
 import net.minecraft.command.arguments.RotationArgument;
 import net.minecraft.command.arguments.ScoreHolderArgument;
@@ -64,6 +65,8 @@ import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.IntNBT;
 import net.minecraft.nbt.LongNBT;
 import net.minecraft.nbt.ShortNBT;
+import net.minecraft.potion.Effect;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.Scoreboard;
@@ -373,7 +376,11 @@ public class ExecuteCommand {
                                                                             return storeIntoAir(context.getSource(), EntityArgument.getPlayer(context, "player"), storingResult);
                                                                         })).then(Commands.literal("fire").redirect(parent, (context) -> {
                                                                             return storeIntoBurnTime(context.getSource(), EntityArgument.getPlayer(context, "player"), storingResult);
-                                                                        }))));
+                                                                        })).then(Commands.literal("effect").then(Commands.argument("effect", PotionArgument.mobEffect()).then(Commands.literal("amplifier").redirect(parent, (context) -> {
+                                                                            return storeIntoEffectAmplifier(context.getSource(), PotionArgument.getMobEffect(context, "effect"), EntityArgument.getPlayer(context, "player"), storingResult);
+                                                                        })).then(Commands.literal("duration").redirect(parent, (context) -> {
+                                                                            return storeIntoEffectDuration(context.getSource(), PotionArgument.getMobEffect(context, "effect"), EntityArgument.getPlayer(context, "player"), storingResult);
+                                                                        }))))));
         literal.then(Commands.literal("bossbar")
                 .then(Commands.argument("id", ResourceLocationArgument.resourceLocation())
                         .suggests(BossBarCommand.SUGGESTIONS_PROVIDER)
@@ -466,7 +473,7 @@ public class ExecuteCommand {
     }
 
     private static CommandSource storeIntoItem(CommandSource source, ServerPlayerEntity target, int slot,
-            IntFunction<INBT> tagConverter, NBTPath path, boolean storingResult) {
+            IntFunction<INBT> tagConverter, NBTPath path, boolean storingResult) throws CommandSyntaxException {
         return source.withResultConsumer((context, successful, result) -> {
             try {
                 ItemStack stack = getItemInInventory(target, slot);
@@ -589,6 +596,46 @@ public class ExecuteCommand {
             double motionX = target.getMotion().x;
             double motionY = target.getMotion().y;
             target.setMotion(motionX, motionY, (double) i);
+        });
+    }
+
+    private static CommandSource storeIntoEffectAmplifier(CommandSource source, Effect effect, ServerPlayerEntity target, boolean storingResult) {
+        return source.withResultConsumer((context, successful, result) -> {
+            try {
+                int i = storingResult ? result : (successful ? 1 : 0);
+                EffectInstance targetEffect = target.getActivePotionEffect(effect);
+                if (targetEffect == null) {
+                    throw new SimpleCommandExceptionType(
+                        new TranslationTextComponent("commands.devsdream.execute.store.player.item.failed.no_item"))
+                                .create();
+                } else {
+                    EffectInstance newEffect = new EffectInstance(targetEffect.getPotion(), targetEffect.getDuration(), i, targetEffect.isAmbient(), targetEffect.doesShowParticles(), targetEffect.isShowIcon());
+                    newEffect.combine(targetEffect);
+                    target.removePotionEffect(effect);
+                    target.addPotionEffect(newEffect);
+                }
+            } catch (CommandSyntaxException e) {
+            }
+        });
+    }
+
+    private static CommandSource storeIntoEffectDuration(CommandSource source, Effect effect, ServerPlayerEntity target, boolean storingResult) {
+        return source.withResultConsumer((context, successful, result) -> {
+            try {
+                int i = storingResult ? result : (successful ? 1 : 0);
+                EffectInstance targetEffect = target.getActivePotionEffect(effect);
+                if (targetEffect == null) {
+                    throw new SimpleCommandExceptionType(
+                        new TranslationTextComponent("commands.devsdream.execute.store.player.item.failed.no_item"))
+                                .create();
+                } else {
+                    EffectInstance newEffect = new EffectInstance(targetEffect.getPotion(), i, targetEffect.getDuration(), targetEffect.isAmbient(), targetEffect.doesShowParticles(), targetEffect.isShowIcon());
+                    newEffect.combine(targetEffect);
+                    target.removePotionEffect(effect);
+                    target.addPotionEffect(newEffect);
+                }
+            } catch (CommandSyntaxException e) {
+            }
         });
     }
 
