@@ -4,3 +4,8 @@ Forge/build/
 Forge/run/
 **/*.class
 Forge/bin/
+Fabric/.gradle/
+Fabric/.idea/
+Fabric/build/
+Fabric/run/
+Fabric/bin/
