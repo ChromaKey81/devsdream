@@ -98,7 +98,7 @@ public class ExecuteCommand {
     };
     private static final SuggestionProvider<CommandSource> field_229760_e_ = (p_229763_0_, p_229763_1_) -> {
         LootPredicateManager lootpredicatemanager = p_229763_0_.getSource().getServer().func_229736_aP_();
-        return ISuggestionProvider.suggestIterable(lootpredicatemanager.func_227513_a_(), p_229763_1_);
+        return ISuggestionProvider.suggestIterable(lootpredicatemanager.getConditionIds(), p_229763_1_);
     };
 
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
@@ -840,7 +840,7 @@ public class ExecuteCommand {
     private static boolean func_229767_a_(CommandSource p_229767_0_, ILootCondition p_229767_1_) {
         ServerWorld serverworld = p_229767_0_.getWorld();
         LootContext.Builder lootcontext$builder = (new LootContext.Builder(serverworld))
-                .withParameter(LootParameters.field_237457_g_, p_229767_0_.getPos())
+                .withParameter(LootParameters.ORIGIN, p_229767_0_.getPos())
                 .withNullableParameter(LootParameters.THIS_ENTITY, p_229767_0_.getEntity());
         return p_229767_1_.test(lootcontext$builder.build(LootParameterSets.COMMAND));
     }
@@ -931,7 +931,7 @@ public class ExecuteCommand {
                         BlockPos blockpos1 = new BlockPos(i1, l, k);
                         BlockPos blockpos2 = blockpos1.add(blockpos);
                         BlockState blockstate = worldIn.getBlockState(blockpos1);
-                        if (!isMasked || !blockstate.isIn(Blocks.AIR)) {
+                        if (!isMasked || !blockstate.matchesBlock(Blocks.AIR)) {
                             if (blockstate != worldIn.getBlockState(blockpos2)) {
                                 return OptionalInt.empty();
                             }

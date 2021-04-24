@@ -171,7 +171,7 @@ public class ComplexItem extends Item {
             Entity entity = context.getPlayer();
             BlockState blockstate = world.getBlockState(blockpos);
             Vector3d blockVec = new Vector3d(blockpos.getX(), blockpos.getY(), blockpos.getZ());
-            if (blockstate.isIn(this.useOnBlock)) {
+            if (blockstate.matchesBlock(this.useOnBlock)) {
                 if (this.useOnBlockPredicate == null) {
                     runFunction(world, entity, this.useOnBlockFunction, blockVec);
                     return ActionResultType.func_233537_a_(world.isRemote);
@@ -298,10 +298,10 @@ public class ComplexItem extends Item {
 
     private static boolean evaluatePredicate(World worldIn, Entity entityIn, ResourceLocation predicate, Vector3d position) {
         try {
-            return worldIn.getServer().func_229736_aP_().func_227517_a_(predicate).test(
+            return worldIn.getServer().func_229736_aP_().getCondition(predicate).test(
                     new LootContext.Builder(worldIn.getServer().getWorld(entityIn.getEntityWorld().getDimensionKey()))
                             .withParameter(LootParameters.THIS_ENTITY, entityIn)
-                            .withParameter(LootParameters.field_237457_g_, position)
+                            .withParameter(LootParameters.ORIGIN, position)
                             .build(LootParameterSets.COMMAND));
         } catch (NullPointerException e) {
             return true;
