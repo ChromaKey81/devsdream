@@ -39,6 +39,9 @@ public class BlockDeserializer {
       case "simple": {
         return new Block(deserializeProperties(object));
       }
+      case "complex": {
+
+      }
       case "air": {
         return new AirBlock(deserializeProperties(object));
       }
@@ -808,7 +811,9 @@ public class BlockDeserializer {
       properties.jumpFactor(JSONUtils.getFloat(propertiesObj, "jump_factor"));
     }
     if (propertiesObj.has("loot_from")) {
-      properties.lootFrom(JSONHelper.getBlock(JSONUtils.getString(propertiesObj, "loot_from")));
+      properties.lootFrom(() -> {
+        return JSONHelper.getBlock(JSONUtils.getString(propertiesObj, "loot_from"));
+      });
     }
     if (propertiesObj.has("solid")) {
       if (JSONUtils.getBoolean(propertiesObj, "solid") == false) {
@@ -827,7 +832,7 @@ public class BlockDeserializer {
       properties.harvestTool(ToolType.get(JSONUtils.getString(propertiesObj, "harvest_tool")));
     }
     if (propertiesObj.has("variable_opacity")) {
-      if (JSONUtils.getBoolean(propertiesObj, "transparent") == true) {
+      if (JSONUtils.getBoolean(propertiesObj, "variable_opacity") == true) {
         properties.variableOpacity();
       }
     }
