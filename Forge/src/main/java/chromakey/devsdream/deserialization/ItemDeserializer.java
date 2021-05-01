@@ -157,17 +157,17 @@ public class ItemDeserializer {
             case "axe": {
                 float attackDamage = JSONUtils.getFloat(object, "attack_damage");
                 float attackSpeed = JSONUtils.getFloat(object, "attack_speed");
-                if (object.has("tier")) {
-                    if (object.get("tier").isJsonObject()) {
-                        JsonObject itemTier = JSONUtils.getJsonObject(object, "tier");
+                if (object.has("item_tier")) {
+                    if (object.get("item_tier").isJsonObject()) {
+                        JsonObject itemTier = JSONUtils.getJsonObject(object, "item_tier");
                         return new AxeItem(deserializeItemTier(itemTier), attackDamage, attackSpeed,
                                 deserializeProperties(object));
                     } else {
-                        return new AxeItem(itemTierMap.get(new ResourceLocation(JSONUtils.getString(object, "tier"))),
+                        return new AxeItem(itemTierMap.get(new ResourceLocation(JSONUtils.getString(object, "item_tier"))),
                                 attackDamage, attackSpeed, deserializeProperties(object));
                     }
                 } else {
-                    throw new JsonSyntaxException("Missing armor material, expected to find a JsonObject or a String");
+                    throw new JsonSyntaxException("Missing item tier, expected to find a JsonObject or a String");
                 }
             }
             case "banner": {
