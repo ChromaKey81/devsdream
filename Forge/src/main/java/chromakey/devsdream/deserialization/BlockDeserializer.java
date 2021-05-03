@@ -9,6 +9,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.mojang.serialization.JsonOps;
 
+import chromakey.devsdream.complex.ComplexBlock;
+import chromakey.devsdream.custom.CustomPoweredRail;
 import chromakey.devsdream.custom.CustomTree;
 import chromakey.devsdream.util.JSONHelper;
 import net.minecraft.block.*;
@@ -40,7 +42,7 @@ public class BlockDeserializer {
         return new Block(deserializeProperties(object));
       }
       case "complex": {
-
+        return new ComplexBlock(deserializeProperties(object));
       }
       case "air": {
         return new AirBlock(deserializeProperties(object));
@@ -422,7 +424,7 @@ public class BlockDeserializer {
         return new PotatoBlock(deserializeProperties(object));
       }
       case "powered_rail": {
-        return new PoweredRailBlock(deserializeProperties(object));
+        return new CustomPoweredRail(deserializeProperties(object), JSONUtils.getBoolean(object, "activator_rail"));
       }
       case "pressure_plate": {
         String sensitivityString = JSONUtils.getString(object, "sensitivity");
