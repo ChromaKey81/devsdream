@@ -1,11 +1,6 @@
-Forge/.gradle/
-Forge/.idea/
-Forge/build/
-Forge/run/
+.gradle/
+.idea/
+build/
+run/
 **/*.class
-Forge/bin/
-Fabric/.gradle/
-Fabric/.idea/
-Fabric/build/
-Fabric/run/
-Fabric/bin/
+bin/

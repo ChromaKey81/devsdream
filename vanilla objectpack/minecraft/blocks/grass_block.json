@@ -1,9 +1,0 @@
-{
-    "type": "grass",
-    "properties": {
-        "material": "organic",
-        "tick_randomly": true,
-        "hardness_and_resistance": 0.6,
-        "sounds": "plant"
-    }
-}

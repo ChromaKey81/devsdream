@@ -1,8 +1,0 @@
-{
-    "type": "armor",
-    "armor_material": "minecraft:diamond",
-    "slot": "chest",
-    "properties": {
-        "group": "combat"
-    }
-}
